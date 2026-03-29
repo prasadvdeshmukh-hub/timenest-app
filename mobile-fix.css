@@ -60,15 +60,20 @@
     flex: 0 1 auto;
     min-height: 0;
     gap: 0.35rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .hud-clock-login {
-    width: clamp(160px, 32svh, 280px);
+    width: clamp(180px, 36svh, 300px) !important;
+    height: clamp(180px, 36svh, 300px) !important;
+    aspect-ratio: 1 / 1;
   }
 
   .clock-orbit-dots {
-    width: clamp(180px, 36svh, 320px);
-    height: clamp(180px, 36svh, 320px);
+    width: clamp(200px, 40svh, 340px);
+    height: clamp(200px, 40svh, 340px);
   }
 
   .login-tagline {
@@ -124,20 +129,23 @@
     align-items: center;
   }
 
-  /* HUD Clock on dashboard: proper size with square aspect */
+  /* HUD Clock on dashboard: sized by parent width */
   .hud-clock-wrap {
-    min-height: 200px;
+    min-height: 0;
     gap: 0.3rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    padding: 0.5rem 0;
   }
 
   .hud-clock {
-    width: 200px;
-    height: 200px;
+    width: min(60vw, 240px) !important;
+    height: min(60vw, 240px) !important;
     aspect-ratio: 1 / 1;
+    max-width: 100%;
   }
 
   /* Stat cards: compact, no wasted space */
@@ -206,12 +214,13 @@
   }
 
   .hud-clock-login {
-    width: clamp(130px, 26svh, 220px);
+    width: clamp(160px, 30svh, 250px) !important;
+    height: clamp(160px, 30svh, 250px) !important;
   }
 
   .clock-orbit-dots {
-    width: clamp(150px, 30svh, 260px);
-    height: clamp(150px, 30svh, 260px);
+    width: clamp(180px, 34svh, 280px);
+    height: clamp(180px, 34svh, 280px);
   }
 
   .login-tagline {
@@ -250,13 +259,13 @@
 
   /* ─── DASHBOARD ─── */
   .hud-clock-wrap {
-    min-height: 170px;
+    min-height: 0;
+    padding: 0.25rem 0;
   }
 
   .hud-clock {
-    width: 170px;
-    height: 170px;
-    aspect-ratio: 1 / 1;
+    width: min(55vw, 200px) !important;
+    height: min(55vw, 200px) !important;
   }
 
   .stat-card {
