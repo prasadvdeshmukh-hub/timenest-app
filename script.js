@@ -75,9 +75,11 @@ function syncClockCanvasSize() {
   }
 
   const measuredWidth = Math.round(clockCanvas.getBoundingClientRect().width);
-  size = measuredWidth || size;
+  // Enforce minimum 120px so the clock is always readable
+  size = Math.max(measuredWidth || size, 120);
   clockCanvas.width = size * pixelRatio;
   clockCanvas.height = size * pixelRatio;
+  clockCanvas.style.width = `${size}px`;
   clockCanvas.style.height = `${size}px`;
   clockContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 }
@@ -96,7 +98,7 @@ function drawHudClock() {
   const cx = size / 2;
   const cy = size / 2;
   const scale = size / 320; // scale factor relative to base 320px
-  const radius = size / 2 - 24 * scale;
+  const radius = size / 2 - 14 * scale; // tighter padding so content fits in small canvases
 
   clockContext.clearRect(0, 0, size, size);
 
@@ -229,30 +231,34 @@ function drawHudClock() {
   clockContext.fillStyle = timeGlow;
   clockContext.fillRect(cx - radius * 0.35, cy - radius * 0.35, radius * 0.7, radius * 0.7);
 
-  clockContext.font = `800 ${Math.round(42 * scale)}px 'Courier New', monospace`;
+  // Main time text — scale font relative to innerRadius so it always fits
+  const timeFontSize = Math.round(Math.min(42 * scale, innerRadius * 0.72));
+  clockContext.font = `800 ${timeFontSize}px 'Courier New', monospace`;
   clockContext.textAlign = "center";
   clockContext.textBaseline = "middle";
   clockContext.fillStyle = "rgba(108,99,255,0.1)";
-  clockContext.fillText(`${hours}:${minutes}`, cx + 2 * scale, cy - 10 * scale + 2 * scale);
+  clockContext.fillText(`${hours}:${minutes}`, cx + 2 * scale, cy - 6 * scale + 2 * scale);
 
   clockContext.fillStyle = CYAN;
   clockContext.shadowBlur = 25 * scale;
   clockContext.shadowColor = CYAN;
-  clockContext.fillText(`${hours}:${minutes}`, cx, cy - 10 * scale);
+  clockContext.fillText(`${hours}:${minutes}`, cx, cy - 6 * scale);
   clockContext.shadowBlur = 0;
 
   if (now.getMilliseconds() < 500) {
     clockContext.fillStyle = "rgba(0,200,255,0.3)";
-    clockContext.fillText(`${hours} ${minutes}`, cx, cy - 10 * scale);
+    clockContext.fillText(`${hours} ${minutes}`, cx, cy - 6 * scale);
   }
 
-  clockContext.font = `600 ${Math.round(18 * scale)}px 'Courier New', monospace`;
+  const secFontSize = Math.round(Math.min(18 * scale, innerRadius * 0.32));
+  clockContext.font = `600 ${secFontSize}px 'Courier New', monospace`;
   clockContext.fillStyle = "rgba(0,200,255,0.55)";
-  clockContext.fillText(seconds, cx, cy + 22 * scale);
+  clockContext.fillText(seconds, cx, cy + 16 * scale);
 
-  clockContext.font = `600 ${Math.round(14 * scale)}px 'Courier New', monospace`;
+  const periodFontSize = Math.round(Math.min(14 * scale, innerRadius * 0.25));
+  clockContext.font = `600 ${periodFontSize}px 'Courier New', monospace`;
   clockContext.fillStyle = "rgba(0,200,255,0.52)";
-  clockContext.fillText(period, cx, cy + 42 * scale);
+  clockContext.fillText(period, cx, cy + 30 * scale);
 
   const bracketLength = 20 * scale;
   const bracketOffset = radius * 0.42;
@@ -271,26 +277,33 @@ function drawHudClock() {
     clockContext.fill();
   });
 
-  clockContext.font = `500 ${Math.round(9 * scale)}px 'Courier New', monospace`;
+  const labelFontSize = Math.max(Math.round(9 * scale), 5);
+  clockContext.font = `500 ${labelFontSize}px 'Courier New', monospace`;
   clockContext.textAlign = "center";
   clockContext.fillStyle = "rgba(0,200,255,0.4)";
   clockContext.fillText("TIMENEST", cx, cy - radius * 0.68);
   clockContext.fillText("SYS.CLOCK v2.1", cx, cy + radius * 0.72);
 
-  clockContext.textAlign = "left";
-  clockContext.font = `500 ${Math.round(8 * scale)}px 'Courier New', monospace`;
-  clockContext.fillStyle = "rgba(108,99,255,0.35)";
-  clockContext.fillText(`HR: ${hours}`, cx + radius * 0.48, cy - radius * 0.22);
-  clockContext.fillText(`MN: ${minutes}`, cx + radius * 0.48, cy - radius * 0.12);
-  clockContext.fillText(`SC: ${seconds}`, cx + radius * 0.48, cy - radius * 0.02);
+  // Only show side metadata if canvas is large enough
+  if (size >= 200) {
+    clockContext.textAlign = "left";
+    clockContext.font = `500 ${Math.max(Math.round(8 * scale), 5)}px 'Courier New', monospace`;
+    clockContext.fillStyle = "rgba(108,99,255,0.35)";
+    clockContext.fillText(`HR: ${hours}`, cx + radius * 0.48, cy - radius * 0.22);
+    clockContext.fillText(`MN: ${minutes}`, cx + radius * 0.48, cy - radius * 0.12);
+    clockContext.fillText(`SC: ${seconds}`, cx + radius * 0.48, cy - radius * 0.02);
+  }
 
   const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-  clockContext.textAlign = "right";
-  clockContext.fillStyle = "rgba(0,200,255,0.3)";
-  clockContext.fillText(dayNames[now.getDay()], cx - radius * 0.48, cy - radius * 0.22);
-  clockContext.fillText(`${now.getDate()} ${monthNames[now.getMonth()]}`, cx - radius * 0.48, cy - radius * 0.12);
-  clockContext.fillText(String(now.getFullYear()), cx - radius * 0.48, cy - radius * 0.02);
+  // Only show date metadata if canvas is large enough
+  if (size >= 200) {
+    clockContext.textAlign = "right";
+    clockContext.fillStyle = "rgba(0,200,255,0.3)";
+    clockContext.fillText(dayNames[now.getDay()], cx - radius * 0.48, cy - radius * 0.22);
+    clockContext.fillText(`${now.getDate()} ${monthNames[now.getMonth()]}`, cx - radius * 0.48, cy - radius * 0.12);
+    clockContext.fillText(String(now.getFullYear()), cx - radius * 0.48, cy - radius * 0.02);
+  }
 
   const orbitAngle = (frame * 0.02) % (Math.PI * 2);
   const orbitX = cx + (radius + 12 * scale) * Math.cos(orbitAngle);
