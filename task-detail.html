@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>TimeNest Task Detail</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="aurora aurora-left" aria-hidden="true"></div>
+    <div class="aurora aurora-right" aria-hidden="true"></div>
+    <main class="app-page-shell">
+      <aside class="app-sidebar">
+        <div class="sidebar-card panel"><a class="brand-link" href="./index.html"><div class="brand-cluster"><div class="brand-mark"><span class="brand-core"></span></div><div><p class="mini-label">Task Drill-Down</p><h2>TimeNest</h2><p class="brand-subline">Master Your Time. Achieve Your Goals.</p></div></div></a></div>
+        <nav class="sidebar-nav">
+          <a class="sidebar-link" href="./daily-tasks.html">Back to Tasks <span>09</span></a>
+          <a class="sidebar-link" href="./goal-detail.html">Goal Detail <span>01</span></a>
+          <a class="sidebar-link is-active" href="./task-detail.html">Task Detail <span>04</span></a>
+          <a class="sidebar-link" href="./task-editor.html">Edit Task <span>01</span></a>
+        </nav>
+      </aside>
+      <section class="app-main">
+        <section class="page-hero">
+          <article class="hero-panel-large panel">
+            <p class="mini-label">Task Detail</p>
+            <h1 class="section-title">Submit investor-ready roadmap</h1>
+            <p>This task belongs to the Launch TimeNest MVP goal and supports the dashboard-to-task drill-down flow.</p>
+            <div class="chip-row">
+              <span class="status-pill alert">High Priority</span>
+              <span class="soft-pill">Today · 07:30 PM</span>
+              <span class="soft-pill">Recurrence: None</span>
+              <a class="soft-pill" href="./task-editor.html">Edit Task</a>
+              <a class="soft-pill" href="./subtask-editor.html">Add Subtask</a>
+            </div>
+          </article>
+          <article class="hero-panel-side panel">
+            <p class="mini-label">Status</p>
+            <strong class="value-big">Pending</strong>
+            <p>Reminder channels enabled and escalation is active if ignored.</p>
+          </article>
+        </section>
+        <section class="content-split">
+          <article class="task-detail-panel panel">
+            <p class="mini-label">Execution Details</p>
+            <div class="surface-list">
+              <div class="surface-item"><div><strong>Goal</strong><small>Launch TimeNest MVP</small></div><span class="soft-pill">Parent Goal</span></div>
+              <div class="surface-item"><div><strong>Time</strong><small>07:30 PM with optional seconds support</small></div><span class="soft-pill">HH MM SS</span></div>
+              <div class="surface-item"><div><strong>Reminder Channels</strong><small>Push, in-app, email, WhatsApp</small></div><span class="soft-pill">4 active</span></div>
+              <div class="surface-item"><div><strong>Notes</strong><small>Finalize slide flow, milestone summary, and product roadmap priorities.</small></div><a class="soft-pill" href="./task-editor.html">Edit</a></div>
+            </div>
+          </article>
+          <article class="task-detail-panel panel">
+            <p class="mini-label">Quick Actions</p>
+            <div class="chip-row">
+              <span class="status-pill good">Mark Complete</span>
+              <span class="soft-pill">Skip</span>
+              <span class="soft-pill">Reschedule</span>
+              <span class="soft-pill">Snooze</span>
+            </div>
+            <div class="timeline-stack">
+              <div class="timeline-item"><span class="timeline-time">-60m</span><div><strong>Email reminder</strong><small>Sent one hour before due time.</small></div></div>
+              <div class="timeline-item"><span class="timeline-time">-10m</span><div><strong>Push reminder</strong><small>Active with in-app popup.</small></div></div>
+              <div class="timeline-item"><span class="timeline-time">+15m</span><div><strong>Escalation</strong><small>WhatsApp trigger if ignored.</small></div></div>
+            </div>
+          </article>
+        </section>
+        <section class="content-split">
+          <article class="task-detail-panel panel">
+            <p class="mini-label">Subtasks</p>
+            <div class="surface-list">
+              <a class="surface-item" href="./subtask-editor.html"><div><strong>Update milestone slide</strong><small>Subtask 1</small></div><span class="soft-pill">Edit</span></a>
+              <a class="surface-item" href="./subtask-editor.html"><div><strong>Validate financial numbers</strong><small>Subtask 2</small></div><span class="soft-pill">Edit</span></a>
+              <a class="surface-item" href="./subtask-editor.html"><div><strong>Send review copy</strong><small>Subtask 3</small></div><span class="soft-pill">Edit</span></a>
+            </div>
+          </article>
+        </section>
+      </section>
+    </main>
+    <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
+      <a class="tab-link" href="./index.html">Dashboard</a>
+      <a class="tab-link" href="./short-term-goals.html">Short-Term Goal</a>
+      <a class="tab-link" href="./long-term-goals.html">Long-Term Goal</a>
+      <a class="tab-link is-active" href="./daily-tasks.html">Daily Task</a>
+      <a class="tab-link" href="./habits.html">Habits</a>
+    </nav>
+  </body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>TimeNest Subtask Editor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="aurora aurora-left" aria-hidden="true"></div>
+    <div class="aurora aurora-right" aria-hidden="true"></div>
+    <main class="app-page-shell">
+      <aside class="app-sidebar">
+        <div class="sidebar-card panel"><a class="brand-link" href="./index.html"><div class="brand-cluster"><div class="brand-mark"><span class="brand-core"></span></div><div><p class="mini-label">Subtask Builder</p><h2>TimeNest</h2><p class="brand-subline">Master Your Time. Achieve Your Goals.</p></div></div></a></div>
+        <nav class="sidebar-nav">
+          <a class="sidebar-link" href="./task-detail.html">Task Detail <span>04</span></a>
+          <a class="sidebar-link" href="./task-editor.html">Task Editor <span>01</span></a>
+          <a class="sidebar-link is-active" href="./subtask-editor.html">Subtask Editor <span>03</span></a>
+        </nav>
+      </aside>
+      <section class="app-main">
+        <article class="page-card panel">
+          <p class="mini-label">Subtask Editor</p>
+          <h2 class="section-title">Add or edit subtasks under a task</h2>
+          <div class="form-grid">
+            <label class="field"><span>Subtask Name</span><input type="text" placeholder="Update milestone slide" /></label>
+            <label class="field"><span>Status</span><input type="text" placeholder="Pending / Completed" /></label>
+            <label class="field"><span>Deadline</span><input type="text" placeholder="29 Mar 2026" /></label>
+            <label class="field"><span>Priority</span><input type="text" placeholder="Low / Medium / High" /></label>
+            <label class="field full"><span>Notes</span><input type="text" placeholder="Context for the subtask and expected output" /></label>
+          </div>
+          <div class="form-actions">
+            <span class="soft-pill">Save Subtask</span>
+            <span class="soft-pill">Mark Complete</span>
+            <a class="soft-pill" href="./task-detail.html">Back to Task</a>
+          </div>
+        </article>
+      </section>
+    </main>
+    <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
+      <a class="tab-link" href="./index.html">Dashboard</a>
+      <a class="tab-link" href="./short-term-goals.html">Short-Term Goal</a>
+      <a class="tab-link" href="./long-term-goals.html">Long-Term Goal</a>
+      <a class="tab-link is-active" href="./daily-tasks.html">Daily Task</a>
+      <a class="tab-link" href="./habits.html">Habits</a>
+    </nav>
+  </body>
+</html>

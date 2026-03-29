@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>TimeNest Task Editor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="aurora aurora-left" aria-hidden="true"></div>
+    <div class="aurora aurora-right" aria-hidden="true"></div>
+    <main class="app-page-shell">
+      <aside class="app-sidebar">
+        <div class="sidebar-card panel"><a class="brand-link" href="./index.html"><div class="brand-cluster"><div class="brand-mark"><span class="brand-core"></span></div><div><p class="mini-label">Task Builder</p><h2>TimeNest</h2><p class="brand-subline">Master Your Time. Achieve Your Goals.</p></div></div></a></div>
+        <nav class="sidebar-nav">
+          <a class="sidebar-link" href="./daily-tasks.html">Daily Tasks <span>09</span></a>
+          <a class="sidebar-link" href="./task-detail.html">Task Detail <span>04</span></a>
+          <a class="sidebar-link is-active" href="./task-editor.html">Task Editor <span>01</span></a>
+        </nav>
+      </aside>
+      <section class="app-main">
+        <article class="page-card panel">
+          <p class="mini-label">Task Editor</p>
+          <h2 class="section-title">Create a task with date, time, recurrence, and reminders</h2>
+          <div class="form-grid">
+            <label class="field"><span>Task Name</span><input type="text" placeholder="Submit investor-ready roadmap" /></label>
+            <label class="field"><span>Priority</span><input type="text" placeholder="Low / Medium / High" /></label>
+            <label class="field"><span>Deadline Date</span><input type="text" placeholder="29 Mar 2026" /></label>
+            <label class="field"><span>Time</span><input type="text" placeholder="HH : MM : SS" /></label>
+            <label class="field full"><span>Notes</span><input type="text" placeholder="Add notes, task context, or checklist" /></label>
+          </div>
+          <div class="segmented-row">
+            <span class="soft-pill">None</span>
+            <span class="soft-pill">Daily</span>
+            <span class="soft-pill">Weekly</span>
+            <span class="soft-pill">Monthly</span>
+            <span class="soft-pill">Yearly</span>
+            <span class="soft-pill">Custom Days</span>
+          </div>
+          <div class="segmented-row">
+            <span class="soft-pill">Push</span>
+            <span class="soft-pill">In-App</span>
+            <span class="soft-pill">Email</span>
+            <span class="soft-pill">SMS</span>
+            <span class="soft-pill">WhatsApp</span>
+          </div>
+          <div class="form-actions"><span class="soft-pill">Save Task</span><span class="soft-pill">Preview Reminder</span><a class="soft-pill" href="./subtask-editor.html">Add Subtask</a><span class="soft-pill">Reset</span></div>
+        </article>
+      </section>
+    </main>
+    <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
+      <a class="tab-link" href="./index.html">Dashboard</a>
+      <a class="tab-link" href="./short-term-goals.html">Short-Term Goal</a>
+      <a class="tab-link" href="./long-term-goals.html">Long-Term Goal</a>
+      <a class="tab-link is-active" href="./daily-tasks.html">Daily Task</a>
+      <a class="tab-link" href="./habits.html">Habits</a>
+    </nav>
+  </body>
+</html>

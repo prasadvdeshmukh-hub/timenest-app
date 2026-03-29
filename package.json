@@ -1,0 +1,14 @@
+{
+  "name": "claude-connect-starter",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node claude-test.js",
+    "ui:preview": "node server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.56.0",
+    "dotenv": "^16.6.1"
+  }
+}

@@ -1,0 +1,67 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="140" y1="96" x2="892" y2="928" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#081224"/>
+      <stop offset="0.52" stop-color="#0A1833"/>
+      <stop offset="1" stop-color="#050A14"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 430) rotate(90) scale(320)">
+      <stop stop-color="#00C8FF" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#00C8FF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 560) rotate(90) scale(260)">
+      <stop stop-color="#6C63FF" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#6C63FF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="306" y1="282" x2="726" y2="742" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00D1FF"/>
+      <stop offset="0.5" stop-color="#6C63FF"/>
+      <stop offset="1" stop-color="#8BE7FF"/>
+    </linearGradient>
+    <linearGradient id="core" x1="444" y1="392" x2="584" y2="632" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFCC8B"/>
+      <stop offset="0.45" stop-color="#00C8FF"/>
+      <stop offset="1" stop-color="#6C63FF"/>
+    </linearGradient>
+    <filter id="softGlow" x="186" y="162" width="652" height="652" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="24" result="effect1_foregroundBlur"/>
+    </filter>
+    <filter id="textGlow" x="238" y="700" width="548" height="132" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="8" result="effect1_foregroundBlur"/>
+    </filter>
+  </defs>
+
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <rect x="28" y="28" width="968" height="968" rx="192" stroke="rgba(147,203,255,0.16)" stroke-width="2"/>
+  <circle cx="512" cy="430" r="320" fill="url(#glowA)"/>
+  <circle cx="512" cy="560" r="260" fill="url(#glowB)"/>
+
+  <g filter="url(#softGlow)">
+    <circle cx="512" cy="430" r="214" stroke="url(#ring)" stroke-width="20"/>
+    <circle cx="512" cy="430" r="154" stroke="#87E8FF" stroke-opacity="0.28" stroke-width="6"/>
+    <circle cx="512" cy="430" r="252" stroke="#00C8FF" stroke-opacity="0.14" stroke-width="4" stroke-dasharray="8 18"/>
+  </g>
+
+  <circle cx="512" cy="430" r="82" fill="#081224" stroke="url(#core)" stroke-width="10"/>
+  <circle cx="512" cy="430" r="26" fill="url(#core)"/>
+
+  <path d="M512 430L512 332" stroke="#DFFBFF" stroke-width="10" stroke-linecap="round"/>
+  <path d="M512 430L578 470" stroke="#FFD39F" stroke-width="10" stroke-linecap="round"/>
+
+  <path d="M377 272C398 248 428 230 463 219" stroke="#00C8FF" stroke-width="14" stroke-linecap="round"/>
+  <path d="M650 588C632 623 601 652 564 670" stroke="#6C63FF" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="371" cy="279" r="10" fill="#00C8FF"/>
+  <circle cx="654" cy="582" r="10" fill="#6C63FF"/>
+
+  <path d="M441 343C470 320 502 308 541 308C590 308 632 334 658 377" stroke="#8BE7FF" stroke-opacity="0.72" stroke-width="4" stroke-linecap="round"/>
+  <path d="M377 430C377 357 436 298 509 298" stroke="#00C8FF" stroke-opacity="0.36" stroke-width="4" stroke-linecap="round"/>
+
+  <g filter="url(#textGlow)">
+    <text x="512" y="778" text-anchor="middle" fill="#EAF8FF" font-family="Outfit, Arial, sans-serif" font-size="92" font-weight="700" letter-spacing="3">TimeNest</text>
+  </g>
+  <text x="512" y="836" text-anchor="middle" fill="#8FDFFF" fill-opacity="0.68" font-family="Space Grotesk, Arial, sans-serif" font-size="24" letter-spacing="10">FUTURE OF FOCUS</text>
+</svg>

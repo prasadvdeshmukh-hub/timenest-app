@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>TimeNest Login Preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="aurora aurora-left" aria-hidden="true"></div>
+    <div class="aurora aurora-right" aria-hidden="true"></div>
+
+    <main class="login-shell">
+      <section class="login-copy">
+        <p class="eyebrow">TimeNest Access</p>
+        <h1>Sign in to your futuristic productivity space</h1>
+        <p class="lede">
+          Log in with Google, email, or mobile access to continue tracking goals,
+          recurring tasks, habits, and reminders across desktop, Android, and iOS.
+        </p>
+
+        <div class="insight-pills">
+          <span>Google Sign-In</span>
+          <span>Email login</span>
+          <span>Mobile access</span>
+          <span>Secure session</span>
+        </div>
+
+        <div class="login-highlights panel">
+          <div class="login-highlight-row">
+            <strong>Cross-device sync</strong>
+            <span>Desktop, Android, iOS</span>
+          </div>
+          <div class="login-highlight-row">
+            <strong>Smart reminders</strong>
+            <span>Push, email, SMS, WhatsApp</span>
+          </div>
+          <div class="login-highlight-row">
+            <strong>Future-ready UI</strong>
+            <span>HUD clock, glass panels, soft neon depth</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="login-stage" aria-label="TimeNest login preview">
+        <article class="login-card panel">
+          <div class="login-card-top">
+            <div class="brand-cluster">
+              <div class="brand-mark" aria-hidden="true">
+                <span class="brand-core"></span>
+              </div>
+              <div>
+                <p class="mini-label">Secure Entry</p>
+                <h2 class="brand-wordmark">TimeNest</h2>
+              </div>
+            </div>
+
+            <a class="ghost-chip login-link" href="./index.html">Open Dashboard Preview</a>
+          </div>
+
+          <div class="login-main-grid">
+            <div class="login-clock-wrap">
+              <canvas id="hud-clock" class="hud-clock hud-clock-login"></canvas>
+              <div class="login-tagline" data-text="Master Your Time. Achieve Your Goals.">Master Your Time. Achieve Your Goals.</div>
+              <div class="clock-orbit-dots" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <div class="login-form-shell">
+              <div class="login-form-header">
+                <p class="mini-label">Welcome Back</p>
+                <h3>Choose a sign-in method</h3>
+                <p>
+                  Start with Google for the fastest setup, or continue with email
+                  or mobile login for account recovery and device access.
+                </p>
+              </div>
+
+              <div class="login-actions">
+                <a class="login-action primary-login" href="./index.html">
+                  <span class="login-action-icon">G</span>
+                  <span>Continue with Google</span>
+                </a>
+
+                <a class="login-action secondary-login" href="./signup.html">
+                  <span class="login-action-icon">@</span>
+                  <span>Login with Email</span>
+                </a>
+
+                <a class="login-action secondary-login" href="./signup.html">
+                  <span class="login-action-icon">#</span>
+                  <span>Login with Mobile</span>
+                </a>
+              </div>
+
+              <div class="login-divider" aria-hidden="true">
+                <span></span>
+                <strong>Quick Access</strong>
+                <span></span>
+              </div>
+
+              <div class="login-middle-link">
+                <a class="text-button" href="./forgot-password.html">Forgot password?</a>
+              </div>
+
+              <form class="login-form">
+                <label class="field">
+                  <span>Email or mobile number</span>
+                  <input type="text" placeholder="Enter email or mobile number" />
+                </label>
+
+                <label class="field">
+                  <span>Password</span>
+                  <input type="password" placeholder="Enter secure password" />
+                </label>
+
+                <div class="login-options">
+                  <label class="remember-choice">
+                    <input type="checkbox" checked />
+                    <span>Keep me signed in</span>
+                  </label>
+                </div>
+              </form>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

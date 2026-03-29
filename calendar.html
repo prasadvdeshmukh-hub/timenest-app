@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>TimeNest Calendar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="aurora aurora-left" aria-hidden="true"></div>
+    <div class="aurora aurora-right" aria-hidden="true"></div>
+    <main class="app-page-shell">
+      <aside class="app-sidebar">
+        <div class="sidebar-card panel"><a class="brand-link" href="./index.html"><div class="brand-cluster"><div class="brand-mark"><span class="brand-core"></span></div><div><p class="mini-label">Calendar Grid</p><h2>TimeNest</h2><p class="brand-subline">Master Your Time. Achieve Your Goals.</p></div></div></a></div>
+        <nav class="sidebar-nav">
+          <a class="sidebar-link" href="./index.html">Dashboard <span>01</span></a>
+          <a class="sidebar-link" href="./daily-tasks.html">Daily Tasks <span>09</span></a>
+          <a class="sidebar-link is-active" href="./calendar.html">Calendar <span>07</span></a>
+          <a class="sidebar-link" href="./notifications.html">Notifications <span>05</span></a>
+          <a class="sidebar-link" href="./task-editor.html">Add Task <span>01</span></a>
+        </nav>
+      </aside>
+      <section class="app-main">
+        <section class="page-hero">
+          <article class="hero-panel-large panel">
+            <p class="mini-label">Task Calendar</p>
+            <h1 class="section-title">One view for deadlines, recurrences, and reviews</h1>
+            <p>Recurring tasks, milestone dates, and daily summaries surface in the same calendar layer.</p>
+          </article>
+          <article class="hero-panel-side panel">
+            <p class="mini-label">Month</p>
+            <strong class="value-big">APR</strong>
+            <p>27 scheduled task occurrences and 4 goal milestone checkpoints.</p>
+          </article>
+        </section>
+        <section class="calendar-grid">
+          <div class="calendar-head">Sun</div><div class="calendar-head">Mon</div><div class="calendar-head">Tue</div><div class="calendar-head">Wed</div><div class="calendar-head">Thu</div><div class="calendar-head">Fri</div><div class="calendar-head">Sat</div>
+          <div class="calendar-cell"><strong>1</strong><span class="calendar-event">Dashboard QA</span></div>
+          <div class="calendar-cell"><strong>2</strong><span class="calendar-event">Recurring workout</span></div>
+          <div class="calendar-cell"><strong>3</strong><span class="calendar-event">Goal review</span></div>
+          <div class="calendar-cell"><strong>4</strong><span class="calendar-event">Budget sync</span></div>
+          <div class="calendar-cell"><strong>5</strong><span class="calendar-event">Marathi streak</span></div>
+          <div class="calendar-cell"><strong>6</strong><span class="calendar-event">API reminder setup</span></div>
+          <div class="calendar-cell"><strong>7</strong><span class="calendar-event">Weekly summary</span></div>
+        </section>
+      </section>
+    </main>
+    <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
+      <a class="tab-link" href="./index.html">Dashboard</a>
+      <a class="tab-link" href="./short-term-goals.html">Short-Term Goal</a>
+      <a class="tab-link" href="./long-term-goals.html">Long-Term Goal</a>
+      <a class="tab-link" href="./daily-tasks.html">Daily Task</a>
+      <a class="tab-link" href="./habits.html">Habits</a>
+    </nav>
+  </body>
+</html>
