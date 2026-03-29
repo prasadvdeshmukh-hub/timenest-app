@@ -1,3 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>TimeNest Login Preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
 :root {
   --bg-deep: #07111f;
   --panel: rgba(10, 22, 44, 0.72);
@@ -857,9 +870,11 @@ a {
 
   .hero-copy p {
     font-size: 0.78rem;
-    line-height: 1.55;
-    display: block;
-    overflow: visible;
+    line-height: 1.35;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 
   .hud-clock-wrap {
@@ -876,16 +891,11 @@ a {
   }
 
   .focus-card {
-    display: grid;
-    padding: 0.85rem;
-    gap: 0.6rem;
+    display: none;
   }
 
   .primary-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    padding: 0.65rem;
+    display: none;
   }
 
   .stat-card {
@@ -958,19 +968,13 @@ a {
   }
 
   .tasks-card .task-row:nth-child(3) {
-    display: flex;
+    display: none;
   }
 
-  .content-grid > .tasks-card:nth-child(2) {
-    display: grid;
-  }
-
-  .content-grid > .progress-card {
-    display: grid;
-  }
-
+  .content-grid > .tasks-card:nth-child(2),
+  .content-grid > .progress-card,
   .content-grid > .detail-card {
-    display: grid;
+    display: none;
   }
 }
 
@@ -1034,9 +1038,8 @@ a {
 
   .hero-copy p {
     font-size: 0.68rem;
-    line-height: 1.4;
-    display: block;
-    overflow: visible;
+    line-height: 1.22;
+    -webkit-line-clamp: 2;
   }
 
   .hud-clock-wrap {
@@ -1070,16 +1073,16 @@ a {
     right: max(0.3rem, var(--safe-right));
     bottom: max(0.3rem, var(--safe-bottom));
     transform: none;
-    gap: 0.25rem;
-    padding: 0.35rem;
+    gap: 0.18rem;
+    padding: 0.28rem;
     border-radius: 18px;
   }
 
   .tab-link {
-    min-height: 40px;
-    padding: 0.32rem 0.15rem;
-    font-size: 0.62rem;
-    border-radius: 12px;
+    min-height: 36px;
+    padding: 0.28rem 0.06rem;
+    font-size: 0.5rem;
+    border-radius: 14px;
   }
 
   .hud-clock {
@@ -1091,21 +1094,19 @@ a {
   }
 
   .stat-card span {
-    font-size: 0.65rem;
-    display: block;
+    display: none;
   }
 
   .stats-grid .stat-card:nth-child(n + 3) {
-    display: flex;
+    display: none;
   }
 
   .section-head .mini-label {
-    font-size: 0.65rem;
-    display: block;
+    display: none;
   }
 
   .tasks-card .task-row:nth-child(n + 2) {
-    display: flex;
+    display: none;
   }
 }
 
@@ -1169,14 +1170,13 @@ a {
   flex-direction: column;
   gap: clamp(0.4rem, 1svh, 1.2rem);
   padding: 1.35rem;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   position: relative;
   transform-style: preserve-3d;
   transform: perspective(1400px) rotateX(var(--login-tilt-x, 0deg)) rotateY(var(--login-tilt-y, 0deg));
   transition: transform 180ms ease;
-  min-height: 100svh;
-  max-height: none;
+  height: 100svh;
+  max-height: 100svh;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 30%),
     var(--panel);
@@ -1310,7 +1310,7 @@ a {
   flex: 1 1 auto;
   position: relative;
   z-index: 1;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .login-form-shell {
@@ -1648,7 +1648,7 @@ a {
       max(0.5rem, env(safe-area-inset-left, 0px));
     align-items: stretch;
     min-height: 100svh;
-    height: auto;
+    height: 100svh;
   }
 
   .login-copy {
@@ -1656,14 +1656,11 @@ a {
   }
 
   .login-card {
-    min-height: 100svh;
-    max-height: none;
-    height: auto;
-    padding: clamp(0.75rem, 2svh, 1.25rem);
-    gap: clamp(0.5rem, 1.2svh, 1rem);
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
+    height: 100svh;
+    max-height: 100svh;
+    padding: clamp(0.5rem, 1.5svh, 1rem);
+    gap: clamp(0.3rem, 0.8svh, 0.6rem);
+    overflow: hidden;
   }
 
   .login-card-top {
@@ -1681,27 +1678,27 @@ a {
   }
 
   .login-main-grid {
-    gap: clamp(0.5rem, 1.2svh, 1rem);
+    gap: clamp(0.2rem, 0.6svh, 0.5rem);
     flex: 1 1 auto;
     min-height: 0;
-    overflow: visible;
+    overflow: hidden;
   }
 
-  /* Clock area: reduced to give form more space */
+  /* Clock area: takes up majority of remaining space */
   .login-clock-wrap {
-    gap: clamp(0.25rem, 0.6svh, 0.5rem);
-    flex: 0 1 auto;
+    gap: clamp(0.15rem, 0.4svh, 0.3rem);
+    flex: 1 1 60%;
     min-height: 0;
   }
 
-  /* Clock canvas: smaller on mobile — 35% of viewport height */
+  /* Clock canvas: 50-55% of viewport height */
   .hud-clock-login {
-    width: clamp(160px, 35svh, 320px);
+    width: clamp(200px, 52svh, 480px);
   }
 
   .clock-orbit-dots {
-    width: clamp(180px, 38svh, 360px);
-    height: clamp(180px, 38svh, 360px);
+    width: clamp(220px, 56svh, 520px);
+    height: clamp(220px, 56svh, 520px);
   }
 
   .login-tagline {
@@ -1713,17 +1710,17 @@ a {
     min-height: 1.5em;
   }
 
-  /* Form: proper spacing and no squish */
+  /* Compact form: no scroll, minimal height */
   .login-form-shell {
-    padding: clamp(0.6rem, 1.5svh, 1rem);
-    gap: clamp(0.4rem, 0.8svh, 0.65rem);
+    padding: clamp(0.4rem, 1svh, 0.7rem);
+    gap: clamp(0.3rem, 0.6svh, 0.5rem);
     border-radius: clamp(12px, 2.5vw, 18px);
     flex-shrink: 0;
   }
 
   .login-form-header h3 {
-    font-size: clamp(0.92rem, 2.8vw, 1.1rem);
-    margin: 0.15rem 0 0.25rem;
+    font-size: clamp(0.88rem, 2.5vw, 1.05rem);
+    margin: 0.1rem 0 0.2rem;
   }
 
   .login-form-header p:last-child,
@@ -1737,36 +1734,38 @@ a {
   }
 
   .login-actions {
-    grid-template-columns: 1fr;
-    gap: 8px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
   }
 
   .login-form {
     grid-template-columns: 1fr;
-    gap: 8px;
   }
 
   .login-action {
-    min-height: 48px;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.88rem;
+    min-height: 44px;
+    padding: 0.4rem 0.5rem;
+    font-size: clamp(0.68rem, 1.8vw, 0.82rem);
   }
 
   .field input {
-    padding: 0.55rem 0.85rem;
-    min-height: 48px;
-    font-size: 16px;
+    padding: 0.45rem 0.75rem;
+    min-height: 44px;
   }
 
   .field span {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
   }
 
   .remember-choice {
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     min-height: 36px;
     display: inline-flex;
     align-items: center;
+  }
+
+  .login-form {
+    gap: 6px;
   }
 
   .login-toggles {
@@ -1777,28 +1776,24 @@ a {
 @media (max-width: 560px) {
   .login-shell {
     padding:
-      max(0.5rem, env(safe-area-inset-top, 0px))
-      max(0.5rem, env(safe-area-inset-right, 0px))
-      max(0.5rem, env(safe-area-inset-bottom, 0px))
-      max(0.5rem, env(safe-area-inset-left, 0px));
+      max(0.35rem, env(safe-area-inset-top, 0px))
+      max(0.35rem, env(safe-area-inset-right, 0px))
+      max(0.35rem, env(safe-area-inset-bottom, 0px))
+      max(0.35rem, env(safe-area-inset-left, 0px));
     gap: 0;
-    min-height: 100svh;
-    height: auto;
+    height: 100svh;
   }
 
   .login-card {
-    padding: clamp(0.6rem, 1.5svh, 1rem);
-    gap: clamp(0.4rem, 0.8svh, 0.75rem);
-    min-height: 100svh;
-    max-height: none;
-    height: auto;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
+    padding: clamp(0.35rem, 1svh, 0.65rem);
+    gap: clamp(0.2rem, 0.5svh, 0.4rem);
+    height: 100svh;
+    max-height: 100svh;
+    overflow: hidden;
   }
 
   .login-card-top {
-    gap: 0.35rem;
+    gap: 0.25rem;
     flex-shrink: 0;
   }
 
@@ -1808,31 +1803,31 @@ a {
   }
 
   .login-main-grid {
-    gap: clamp(0.4rem, 0.8svh, 0.75rem);
+    gap: clamp(0.15rem, 0.4svh, 0.35rem);
     min-height: 0;
-    overflow: visible;
+    overflow: hidden;
   }
 
-  /* Clock area: smaller to give form proper space */
+  /* Clock area: dominates 55%+ of viewport */
   .login-clock-wrap {
-    flex: 0 1 auto;
+    flex: 1 1 58%;
     min-height: 0;
   }
 
-  /* Clock canvas: 28% of viewport — compact but visible */
+  /* Clock canvas: 50-55svh — covers majority of screen */
   .hud-clock-login {
-    width: clamp(140px, 28svh, 240px);
+    width: clamp(180px, 50svh, 360px);
   }
 
   .clock-orbit-dots {
-    width: clamp(160px, 32svh, 280px);
-    height: clamp(160px, 32svh, 280px);
+    width: clamp(200px, 54svh, 400px);
+    height: clamp(200px, 54svh, 400px);
   }
 
   /* Tagline: always one line, visible */
   .login-tagline {
     white-space: nowrap;
-    font-size: clamp(0.52rem, 2.4vw, 0.7rem);
+    font-size: clamp(0.44rem, 2.2vw, 0.65rem);
     letter-spacing: clamp(0.01em, 0.3vw, 0.08em);
     overflow: visible;
     min-height: 1.5em;
@@ -1842,71 +1837,62 @@ a {
     grid-template-columns: 1fr;
   }
 
-  /* Form shell: properly spaced */
+  /* Ultra-compact form shell */
   .login-form-shell {
-    padding: clamp(0.5rem, 1.2svh, 0.8rem);
-    gap: clamp(0.35rem, 0.6svh, 0.5rem);
+    padding: clamp(0.3rem, 0.8svh, 0.5rem);
+    gap: clamp(0.2rem, 0.5svh, 0.35rem);
     border-radius: 12px;
     flex-shrink: 0;
   }
 
-  .login-form-header h3 {
-    font-size: 0.95rem;
-    margin: 0.1rem 0 0.2rem;
-  }
-
-  .login-form-header p:last-child {
+  .login-form-header {
     display: none;
   }
 
-  /* Stacked buttons — full width, easy to tap */
+  /* 3-column buttons — compact row */
   .login-actions {
-    grid-template-columns: 1fr;
-    gap: 6px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
   }
 
   .login-action {
-    min-height: 44px;
-    padding: 0.4rem 0.6rem;
-    font-size: 0.84rem;
-    gap: 0.4rem;
-    border-radius: 12px;
+    min-height: 40px;
+    padding: 0.3rem 0.4rem;
+    font-size: clamp(0.62rem, 1.8vw, 0.76rem);
+    gap: 0.3rem;
+    border-radius: 10px;
   }
 
   .login-action-icon {
-    width: 22px;
-    height: 22px;
-    font-size: 0.72rem;
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
   }
 
-  /* Show the form on small phones — don't hide it */
-  .login-divider {
-    display: none;
-  }
-
+  /* Hide divider and form fields on smallest phones — keep auth buttons and forgot password */
+  .login-divider,
   .login-form {
-    display: grid;
-    gap: 8px;
+    display: none;
   }
 
   .login-middle-link {
     margin: 0;
-    font-size: 0.78rem;
+    font-size: 0.75rem;
   }
 
   .field span {
-    font-size: 0.78rem;
+    font-size: clamp(0.68rem, 1.8vw, 0.78rem);
   }
 
   .field input {
-    padding: 0.5rem 0.75rem;
-    min-height: 44px;
+    padding: 0.4rem 0.65rem;
+    min-height: 40px;
     font-size: 16px;
     border-radius: 10px;
   }
 
   .remember-choice {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     min-height: 32px;
   }
 }
@@ -2398,3 +2384,507 @@ a {
     flex-direction: column;
   }
 }
+
+</style>
+  </head>
+  <body>
+    <div class="aurora aurora-left" aria-hidden="true"></div>
+    <div class="aurora aurora-right" aria-hidden="true"></div>
+
+    <main class="login-shell">
+      <section class="login-copy">
+        <p class="eyebrow">TimeNest Access</p>
+        <h1>Sign in to your futuristic productivity space</h1>
+        <p class="lede">
+          Log in with Google, email, or mobile access to continue tracking goals,
+          recurring tasks, habits, and reminders across desktop, Android, and iOS.
+        </p>
+
+        <div class="insight-pills">
+          <span>Google Sign-In</span>
+          <span>Email login</span>
+          <span>Mobile access</span>
+          <span>Secure session</span>
+        </div>
+
+        <div class="login-highlights panel">
+          <div class="login-highlight-row">
+            <strong>Cross-device sync</strong>
+            <span>Desktop, Android, iOS</span>
+          </div>
+          <div class="login-highlight-row">
+            <strong>Smart reminders</strong>
+            <span>Push, email, SMS, WhatsApp</span>
+          </div>
+          <div class="login-highlight-row">
+            <strong>Future-ready UI</strong>
+            <span>HUD clock, glass panels, soft neon depth</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="login-stage" aria-label="TimeNest login preview">
+        <article class="login-card panel">
+          <div class="login-card-top">
+            <div class="brand-cluster">
+              <div class="brand-mark" aria-hidden="true">
+                <span class="brand-core"></span>
+              </div>
+              <div>
+                <p class="mini-label">Secure Entry</p>
+                <h2 class="brand-wordmark">TimeNest</h2>
+              </div>
+            </div>
+
+            <a class="ghost-chip login-link" href="#">Open Dashboard Preview</a>
+          </div>
+
+          <div class="login-main-grid">
+            <div class="login-clock-wrap">
+              <canvas id="hud-clock" class="hud-clock hud-clock-login"></canvas>
+              <div class="login-tagline" data-text="Master Your Time. Achieve Your Goals.">Master Your Time. Achieve Your Goals.</div>
+              <div class="clock-orbit-dots" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <div class="login-form-shell">
+              <div class="login-form-header">
+                <p class="mini-label">Welcome Back</p>
+                <h3>Choose a sign-in method</h3>
+                <p>
+                  Start with Google for the fastest setup, or continue with email
+                  or mobile login for account recovery and device access.
+                </p>
+              </div>
+
+              <div class="login-actions">
+                <a class="login-action primary-login" href="#">
+                  <span class="login-action-icon">G</span>
+                  <span>Continue with Google</span>
+                </a>
+
+                <a class="login-action secondary-login" href="#">
+                  <span class="login-action-icon">@</span>
+                  <span>Login with Email</span>
+                </a>
+
+                <a class="login-action secondary-login" href="#">
+                  <span class="login-action-icon">#</span>
+                  <span>Login with Mobile</span>
+                </a>
+              </div>
+
+              <div class="login-divider" aria-hidden="true">
+                <span></span>
+                <strong>Quick Access</strong>
+                <span></span>
+              </div>
+
+              <div class="login-middle-link">
+                <a class="text-button" href="#">Forgot password?</a>
+              </div>
+
+              <form class="login-form">
+                <label class="field">
+                  <span>Email or mobile number</span>
+                  <input type="text" placeholder="Enter email or mobile number" />
+                </label>
+
+                <label class="field">
+                  <span>Password</span>
+                  <input type="password" placeholder="Enter secure password" />
+                </label>
+
+                <div class="login-options">
+                  <label class="remember-choice">
+                    <input type="checkbox" checked />
+                    <span>Keep me signed in</span>
+                  </label>
+                </div>
+              </form>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <script>
+const taskRows = document.querySelectorAll(".task-row");
+const completeButton = document.querySelector("#complete-task");
+const detailTitle = document.querySelector("#detail-title");
+const detailState = document.querySelector("#detail-state");
+const detailNotes = document.querySelector("#detail-notes");
+
+const taskNotes = {
+  "Submit investor-ready roadmap":
+    "Finalize the milestone slide, revise financial assumptions, and send the updated version before the evening review meeting.",
+  "Complete 45 min workout":
+    "Focus on cardio and mobility today. This recurring wellness task also contributes to the current streak.",
+  "Practice spoken Marathi lesson":
+    "Complete one guided speaking session and one revision block. Mark complete only after both are done.",
+  "Review monthly budget targets":
+    "Compare target versus actual spend, then update the Financial Goal with the next savings adjustment.",
+  "Renew hosting and production services":
+    "Verify billing, renew the required subscription, and confirm that downtime alerts remain active after payment.",
+  "Prepare Q2 learning sprint plan":
+    "Split the quarter plan into weekly milestones, course sessions, and evaluation checkpoints."
+};
+
+let selectedTask = taskRows[0] || null;
+
+function updateDetail(taskButton) {
+  const title = taskButton.querySelector("strong").textContent;
+  const meta = taskButton.querySelector("small").textContent;
+  const metaParts = meta.split("·").map((item) => item.trim());
+  const deadlineLabel = metaParts.slice(-2).join(" · ");
+
+  selectedTask = taskButton;
+  detailTitle.textContent = title;
+  detailNotes.textContent = taskNotes[title] || "Task details will appear here.";
+  detailState.textContent = taskButton.classList.contains("is-complete")
+    ? "Completed"
+    : "Pending";
+
+  document.querySelectorAll(".task-row.is-selected").forEach((task) => {
+    task.classList.remove("is-selected");
+  });
+  taskButton.classList.add("is-selected");
+
+  const detailMeta = document.querySelector(".detail-meta");
+  detailMeta.children[1].textContent = `Deadline: ${deadlineLabel}`;
+}
+
+if (taskRows.length && completeButton && detailTitle && detailState && detailNotes) {
+  taskRows.forEach((taskButton) => {
+    taskButton.addEventListener("click", () => updateDetail(taskButton));
+  });
+
+  completeButton.addEventListener("click", () => {
+    if (!selectedTask) {
+      return;
+    }
+
+    selectedTask.classList.toggle("is-complete");
+    detailState.textContent = selectedTask.classList.contains("is-complete")
+      ? "Completed"
+      : "Pending";
+  });
+
+  updateDetail(selectedTask);
+}
+
+const CYAN = "#00C8FF";
+const PURPLE = "#6C63FF";
+const clockCanvas = document.getElementById("hud-clock");
+const pixelRatio = window.devicePixelRatio || 1;
+const clockContext = clockCanvas ? clockCanvas.getContext("2d") : null;
+let size = clockCanvas?.classList.contains("hud-clock-login") ? 520 : 320;
+
+function syncClockCanvasSize() {
+  if (!clockCanvas || !clockContext) {
+    return;
+  }
+
+  const measuredWidth = Math.round(clockCanvas.getBoundingClientRect().width);
+  size = measuredWidth || size;
+  clockCanvas.width = size * pixelRatio;
+  clockCanvas.height = size * pixelRatio;
+  clockCanvas.style.height = `${size}px`;
+  clockContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+}
+
+if (clockCanvas && clockContext) {
+  syncClockCanvasSize();
+  window.addEventListener("resize", syncClockCanvasSize);
+}
+
+let frame = 0;
+
+function drawHudClock() {
+  frame += 1;
+
+  const now = new Date();
+  const cx = size / 2;
+  const cy = size / 2;
+  const scale = size / 320; // scale factor relative to base 320px
+  const radius = size / 2 - 24 * scale;
+
+  clockContext.clearRect(0, 0, size, size);
+
+  const bgGlow = clockContext.createRadialGradient(cx, cy, 0, cx, cy, radius * 1.2);
+  bgGlow.addColorStop(0, "rgba(0,200,255,0.03)");
+  bgGlow.addColorStop(0.5, "rgba(108,99,255,0.02)");
+  bgGlow.addColorStop(1, "transparent");
+  clockContext.fillStyle = bgGlow;
+  clockContext.fillRect(0, 0, size, size);
+
+  clockContext.save();
+  clockContext.translate(cx, cy);
+  clockContext.rotate(((now.getSeconds() + now.getMilliseconds() / 1000) / 60) * Math.PI * 2);
+  for (let i = 0; i < 60; i += 1) {
+    const angle = (i / 60) * Math.PI * 2 - Math.PI / 2;
+    const isMajor = i % 5 === 0;
+    const length = (isMajor ? 16 : 8) * scale;
+    const outerRadius = radius - 2 * scale;
+    clockContext.beginPath();
+    clockContext.moveTo(outerRadius * Math.cos(angle), outerRadius * Math.sin(angle));
+    clockContext.lineTo((outerRadius - length) * Math.cos(angle), (outerRadius - length) * Math.sin(angle));
+    clockContext.strokeStyle = isMajor ? CYAN : "rgba(0,200,255,0.25)";
+    clockContext.lineWidth = (isMajor ? 2.5 : 1) * scale;
+    clockContext.stroke();
+  }
+  clockContext.restore();
+
+  clockContext.beginPath();
+  clockContext.arc(cx, cy, radius, 0, Math.PI * 2);
+  clockContext.strokeStyle = "rgba(0,200,255,0.12)";
+  clockContext.lineWidth = 1 * scale;
+  clockContext.stroke();
+
+  const middleRadius = radius * 0.78;
+  clockContext.save();
+  clockContext.translate(cx, cy);
+  clockContext.rotate(-((now.getMinutes() + now.getSeconds() / 60) / 60) * Math.PI * 2);
+  clockContext.beginPath();
+  clockContext.arc(0, 0, middleRadius, 0, Math.PI * 2);
+  clockContext.strokeStyle = "rgba(108,99,255,0.2)";
+  clockContext.lineWidth = 1.5 * scale;
+  clockContext.stroke();
+  for (let i = 0; i < 24; i += 1) {
+    const angle = (i / 24) * Math.PI * 2;
+    clockContext.beginPath();
+    clockContext.moveTo((middleRadius - 5 * scale) * Math.cos(angle), (middleRadius - 5 * scale) * Math.sin(angle));
+    clockContext.lineTo((middleRadius + 5 * scale) * Math.cos(angle), (middleRadius + 5 * scale) * Math.sin(angle));
+    clockContext.strokeStyle = i % 6 === 0 ? "rgba(108,99,255,0.7)" : "rgba(108,99,255,0.35)";
+    clockContext.lineWidth = (i % 6 === 0 ? 2 : 1.5) * scale;
+    clockContext.stroke();
+  }
+  clockContext.restore();
+
+  const pulse = 0.95 + Math.sin(frame * 0.03) * 0.05;
+  const innerRadius = radius * 0.55 * pulse;
+  clockContext.beginPath();
+  clockContext.arc(cx, cy, innerRadius, 0, Math.PI * 2);
+  clockContext.strokeStyle = "rgba(0,200,255,0.12)";
+  clockContext.lineWidth = 2 * scale;
+  clockContext.shadowBlur = 18 * scale;
+  clockContext.shadowColor = "rgba(0,200,255,0.2)";
+  clockContext.stroke();
+  clockContext.shadowBlur = 0;
+
+  const secondFraction = (now.getSeconds() + now.getMilliseconds() / 1000) / 60;
+  clockContext.beginPath();
+  clockContext.arc(cx, cy, radius + 4 * scale, -Math.PI / 2, -Math.PI / 2 + secondFraction * Math.PI * 2);
+  clockContext.strokeStyle = CYAN;
+  clockContext.lineWidth = 3 * scale;
+  clockContext.shadowBlur = 14 * scale;
+  clockContext.shadowColor = CYAN;
+  clockContext.lineCap = "round";
+  clockContext.stroke();
+  clockContext.shadowBlur = 0;
+  clockContext.lineCap = "butt";
+
+  const secondEndAngle = -Math.PI / 2 + secondFraction * Math.PI * 2;
+  const dotX = cx + (radius + 4 * scale) * Math.cos(secondEndAngle);
+  const dotY = cy + (radius + 4 * scale) * Math.sin(secondEndAngle);
+  clockContext.beginPath();
+  clockContext.arc(dotX, dotY, 4 * scale, 0, Math.PI * 2);
+  clockContext.fillStyle = CYAN;
+  clockContext.shadowBlur = 12 * scale;
+  clockContext.shadowColor = CYAN;
+  clockContext.fill();
+  clockContext.shadowBlur = 0;
+
+  const minuteFraction = (now.getMinutes() + now.getSeconds() / 60) / 60;
+  clockContext.beginPath();
+  clockContext.arc(cx, cy, middleRadius + 3 * scale, -Math.PI / 2, -Math.PI / 2 + minuteFraction * Math.PI * 2);
+  clockContext.strokeStyle = PURPLE;
+  clockContext.lineWidth = 2.5 * scale;
+  clockContext.shadowBlur = 12 * scale;
+  clockContext.shadowColor = PURPLE;
+  clockContext.lineCap = "round";
+  clockContext.stroke();
+  clockContext.shadowBlur = 0;
+  clockContext.lineCap = "butt";
+
+  const hourFraction = ((now.getHours() % 12) + now.getMinutes() / 60) / 12;
+  clockContext.beginPath();
+  clockContext.arc(cx, cy, innerRadius + 2 * scale, -Math.PI / 2, -Math.PI / 2 + hourFraction * Math.PI * 2);
+  clockContext.strokeStyle = "rgba(255,109,0,0.5)";
+  clockContext.lineWidth = 2 * scale;
+  clockContext.shadowBlur = 8 * scale;
+  clockContext.shadowColor = "rgba(255,109,0,0.3)";
+  clockContext.lineCap = "round";
+  clockContext.stroke();
+  clockContext.shadowBlur = 0;
+  clockContext.lineCap = "butt";
+
+  const scanY = cy - radius + ((frame * 1.8) % (radius * 2));
+  const scanH = 25 * scale;
+  const scanGradient = clockContext.createLinearGradient(0, scanY - scanH, 0, scanY + scanH);
+  scanGradient.addColorStop(0, "transparent");
+  scanGradient.addColorStop(0.5, "rgba(0,200,255,0.05)");
+  scanGradient.addColorStop(1, "transparent");
+  clockContext.fillStyle = scanGradient;
+  clockContext.fillRect(cx - radius - 5 * scale, scanY - scanH, (radius + 5 * scale) * 2, scanH * 2);
+
+  const period = now.getHours() >= 12 ? "PM" : "AM";
+  const hour12 = now.getHours() % 12 || 12;
+  const hours = String(hour12).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
+
+  const timeGlow = clockContext.createRadialGradient(cx, cy, 0, cx, cy, radius * 0.35);
+  timeGlow.addColorStop(0, "rgba(0,200,255,0.06)");
+  timeGlow.addColorStop(1, "transparent");
+  clockContext.fillStyle = timeGlow;
+  clockContext.fillRect(cx - radius * 0.35, cy - radius * 0.35, radius * 0.7, radius * 0.7);
+
+  clockContext.font = `800 ${Math.round(42 * scale)}px 'Courier New', monospace`;
+  clockContext.textAlign = "center";
+  clockContext.textBaseline = "middle";
+  clockContext.fillStyle = "rgba(108,99,255,0.1)";
+  clockContext.fillText(`${hours}:${minutes}`, cx + 2 * scale, cy - 10 * scale + 2 * scale);
+
+  clockContext.fillStyle = CYAN;
+  clockContext.shadowBlur = 25 * scale;
+  clockContext.shadowColor = CYAN;
+  clockContext.fillText(`${hours}:${minutes}`, cx, cy - 10 * scale);
+  clockContext.shadowBlur = 0;
+
+  if (now.getMilliseconds() < 500) {
+    clockContext.fillStyle = "rgba(0,200,255,0.3)";
+    clockContext.fillText(`${hours} ${minutes}`, cx, cy - 10 * scale);
+  }
+
+  clockContext.font = `600 ${Math.round(18 * scale)}px 'Courier New', monospace`;
+  clockContext.fillStyle = "rgba(0,200,255,0.55)";
+  clockContext.fillText(seconds, cx, cy + 22 * scale);
+
+  clockContext.font = `600 ${Math.round(14 * scale)}px 'Courier New', monospace`;
+  clockContext.fillStyle = "rgba(0,200,255,0.52)";
+  clockContext.fillText(period, cx, cy + 42 * scale);
+
+  const bracketLength = 20 * scale;
+  const bracketOffset = radius * 0.42;
+  clockContext.strokeStyle = "rgba(0,200,255,0.35)";
+  clockContext.lineWidth = 1.5 * scale;
+  [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([dx, dy]) => {
+    clockContext.beginPath();
+    clockContext.moveTo(cx + dx * bracketOffset, cy + dy * (bracketOffset - bracketLength));
+    clockContext.lineTo(cx + dx * bracketOffset, cy + dy * bracketOffset);
+    clockContext.lineTo(cx + dx * (bracketOffset - bracketLength), cy + dy * bracketOffset);
+    clockContext.stroke();
+
+    clockContext.beginPath();
+    clockContext.arc(cx + dx * bracketOffset, cy + dy * bracketOffset, 2 * scale, 0, Math.PI * 2);
+    clockContext.fillStyle = "rgba(0,200,255,0.3)";
+    clockContext.fill();
+  });
+
+  clockContext.font = `500 ${Math.round(9 * scale)}px 'Courier New', monospace`;
+  clockContext.textAlign = "center";
+  clockContext.fillStyle = "rgba(0,200,255,0.4)";
+  clockContext.fillText("TIMENEST", cx, cy - radius * 0.68);
+  clockContext.fillText("SYS.CLOCK v2.1", cx, cy + radius * 0.72);
+
+  clockContext.textAlign = "left";
+  clockContext.font = `500 ${Math.round(8 * scale)}px 'Courier New', monospace`;
+  clockContext.fillStyle = "rgba(108,99,255,0.35)";
+  clockContext.fillText(`HR: ${hours}`, cx + radius * 0.48, cy - radius * 0.22);
+  clockContext.fillText(`MN: ${minutes}`, cx + radius * 0.48, cy - radius * 0.12);
+  clockContext.fillText(`SC: ${seconds}`, cx + radius * 0.48, cy - radius * 0.02);
+
+  const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  clockContext.textAlign = "right";
+  clockContext.fillStyle = "rgba(0,200,255,0.3)";
+  clockContext.fillText(dayNames[now.getDay()], cx - radius * 0.48, cy - radius * 0.22);
+  clockContext.fillText(`${now.getDate()} ${monthNames[now.getMonth()]}`, cx - radius * 0.48, cy - radius * 0.12);
+  clockContext.fillText(String(now.getFullYear()), cx - radius * 0.48, cy - radius * 0.02);
+
+  const orbitAngle = (frame * 0.02) % (Math.PI * 2);
+  const orbitX = cx + (radius + 12 * scale) * Math.cos(orbitAngle);
+  const orbitY = cy + (radius + 12 * scale) * Math.sin(orbitAngle);
+  clockContext.beginPath();
+  clockContext.arc(orbitX, orbitY, 2 * scale, 0, Math.PI * 2);
+  clockContext.fillStyle = "rgba(0,200,255,0.6)";
+  clockContext.shadowBlur = 8 * scale;
+  clockContext.shadowColor = CYAN;
+  clockContext.fill();
+  clockContext.shadowBlur = 0;
+
+  clockContext.textAlign = "center";
+  clockContext.font = `500 ${Math.round(7 * scale)}px 'Courier New', monospace`;
+  clockContext.fillStyle = "rgba(0,200,255,0.25)";
+  clockContext.fillText(`* SYNC ACTIVE  * PRECISION MODE  * UTC${formatUtcOffset(now)}`, cx, cy + radius * 0.85);
+
+  requestAnimationFrame(drawHudClock);
+}
+
+function formatUtcOffset(date) {
+  const offsetHours = -date.getTimezoneOffset() / 60;
+  return offsetHours >= 0 ? `+${offsetHours}` : `${offsetHours}`;
+}
+
+if (clockCanvas && clockContext) {
+  drawHudClock();
+}
+
+const loginCard = document.querySelector(".login-card");
+const loginActions = document.querySelectorAll(".login-action, .login-submit");
+const animatedTaglines = document.querySelectorAll(".login-tagline, .brand-subline");
+
+animatedTaglines.forEach((tagline) => {
+  const text = tagline.dataset.text || tagline.textContent;
+  tagline.textContent = "";
+
+  [...text].forEach((character, index) => {
+    const span = document.createElement("span");
+    span.className = "tagline-char";
+    span.textContent = character === " " ? "\u00A0" : character;
+    span.style.animationDelay = `${index * 0.04}s`;
+    tagline.appendChild(span);
+  });
+});
+
+if (loginCard) {
+  loginCard.addEventListener("pointermove", (event) => {
+    const bounds = loginCard.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width;
+    const y = (event.clientY - bounds.top) / bounds.height;
+    const tiltY = (x - 0.5) * 8;
+    const tiltX = (0.5 - y) * 8;
+
+    loginCard.style.setProperty("--login-tilt-x", `${tiltX.toFixed(2)}deg`);
+    loginCard.style.setProperty("--login-tilt-y", `${tiltY.toFixed(2)}deg`);
+  });
+
+  loginCard.addEventListener("pointerleave", () => {
+    loginCard.style.setProperty("--login-tilt-x", "0deg");
+    loginCard.style.setProperty("--login-tilt-y", "0deg");
+  });
+}
+
+loginActions.forEach((button) => {
+  button.addEventListener("click", () => {
+    button.animate(
+      [
+        { transform: "translateY(0) scale(1)" },
+        { transform: "translateY(-2px) scale(1.02)" },
+        { transform: "translateY(0) scale(1)" }
+      ],
+      {
+        duration: 260,
+        easing: "ease-out"
+      }
+    );
+  });
+});
+
+</script>
+  </body>
+</html>

@@ -136,6 +136,103 @@
       </section>
     </main>
 
+    <div id="recaptcha-container"></div>
     <script src="./script.js"></script>
+    <script type="module" src="./auth.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // ── Google Sign-In button ──
+        const googleBtn = document.querySelector(".primary-login");
+        if (googleBtn) {
+          googleBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (window.timenestAuth) window.timenestAuth.signInWithGoogle();
+          });
+        }
+
+        // ── Email login button ──
+        const emailBtn = document.querySelector('.secondary-login [class*="icon"]')
+          ?.closest(".login-action");
+        const emailBtns = document.querySelectorAll(".secondary-login");
+        const emailLoginBtn = emailBtns[0];
+        const mobileLoginBtn = emailBtns[1];
+
+        // Track which mode is active
+        let loginMode = "none"; // "none", "email", "phone"
+        const form = document.querySelector(".login-form");
+        const emailInput = form?.querySelector('input[type="text"]');
+        const passwordInput = form?.querySelector('input[type="password"]');
+
+        if (emailLoginBtn) {
+          emailLoginBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            loginMode = "email";
+            if (form) form.style.display = "flex";
+            if (emailInput) {
+              emailInput.placeholder = "Enter your email address";
+              emailInput.type = "email";
+            }
+            if (passwordInput) passwordInput.style.display = "";
+          });
+        }
+
+        if (mobileLoginBtn) {
+          mobileLoginBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            loginMode = "phone";
+            if (form) form.style.display = "flex";
+            if (emailInput) {
+              emailInput.placeholder = "Enter phone number (e.g. +91 9876543210)";
+              emailInput.type = "tel";
+            }
+            if (passwordInput) {
+              passwordInput.placeholder = "Enter 6-digit OTP";
+              passwordInput.type = "text";
+              passwordInput.maxLength = 6;
+              passwordInput.style.display = "none";
+            }
+          });
+        }
+
+        // ── Form submission ──
+        if (form) {
+          form.addEventListener("submit", (e) => e.preventDefault());
+
+          // Add a sign-in button to the form
+          const submitBtn = document.createElement("button");
+          submitBtn.type = "button";
+          submitBtn.className = "login-action primary-login";
+          submitBtn.style.cssText = "margin-top:0.5rem;justify-content:center;";
+          submitBtn.innerHTML = "<span>Sign In</span>";
+          form.appendChild(submitBtn);
+
+          let otpSent = false;
+
+          submitBtn.addEventListener("click", async () => {
+            const val1 = emailInput?.value?.trim();
+            const val2 = passwordInput?.value?.trim();
+
+            if (!val1) return;
+
+            if (loginMode === "email") {
+              if (!val2) return;
+              window.timenestAuth?.signInWithEmail(val1, val2);
+            } else if (loginMode === "phone") {
+              if (!otpSent) {
+                const sent = await window.timenestAuth?.sendPhoneOtp(val1);
+                if (sent) {
+                  otpSent = true;
+                  passwordInput.style.display = "";
+                  passwordInput.placeholder = "Enter 6-digit OTP";
+                  submitBtn.innerHTML = "<span>Verify OTP</span>";
+                }
+              } else {
+                window.timenestAuth?.verifyPhoneOtp(val2);
+              }
+            }
+          });
+        }
+      });
+    </script>
   </body>
 </html>

@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.56.0",
-    "dotenv": "^16.6.1"
+    "dotenv": "^16.6.1",
+    "firebase": "^12.11.0"
   }
 }

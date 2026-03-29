@@ -330,5 +330,34 @@
     </nav>
 
     <script src="./script.js"></script>
+    <script type="module" src="./auth.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Wire up logout button
+        const logoutBtn = document.querySelector(".logout-button");
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (window.timenestAuth) window.timenestAuth.logOut();
+          });
+        }
+
+        // Show user name if signed in
+        const checkUser = setInterval(() => {
+          if (window._fb && window._fb.auth) {
+            clearInterval(checkUser);
+            const user = window._fb.auth.currentUser;
+            if (user) {
+              const greeting = document.querySelector(".hero-copy h3");
+              const name = user.displayName || user.email?.split("@")[0] || "there";
+              if (greeting) greeting.textContent = "Good evening, " + name;
+
+              const avatar = document.querySelector(".profile-avatar");
+              if (avatar) avatar.textContent = name.charAt(0).toUpperCase();
+            }
+          }
+        }, 500);
+      });
+    </script>
   </body>
 </html>

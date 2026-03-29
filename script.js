@@ -95,7 +95,8 @@ function drawHudClock() {
   const now = new Date();
   const cx = size / 2;
   const cy = size / 2;
-  const radius = size / 2 - 24;
+  const scale = size / 320; // scale factor relative to base 320px
+  const radius = size / 2 - 24 * scale;
 
   clockContext.clearRect(0, 0, size, size);
 
@@ -112,13 +113,13 @@ function drawHudClock() {
   for (let i = 0; i < 60; i += 1) {
     const angle = (i / 60) * Math.PI * 2 - Math.PI / 2;
     const isMajor = i % 5 === 0;
-    const length = isMajor ? 16 : 8;
-    const outerRadius = radius - 2;
+    const length = (isMajor ? 16 : 8) * scale;
+    const outerRadius = radius - 2 * scale;
     clockContext.beginPath();
     clockContext.moveTo(outerRadius * Math.cos(angle), outerRadius * Math.sin(angle));
     clockContext.lineTo((outerRadius - length) * Math.cos(angle), (outerRadius - length) * Math.sin(angle));
     clockContext.strokeStyle = isMajor ? CYAN : "rgba(0,200,255,0.25)";
-    clockContext.lineWidth = isMajor ? 2.5 : 1;
+    clockContext.lineWidth = (isMajor ? 2.5 : 1) * scale;
     clockContext.stroke();
   }
   clockContext.restore();
@@ -126,7 +127,7 @@ function drawHudClock() {
   clockContext.beginPath();
   clockContext.arc(cx, cy, radius, 0, Math.PI * 2);
   clockContext.strokeStyle = "rgba(0,200,255,0.12)";
-  clockContext.lineWidth = 1;
+  clockContext.lineWidth = 1 * scale;
   clockContext.stroke();
 
   const middleRadius = radius * 0.78;
@@ -136,15 +137,15 @@ function drawHudClock() {
   clockContext.beginPath();
   clockContext.arc(0, 0, middleRadius, 0, Math.PI * 2);
   clockContext.strokeStyle = "rgba(108,99,255,0.2)";
-  clockContext.lineWidth = 1.5;
+  clockContext.lineWidth = 1.5 * scale;
   clockContext.stroke();
   for (let i = 0; i < 24; i += 1) {
     const angle = (i / 24) * Math.PI * 2;
     clockContext.beginPath();
-    clockContext.moveTo((middleRadius - 5) * Math.cos(angle), (middleRadius - 5) * Math.sin(angle));
-    clockContext.lineTo((middleRadius + 5) * Math.cos(angle), (middleRadius + 5) * Math.sin(angle));
+    clockContext.moveTo((middleRadius - 5 * scale) * Math.cos(angle), (middleRadius - 5 * scale) * Math.sin(angle));
+    clockContext.lineTo((middleRadius + 5 * scale) * Math.cos(angle), (middleRadius + 5 * scale) * Math.sin(angle));
     clockContext.strokeStyle = i % 6 === 0 ? "rgba(108,99,255,0.7)" : "rgba(108,99,255,0.35)";
-    clockContext.lineWidth = i % 6 === 0 ? 2 : 1.5;
+    clockContext.lineWidth = (i % 6 === 0 ? 2 : 1.5) * scale;
     clockContext.stroke();
   }
   clockContext.restore();
@@ -154,18 +155,18 @@ function drawHudClock() {
   clockContext.beginPath();
   clockContext.arc(cx, cy, innerRadius, 0, Math.PI * 2);
   clockContext.strokeStyle = "rgba(0,200,255,0.12)";
-  clockContext.lineWidth = 2;
-  clockContext.shadowBlur = 18;
+  clockContext.lineWidth = 2 * scale;
+  clockContext.shadowBlur = 18 * scale;
   clockContext.shadowColor = "rgba(0,200,255,0.2)";
   clockContext.stroke();
   clockContext.shadowBlur = 0;
 
   const secondFraction = (now.getSeconds() + now.getMilliseconds() / 1000) / 60;
   clockContext.beginPath();
-  clockContext.arc(cx, cy, radius + 4, -Math.PI / 2, -Math.PI / 2 + secondFraction * Math.PI * 2);
+  clockContext.arc(cx, cy, radius + 4 * scale, -Math.PI / 2, -Math.PI / 2 + secondFraction * Math.PI * 2);
   clockContext.strokeStyle = CYAN;
-  clockContext.lineWidth = 3;
-  clockContext.shadowBlur = 14;
+  clockContext.lineWidth = 3 * scale;
+  clockContext.shadowBlur = 14 * scale;
   clockContext.shadowColor = CYAN;
   clockContext.lineCap = "round";
   clockContext.stroke();
@@ -173,22 +174,22 @@ function drawHudClock() {
   clockContext.lineCap = "butt";
 
   const secondEndAngle = -Math.PI / 2 + secondFraction * Math.PI * 2;
-  const dotX = cx + (radius + 4) * Math.cos(secondEndAngle);
-  const dotY = cy + (radius + 4) * Math.sin(secondEndAngle);
+  const dotX = cx + (radius + 4 * scale) * Math.cos(secondEndAngle);
+  const dotY = cy + (radius + 4 * scale) * Math.sin(secondEndAngle);
   clockContext.beginPath();
-  clockContext.arc(dotX, dotY, 4, 0, Math.PI * 2);
+  clockContext.arc(dotX, dotY, 4 * scale, 0, Math.PI * 2);
   clockContext.fillStyle = CYAN;
-  clockContext.shadowBlur = 12;
+  clockContext.shadowBlur = 12 * scale;
   clockContext.shadowColor = CYAN;
   clockContext.fill();
   clockContext.shadowBlur = 0;
 
   const minuteFraction = (now.getMinutes() + now.getSeconds() / 60) / 60;
   clockContext.beginPath();
-  clockContext.arc(cx, cy, middleRadius + 3, -Math.PI / 2, -Math.PI / 2 + minuteFraction * Math.PI * 2);
+  clockContext.arc(cx, cy, middleRadius + 3 * scale, -Math.PI / 2, -Math.PI / 2 + minuteFraction * Math.PI * 2);
   clockContext.strokeStyle = PURPLE;
-  clockContext.lineWidth = 2.5;
-  clockContext.shadowBlur = 12;
+  clockContext.lineWidth = 2.5 * scale;
+  clockContext.shadowBlur = 12 * scale;
   clockContext.shadowColor = PURPLE;
   clockContext.lineCap = "round";
   clockContext.stroke();
@@ -197,10 +198,10 @@ function drawHudClock() {
 
   const hourFraction = ((now.getHours() % 12) + now.getMinutes() / 60) / 12;
   clockContext.beginPath();
-  clockContext.arc(cx, cy, innerRadius + 2, -Math.PI / 2, -Math.PI / 2 + hourFraction * Math.PI * 2);
+  clockContext.arc(cx, cy, innerRadius + 2 * scale, -Math.PI / 2, -Math.PI / 2 + hourFraction * Math.PI * 2);
   clockContext.strokeStyle = "rgba(255,109,0,0.5)";
-  clockContext.lineWidth = 2;
-  clockContext.shadowBlur = 8;
+  clockContext.lineWidth = 2 * scale;
+  clockContext.shadowBlur = 8 * scale;
   clockContext.shadowColor = "rgba(255,109,0,0.3)";
   clockContext.lineCap = "round";
   clockContext.stroke();
@@ -208,12 +209,13 @@ function drawHudClock() {
   clockContext.lineCap = "butt";
 
   const scanY = cy - radius + ((frame * 1.8) % (radius * 2));
-  const scanGradient = clockContext.createLinearGradient(0, scanY - 25, 0, scanY + 25);
+  const scanH = 25 * scale;
+  const scanGradient = clockContext.createLinearGradient(0, scanY - scanH, 0, scanY + scanH);
   scanGradient.addColorStop(0, "transparent");
   scanGradient.addColorStop(0.5, "rgba(0,200,255,0.05)");
   scanGradient.addColorStop(1, "transparent");
   clockContext.fillStyle = scanGradient;
-  clockContext.fillRect(cx - radius - 5, scanY - 25, (radius + 5) * 2, 50);
+  clockContext.fillRect(cx - radius - 5 * scale, scanY - scanH, (radius + 5 * scale) * 2, scanH * 2);
 
   const period = now.getHours() >= 12 ? "PM" : "AM";
   const hour12 = now.getHours() % 12 || 12;
@@ -227,35 +229,35 @@ function drawHudClock() {
   clockContext.fillStyle = timeGlow;
   clockContext.fillRect(cx - radius * 0.35, cy - radius * 0.35, radius * 0.7, radius * 0.7);
 
-  clockContext.font = "800 42px 'Courier New', monospace";
+  clockContext.font = `800 ${Math.round(42 * scale)}px 'Courier New', monospace`;
   clockContext.textAlign = "center";
   clockContext.textBaseline = "middle";
   clockContext.fillStyle = "rgba(108,99,255,0.1)";
-  clockContext.fillText(`${hours}:${minutes}`, cx + 2, cy - 10 + 2);
+  clockContext.fillText(`${hours}:${minutes}`, cx + 2 * scale, cy - 10 * scale + 2 * scale);
 
   clockContext.fillStyle = CYAN;
-  clockContext.shadowBlur = 25;
+  clockContext.shadowBlur = 25 * scale;
   clockContext.shadowColor = CYAN;
-  clockContext.fillText(`${hours}:${minutes}`, cx, cy - 10);
+  clockContext.fillText(`${hours}:${minutes}`, cx, cy - 10 * scale);
   clockContext.shadowBlur = 0;
 
   if (now.getMilliseconds() < 500) {
     clockContext.fillStyle = "rgba(0,200,255,0.3)";
-    clockContext.fillText(`${hours} ${minutes}`, cx, cy - 10);
+    clockContext.fillText(`${hours} ${minutes}`, cx, cy - 10 * scale);
   }
 
-  clockContext.font = "600 18px 'Courier New', monospace";
+  clockContext.font = `600 ${Math.round(18 * scale)}px 'Courier New', monospace`;
   clockContext.fillStyle = "rgba(0,200,255,0.55)";
-  clockContext.fillText(seconds, cx, cy + 22);
+  clockContext.fillText(seconds, cx, cy + 22 * scale);
 
-  clockContext.font = "600 14px 'Courier New', monospace";
+  clockContext.font = `600 ${Math.round(14 * scale)}px 'Courier New', monospace`;
   clockContext.fillStyle = "rgba(0,200,255,0.52)";
-  clockContext.fillText(period, cx, cy + 42);
+  clockContext.fillText(period, cx, cy + 42 * scale);
 
-  const bracketLength = 20;
+  const bracketLength = 20 * scale;
   const bracketOffset = radius * 0.42;
   clockContext.strokeStyle = "rgba(0,200,255,0.35)";
-  clockContext.lineWidth = 1.5;
+  clockContext.lineWidth = 1.5 * scale;
   [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([dx, dy]) => {
     clockContext.beginPath();
     clockContext.moveTo(cx + dx * bracketOffset, cy + dy * (bracketOffset - bracketLength));
@@ -264,19 +266,19 @@ function drawHudClock() {
     clockContext.stroke();
 
     clockContext.beginPath();
-    clockContext.arc(cx + dx * bracketOffset, cy + dy * bracketOffset, 2, 0, Math.PI * 2);
+    clockContext.arc(cx + dx * bracketOffset, cy + dy * bracketOffset, 2 * scale, 0, Math.PI * 2);
     clockContext.fillStyle = "rgba(0,200,255,0.3)";
     clockContext.fill();
   });
 
-  clockContext.font = "500 9px 'Courier New', monospace";
+  clockContext.font = `500 ${Math.round(9 * scale)}px 'Courier New', monospace`;
   clockContext.textAlign = "center";
   clockContext.fillStyle = "rgba(0,200,255,0.4)";
   clockContext.fillText("TIMENEST", cx, cy - radius * 0.68);
   clockContext.fillText("SYS.CLOCK v2.1", cx, cy + radius * 0.72);
 
   clockContext.textAlign = "left";
-  clockContext.font = "500 8px 'Courier New', monospace";
+  clockContext.font = `500 ${Math.round(8 * scale)}px 'Courier New', monospace`;
   clockContext.fillStyle = "rgba(108,99,255,0.35)";
   clockContext.fillText(`HR: ${hours}`, cx + radius * 0.48, cy - radius * 0.22);
   clockContext.fillText(`MN: ${minutes}`, cx + radius * 0.48, cy - radius * 0.12);
@@ -291,18 +293,18 @@ function drawHudClock() {
   clockContext.fillText(String(now.getFullYear()), cx - radius * 0.48, cy - radius * 0.02);
 
   const orbitAngle = (frame * 0.02) % (Math.PI * 2);
-  const orbitX = cx + (radius + 12) * Math.cos(orbitAngle);
-  const orbitY = cy + (radius + 12) * Math.sin(orbitAngle);
+  const orbitX = cx + (radius + 12 * scale) * Math.cos(orbitAngle);
+  const orbitY = cy + (radius + 12 * scale) * Math.sin(orbitAngle);
   clockContext.beginPath();
-  clockContext.arc(orbitX, orbitY, 2, 0, Math.PI * 2);
+  clockContext.arc(orbitX, orbitY, 2 * scale, 0, Math.PI * 2);
   clockContext.fillStyle = "rgba(0,200,255,0.6)";
-  clockContext.shadowBlur = 8;
+  clockContext.shadowBlur = 8 * scale;
   clockContext.shadowColor = CYAN;
   clockContext.fill();
   clockContext.shadowBlur = 0;
 
   clockContext.textAlign = "center";
-  clockContext.font = "500 7px 'Courier New', monospace";
+  clockContext.font = `500 ${Math.round(7 * scale)}px 'Courier New', monospace`;
   clockContext.fillStyle = "rgba(0,200,255,0.25)";
   clockContext.fillText(`* SYNC ACTIVE  * PRECISION MODE  * UTC${formatUtcOffset(now)}`, cx, cy + radius * 0.85);
 

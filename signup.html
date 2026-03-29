@@ -31,6 +31,95 @@
         </article>
       </section>
     </main>
+    <div id="recaptcha-container"></div>
     <script src="./script.js"></script>
+    <script type="module" src="./auth.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const buttons = document.querySelectorAll(".login-action");
+        const googleBtn = buttons[0];
+        const emailBtn = buttons[1];
+        const mobileBtn = buttons[2];
+        const formShell = document.querySelector(".login-form-shell");
+
+        // Google sign-up
+        if (googleBtn) {
+          googleBtn.addEventListener("click", () => {
+            if (window.timenestAuth) window.timenestAuth.signInWithGoogle();
+          });
+        }
+
+        // Email sign-up form
+        if (emailBtn) {
+          emailBtn.addEventListener("click", () => {
+            showSignupForm("email");
+          });
+        }
+
+        // Mobile sign-up form
+        if (mobileBtn) {
+          mobileBtn.addEventListener("click", () => {
+            showSignupForm("phone");
+          });
+        }
+
+        function showSignupForm(mode) {
+          let existing = document.getElementById("signup-form");
+          if (existing) existing.remove();
+
+          const form = document.createElement("form");
+          form.id = "signup-form";
+          form.className = "login-form";
+          form.style.display = "flex";
+          form.addEventListener("submit", (e) => e.preventDefault());
+
+          if (mode === "email") {
+            form.innerHTML = `
+              <label class="field"><span>Full Name</span><input type="text" id="su-name" placeholder="Enter your name" /></label>
+              <label class="field"><span>Email</span><input type="email" id="su-email" placeholder="Enter email address" required /></label>
+              <label class="field"><span>Password</span><input type="password" id="su-pass" placeholder="Create a secure password (min 6 chars)" required /></label>
+              <button type="button" class="login-action primary-login" style="margin-top:0.5rem;justify-content:center;" id="su-submit"><span>Create Account</span></button>
+            `;
+          } else {
+            form.innerHTML = `
+              <label class="field"><span>Phone Number</span><input type="tel" id="su-phone" placeholder="+91 9876543210" required /></label>
+              <label class="field" id="su-otp-field" style="display:none;"><span>OTP Code</span><input type="text" id="su-otp" placeholder="Enter 6-digit OTP" maxlength="6" /></label>
+              <button type="button" class="login-action primary-login" style="margin-top:0.5rem;justify-content:center;" id="su-submit"><span>Send OTP</span></button>
+            `;
+          }
+
+          formShell.appendChild(form);
+
+          const submitBtn = document.getElementById("su-submit");
+          let otpSent = false;
+
+          submitBtn.addEventListener("click", async () => {
+            if (mode === "email") {
+              const name = document.getElementById("su-name")?.value?.trim();
+              const email = document.getElementById("su-email")?.value?.trim();
+              const pass = document.getElementById("su-pass")?.value;
+              if (email && pass) {
+                window.timenestAuth?.signUpWithEmail(email, pass, name);
+              }
+            } else {
+              if (!otpSent) {
+                const phone = document.getElementById("su-phone")?.value?.trim();
+                if (phone) {
+                  const sent = await window.timenestAuth?.sendPhoneOtp(phone);
+                  if (sent) {
+                    otpSent = true;
+                    document.getElementById("su-otp-field").style.display = "";
+                    submitBtn.innerHTML = "<span>Verify OTP</span>";
+                  }
+                }
+              } else {
+                const otp = document.getElementById("su-otp")?.value?.trim();
+                if (otp) window.timenestAuth?.verifyPhoneOtp(otp);
+              }
+            }
+          });
+        }
+      });
+    </script>
   </body>
 </html>
