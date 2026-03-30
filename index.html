@@ -17,40 +17,6 @@
     <div class="aurora aurora-right" aria-hidden="true"></div>
 
     <main class="page-shell">
-      <section class="pitch-panel">
-        <p class="eyebrow">TimeNest Step 1</p>
-        <h1>Mobile-first dashboard for goals, tasks, and habits</h1>
-        <p class="lede">
-          This index screen is the visual command center for goals, daily tasks,
-          habits, and reminders. It is designed to feel premium and calm while
-          still staying fast, readable, and app-ready across desktop and mobile.
-        </p>
-
-        <div class="insight-pills">
-          <span>Responsive dashboard</span>
-          <span>Goal drill-down ready</span>
-          <span>Task completion flow</span>
-          <span>Futuristic motion system</span>
-        </div>
-
-        <div class="launch-note panel">
-          <div>
-            <p class="mini-label">Launch focus</p>
-            <strong>Build and review this page before auth and Firebase.</strong>
-          </div>
-          <p>
-            The layout below is structured so Claude can turn it into Flutter
-            widgets with reusable cards, sections, quick actions, and task
-            detail navigation.
-          </p>
-        </div>
-        <div class="page-tools">
-          <a class="soft-pill" href="./task-editor.html">Add Task</a>
-          <a class="soft-pill" href="./goal-editor.html">Add Goal</a>
-          <a class="soft-pill" href="./profile.html">Profile</a>
-        </div>
-      </section>
-
       <section class="dashboard-shell" aria-label="TimeNest dashboard preview">
         <div class="dashboard-frame">
           <header class="topbar panel">
@@ -66,12 +32,59 @@
             </div>
 
             <nav class="top-actions" aria-label="Profile and session actions">
-              <a class="ghost-chip" href="./settings.html">Dark Mode</a>
-              <a class="profile-chip" href="./profile.html">
-                <span class="profile-avatar">V</span>
-                <span>Profile</span>
+              <a class="ghost-chip" href="./settings.html">
+                <span class="action-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                    <path
+                      d="M20 14.2A8 8 0 0 1 9.8 4a8.5 8.5 0 1 0 10.2 10.2Z"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.8"
+                    />
+                  </svg>
+                </span>
+                <span class="action-label">Dark Mode</span>
               </a>
-              <a class="logout-button" href="./login.html">Logout</a>
+              <a class="profile-chip" href="./profile.html">
+                <span class="action-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                    <path
+                      d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.8"
+                    />
+                  </svg>
+                </span>
+                <span class="action-label">Profile</span>
+              </a>
+              <a class="logout-button" href="./login.html">
+                <span class="action-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                    <path
+                      d="M14 7h-4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h4"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.8"
+                    />
+                    <path
+                      d="M11 12h9m-3-3 3 3-3 3"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.8"
+                    />
+                  </svg>
+                </span>
+                <span class="action-label">Logout</span>
+              </a>
             </nav>
           </header>
 
@@ -117,34 +130,26 @@
             </article>
           </section>
 
-          <nav class="primary-nav panel" aria-label="Main app sections">
-            <a class="nav-chip is-active" href="./index.html">Dashboard</a>
-            <a class="nav-chip" href="./short-term-goals.html">Short-Term Goal</a>
-            <a class="nav-chip" href="./long-term-goals.html">Long-Term Goal</a>
-            <a class="nav-chip" href="./daily-tasks.html">Daily Task</a>
-            <a class="nav-chip" href="./habits.html">Habits</a>
-          </nav>
-
           <section class="stats-grid" aria-label="Goal progress summary">
             <article class="stat-card panel accent-cyan">
               <p class="mini-label">Completed Goals</p>
               <strong>12</strong>
-              <span>3 finished this month</span>
+              <span>Finished this month</span>
             </article>
             <article class="stat-card panel accent-blue">
               <p class="mini-label">In Progress</p>
               <strong>06</strong>
-              <span>2 short-term, 4 long-term</span>
+              <span>Short-term + long-term</span>
             </article>
             <article class="stat-card panel accent-gold">
               <p class="mini-label">Completed On Time</p>
               <strong>09</strong>
-              <span>75% deadline accuracy</span>
+              <span>Deadline accuracy</span>
             </article>
             <article class="stat-card panel accent-coral">
               <p class="mini-label">Delayed Goals</p>
               <strong>03</strong>
-              <span>1 needs immediate follow-up</span>
+              <span>Needs follow-up</span>
             </article>
           </section>
 
@@ -163,7 +168,10 @@
                   <span class="task-status"></span>
                   <span class="task-main">
                     <strong>Submit investor-ready roadmap</strong>
-                    <small>Business Growth Goal &middot; Due 07:30 PM</small>
+                    <small class="task-meta">
+                      <span class="task-meta-due">Due 07:30 PM</span>
+                      <span class="task-meta-goal">Business Growth Goal</span>
+                    </small>
                   </span>
                   <span class="task-tag">High</span>
                 </a>
@@ -172,7 +180,11 @@
                   <span class="task-status"></span>
                   <span class="task-main">
                     <strong>Complete 45 min workout</strong>
-                    <small>Fitness Goal &middot; Daily recurrence &middot; Due 06:30 AM</small>
+                    <small class="task-meta">
+                      <span class="task-meta-due">Due 06:30 AM</span>
+                      <span class="task-meta-goal">Fitness Goal</span>
+                      <span class="task-meta-extra">Daily recurrence</span>
+                    </small>
                   </span>
                   <span class="task-tag">Medium</span>
                 </a>
@@ -181,7 +193,11 @@
                   <span class="task-status"></span>
                   <span class="task-main">
                     <strong>Practice spoken Marathi lesson</strong>
-                    <small>Learning Goal &middot; Streak day 14 &middot; Due 08:00 PM</small>
+                    <small class="task-meta">
+                      <span class="task-meta-due">Due 08:00 PM</span>
+                      <span class="task-meta-goal">Learning Goal</span>
+                      <span class="task-meta-extra">Streak day 14</span>
+                    </small>
                   </span>
                   <span class="task-tag">Habit</span>
                 </a>
@@ -202,7 +218,10 @@
                   <span class="task-status is-upcoming"></span>
                   <span class="task-main">
                     <strong>Review monthly budget targets</strong>
-                    <small>Financial Goal &middot; Tomorrow &middot; 09:00 AM</small>
+                    <small class="task-meta">
+                      <span class="task-meta-due">Due Tomorrow 09:00 AM</span>
+                      <span class="task-meta-goal">Financial Goal</span>
+                    </small>
                   </span>
                   <span class="task-tag">Low</span>
                 </a>
@@ -211,7 +230,10 @@
                   <span class="task-status is-upcoming"></span>
                   <span class="task-main">
                     <strong>Renew hosting and production services</strong>
-                    <small>Operations Goal &middot; 31 Mar 2026 &middot; 11:45 AM</small>
+                    <small class="task-meta">
+                      <span class="task-meta-due">Due 31 Mar 2026 11:45 AM</span>
+                      <span class="task-meta-goal">Operations Goal</span>
+                    </small>
                   </span>
                   <span class="task-tag">High</span>
                 </a>
@@ -220,102 +242,16 @@
                   <span class="task-status is-upcoming"></span>
                   <span class="task-main">
                     <strong>Prepare Q2 learning sprint plan</strong>
-                    <small>Learning Goal &middot; 02 Apr 2026 &middot; 07:00 PM</small>
+                    <small class="task-meta">
+                      <span class="task-meta-due">Due 02 Apr 2026 07:00 PM</span>
+                      <span class="task-meta-goal">Learning Goal</span>
+                    </small>
                   </span>
                   <span class="task-tag">Medium</span>
                 </a>
               </div>
             </article>
 
-            <article class="progress-card panel">
-              <div class="section-head">
-                <div>
-                  <p class="mini-label">Goal Drill-Down</p>
-                  <h3>Progress Radar</h3>
-                </div>
-                <a class="inline-button" href="./goal-detail.html">Details</a>
-              </div>
-
-              <div class="goal-progress-list">
-                <div class="progress-row">
-                  <div class="progress-copy">
-                    <strong>Fitness Goal</strong>
-                    <small>18 of 24 tasks completed</small>
-                  </div>
-                  <div class="progress-track"><span style="width: 75%"></span></div>
-                </div>
-
-                <div class="progress-row">
-                  <div class="progress-copy">
-                    <strong>Financial Goal</strong>
-                    <small>6 of 10 tasks completed</small>
-                  </div>
-                  <div class="progress-track"><span style="width: 60%"></span></div>
-                </div>
-
-                <div class="progress-row">
-                  <div class="progress-copy">
-                    <strong>Learning Goal</strong>
-                    <small>22 of 28 tasks completed</small>
-                  </div>
-                  <div class="progress-track"><span style="width: 79%"></span></div>
-                </div>
-              </div>
-
-              <div class="insight-grid">
-                <div class="insight-box">
-                  <strong>14</strong>
-                  <span>Active streak</span>
-                </div>
-                <div class="insight-box">
-                  <strong>04</strong>
-                  <span>Reminders snoozed</span>
-                </div>
-                <div class="insight-box">
-                  <strong>11</strong>
-                  <span>Recurring tasks today</span>
-                </div>
-              </div>
-            </article>
-
-            <article class="detail-card panel">
-              <div class="section-head">
-                <div>
-                  <p class="mini-label">Task Detail</p>
-                  <h3 id="detail-title">Submit investor-ready roadmap</h3>
-                </div>
-                <span class="detail-state" id="detail-state">Pending</span>
-              </div>
-
-              <div class="detail-meta">
-                <span>Goal: Business Growth Goal</span>
-                <span>Deadline: Today &middot; 07:30 PM</span>
-                <span>Reminder: Push + Email + WhatsApp</span>
-                <span>Recurrence: None</span>
-              </div>
-
-              <p id="detail-notes">
-                Finalize the milestone slide, revise financial assumptions, and
-                send the updated version before the evening review meeting.
-              </p>
-
-              <div class="toggle-row" aria-label="Notification channel toggles">
-                <span class="toggle-chip is-on">Push</span>
-                <span class="toggle-chip is-on">In-App</span>
-                <span class="toggle-chip">SMS</span>
-                <span class="toggle-chip is-on">Email</span>
-                <span class="toggle-chip is-on">WhatsApp</span>
-              </div>
-
-              <div class="detail-actions">
-                <button class="complete-button" id="complete-task" type="button">
-                  Mark as Completed
-                </button>
-                <a class="ghost-chip" href="./goal-detail.html">Open Goal</a>
-                <a class="ghost-chip" href="./task-editor.html">Edit Task</a>
-                <a class="ghost-chip" href="./subtask-editor.html">Add Subtask</a>
-              </div>
-            </article>
           </section>
         </div>
       </section>
