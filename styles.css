@@ -1312,6 +1312,29 @@ a {
   backdrop-filter: blur(20px);
 }
 
+.prototype-notice {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid rgba(255, 183, 107, 0.26);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255, 183, 107, 0.14), rgba(255, 125, 92, 0.1));
+  color: #fff2df;
+}
+
+.prototype-notice strong {
+  font-family: "Space Grotesk", "Outfit", sans-serif;
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.prototype-notice span {
+  color: rgba(255, 240, 224, 0.82);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
 .login-form-header h3 {
   margin: 0.35rem 0 0.55rem;
   font-family: "Space Grotesk", "Outfit", sans-serif;
@@ -1433,6 +1456,11 @@ a {
   background: rgba(8, 18, 35, 0.76);
   color: var(--text-primary);
   font: inherit;
+}
+
+.field input[readonly] {
+  color: rgba(231, 239, 255, 0.7);
+  cursor: not-allowed;
 }
 
 .field input::placeholder {
@@ -1675,6 +1703,16 @@ a {
     border-radius: 20px;
   }
 
+  .prototype-notice {
+    padding: 0.75rem 0.82rem;
+    border-radius: 16px;
+  }
+
+  .prototype-notice strong,
+  .prototype-notice span {
+    font-size: 0.8rem;
+  }
+
   .login-form-header h3 {
     font-size: 1.05rem;
     margin: 0.15rem 0 0.3rem;
@@ -1743,6 +1781,10 @@ a {
   .login-form-shell {
     padding: 0.64rem;
     gap: 0.55rem;
+  }
+
+  .prototype-notice {
+    padding: 0.68rem 0.72rem;
   }
 
   .login-form-header h3 {
