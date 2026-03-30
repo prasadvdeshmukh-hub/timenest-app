@@ -65,9 +65,10 @@ if (taskRows.length && completeButton && detailTitle && detailState && detailNot
 const CYAN = "#00C8FF";
 const PURPLE = "#6C63FF";
 const clockCanvas = document.getElementById("hud-clock");
-const pixelRatio = window.devicePixelRatio || 1;
 const clockContext = clockCanvas ? clockCanvas.getContext("2d") : null;
 let size = clockCanvas?.classList.contains("hud-clock-login") ? 520 : 320;
+let clockResizeFrame = 0;
+let clockResizeObserver = null;
 
 function syncClockCanvasSize() {
   if (!clockCanvas || !clockContext) {
@@ -75,16 +76,43 @@ function syncClockCanvasSize() {
   }
 
   const measuredWidth = Math.round(clockCanvas.getBoundingClientRect().width);
-  size = measuredWidth || size;
-  clockCanvas.width = size * pixelRatio;
-  clockCanvas.height = size * pixelRatio;
-  clockCanvas.style.height = `${size}px`;
+  if (!measuredWidth) {
+    return;
+  }
+
+  const pixelRatio = window.devicePixelRatio || 1;
+  const backingSize = Math.max(1, Math.round(measuredWidth * pixelRatio));
+
+  size = measuredWidth;
+
+  if (clockCanvas.width !== backingSize || clockCanvas.height !== backingSize) {
+    clockCanvas.width = backingSize;
+    clockCanvas.height = backingSize;
+  }
+
+  // Keep layout sizing in CSS so the canvas can stay fluid across breakpoints.
+  clockCanvas.style.removeProperty("height");
+  clockCanvas.style.removeProperty("width");
   clockContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+}
+
+function queueClockCanvasSync() {
+  if (!clockCanvas || !clockContext) {
+    return;
+  }
+
+  cancelAnimationFrame(clockResizeFrame);
+  clockResizeFrame = requestAnimationFrame(syncClockCanvasSize);
 }
 
 if (clockCanvas && clockContext) {
   syncClockCanvasSize();
-  window.addEventListener("resize", syncClockCanvasSize);
+  window.addEventListener("resize", queueClockCanvasSync);
+
+  if ("ResizeObserver" in window) {
+    clockResizeObserver = new ResizeObserver(queueClockCanvasSync);
+    clockResizeObserver.observe(clockCanvas.parentElement ?? clockCanvas);
+  }
 }
 
 let frame = 0;
