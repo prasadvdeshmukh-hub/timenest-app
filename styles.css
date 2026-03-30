@@ -866,12 +866,12 @@ a {
   }
 
   .hud-clock-wrap {
-    min-height: 122px;
-    gap: 0.2rem;
+    min-height: 152px;
+    gap: 0.3rem;
   }
 
   .hud-clock {
-    width: min(100%, 118px);
+    width: min(100%, 144px);
   }
 
   .hud-clock-label {
@@ -1016,8 +1016,8 @@ a {
   .hero-card {
     grid-template-columns: 1fr;
     align-items: stretch;
-    padding: 0.6rem;
-    gap: 0.32rem;
+    padding: 0.68rem;
+    gap: 0.5rem;
   }
 
   .hero-copy h3 {
@@ -1031,8 +1031,12 @@ a {
   }
 
   .hud-clock-wrap {
-    min-height: 0;
+    min-height: 138px;
     justify-items: center;
+  }
+
+  .hud-clock {
+    width: min(100%, 132px);
   }
 
   .task-tag {
