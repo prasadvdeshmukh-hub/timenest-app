@@ -1718,17 +1718,29 @@ body.dashboard-home .tab-link {
 }
 
 @media (max-width: 780px) {
+  body.dashboard-home {
+    overflow-y: auto;
+    overscroll-behavior-y: auto;
+  }
+
   body.dashboard-home .page-shell {
+    min-height: auto;
     padding:
       max(0.85rem, var(--safe-top))
       max(0.85rem, var(--safe-right))
       max(0.85rem, var(--safe-bottom))
       max(0.85rem, var(--safe-left));
+    overflow: visible;
+    touch-action: pan-y;
   }
 
   body.dashboard-home .dashboard-frame {
     gap: 0.95rem;
+    min-height: auto;
+    overflow: visible;
+    overscroll-behavior: auto;
     padding-bottom: calc(7.2rem + var(--safe-bottom));
+    touch-action: pan-y;
   }
 
   body.dashboard-home .topbar {
@@ -1968,6 +1980,7 @@ body.dashboard-home .tab-link {
 
 @media (max-width: 560px) {
   body.dashboard-home .page-shell {
+    min-height: auto;
     padding:
       max(0.65rem, var(--safe-top))
       max(0.65rem, var(--safe-right))
