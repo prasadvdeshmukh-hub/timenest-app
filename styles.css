@@ -662,6 +662,198 @@ a {
   background: rgba(255, 255, 255, 0.04);
 }
 
+/* Home dashboard gets a larger type scale than the secondary screens. */
+body.dashboard-home {
+  --dashboard-stage-max: 1120px;
+}
+
+body.dashboard-home .dashboard-frame {
+  gap: 1.35rem;
+}
+
+body.dashboard-home .topbar,
+body.dashboard-home .hero-card,
+body.dashboard-home .focus-card,
+body.dashboard-home .tasks-card {
+  padding: 1.55rem;
+}
+
+body.dashboard-home .topbar h2,
+body.dashboard-home .brand-wordmark {
+  font-size: 2.4rem;
+}
+
+body.dashboard-home .topbar .mini-label {
+  font-size: 0.9rem;
+}
+
+body.dashboard-home .brand-subline {
+  max-width: 20rem;
+  font-size: 1rem;
+  line-height: 1.45;
+  white-space: normal;
+  animation: tagline-line-flash 5.6s ease-in-out infinite;
+}
+
+body.dashboard-home .ghost-chip,
+body.dashboard-home .profile-chip,
+body.dashboard-home .logout-button,
+body.dashboard-home .inline-button,
+body.dashboard-home .soft-pill {
+  font-size: 0.95rem;
+}
+
+body.dashboard-home .ghost-chip,
+body.dashboard-home .logout-button {
+  padding: 0.9rem 1.15rem;
+}
+
+body.dashboard-home .profile-chip {
+  padding: 0.58rem 1rem 0.58rem 0.72rem;
+}
+
+body.dashboard-home .hero-card {
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 340px);
+  gap: 1.35rem;
+}
+
+body.dashboard-home .hero-copy h3 {
+  margin: 0.55rem 0 0.95rem;
+  font-size: clamp(3.2rem, 5vw, 5rem);
+}
+
+body.dashboard-home .hero-copy p {
+  max-width: 36rem;
+  font-size: 1.15rem;
+  line-height: 1.82;
+}
+
+body.dashboard-home .hud-clock-wrap {
+  min-height: 320px;
+  gap: 0.7rem;
+}
+
+body.dashboard-home .hud-clock {
+  width: min(100%, 300px);
+}
+
+body.dashboard-home .hud-clock-label {
+  font-size: 0.84rem;
+  letter-spacing: 0.22em;
+}
+
+body.dashboard-home .focus-card {
+  gap: 1.15rem;
+}
+
+body.dashboard-home .focus-card > .mini-label {
+  font-size: 0.9rem;
+}
+
+body.dashboard-home .focus-value {
+  font-size: clamp(4.4rem, 7vw, 6.2rem);
+}
+
+body.dashboard-home .focus-text,
+body.dashboard-home .focus-footnote {
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+body.dashboard-home .focus-bars {
+  min-height: 88px;
+}
+
+body.dashboard-home .page-tools {
+  gap: 0.75rem;
+}
+
+body.dashboard-home .soft-pill {
+  padding: 0.6rem 1rem;
+}
+
+body.dashboard-home .stats-grid {
+  gap: 1.15rem;
+}
+
+body.dashboard-home .stat-card {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  min-height: 152px;
+  padding: 1.1rem 1rem;
+  text-align: center;
+}
+
+body.dashboard-home .stat-card .mini-label {
+  font-size: 0.82rem;
+  line-height: 1.2;
+}
+
+body.dashboard-home .stat-card strong {
+  margin: 0.95rem 0 0.55rem;
+  font-size: clamp(3.9rem, 6vw, 5.7rem);
+}
+
+body.dashboard-home .stat-card span {
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+body.dashboard-home .section-head {
+  align-items: center;
+}
+
+body.dashboard-home .section-head .mini-label {
+  font-size: 0.86rem;
+}
+
+body.dashboard-home .section-head h3 {
+  font-size: 2rem;
+}
+
+body.dashboard-home .inline-button {
+  min-height: 44px;
+  padding: 0.8rem 1.1rem;
+}
+
+body.dashboard-home .task-list {
+  gap: 1.05rem;
+}
+
+body.dashboard-home .task-row {
+  gap: 1rem;
+  padding: 1.15rem 1.2rem;
+}
+
+body.dashboard-home .task-main {
+  gap: 0.35rem;
+}
+
+body.dashboard-home .task-main strong {
+  font-size: 1.25rem;
+  line-height: 1.35;
+}
+
+body.dashboard-home .task-main small {
+  font-size: 0.98rem;
+  line-height: 1.45;
+}
+
+body.dashboard-home .task-tag {
+  padding: 0.48rem 0.82rem;
+  font-size: 0.92rem;
+}
+
+body.dashboard-home .bottom-tabbar {
+  width: min(calc(100vw - var(--safe-left) - var(--safe-right) - 1.8rem), 1120px);
+}
+
+body.dashboard-home .tab-link {
+  min-height: 56px;
+  font-size: 0.96rem;
+}
+
 .progress-copy {
   justify-content: space-between;
   gap: 1rem;
@@ -1522,6 +1714,384 @@ a {
     border-radius: 10px;
     overflow-wrap: anywhere;
     word-break: break-word;
+  }
+}
+
+@media (max-width: 780px) {
+  body.dashboard-home .page-shell {
+    padding:
+      max(0.85rem, var(--safe-top))
+      max(0.85rem, var(--safe-right))
+      max(0.85rem, var(--safe-bottom))
+      max(0.85rem, var(--safe-left));
+  }
+
+  body.dashboard-home .dashboard-frame {
+    gap: 0.95rem;
+    padding-bottom: calc(7.2rem + var(--safe-bottom));
+  }
+
+  body.dashboard-home .topbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.7rem;
+    padding: 1rem;
+    align-items: start;
+  }
+
+  body.dashboard-home .brand-cluster {
+    align-items: flex-start;
+    min-width: 0;
+  }
+
+  body.dashboard-home .topbar h2,
+  body.dashboard-home .brand-wordmark {
+    font-size: 1.85rem;
+  }
+
+  body.dashboard-home .topbar .mini-label {
+    font-size: 0.72rem;
+  }
+
+  body.dashboard-home .brand-subline {
+    max-width: none;
+    font-size: 0.84rem;
+  }
+
+  body.dashboard-home .top-actions {
+    justify-self: end;
+    align-self: start;
+    gap: 0.36rem;
+    flex-wrap: nowrap;
+  }
+
+  body.dashboard-home .ghost-chip,
+  body.dashboard-home .profile-chip,
+  body.dashboard-home .logout-button {
+    min-height: 40px;
+    min-width: 40px;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.72rem;
+  }
+
+  body.dashboard-home .hero-grid {
+    gap: 0.9rem;
+  }
+
+  body.dashboard-home .hero-card {
+    grid-template-columns: minmax(0, 1.2fr) minmax(150px, 0.82fr);
+    gap: 0.8rem;
+    padding: 1rem;
+    align-items: center;
+  }
+
+  body.dashboard-home .hero-copy h3 {
+    margin: 0.2rem 0 0.45rem;
+    font-size: 1.56rem;
+  }
+
+  body.dashboard-home .hero-copy p {
+    font-size: 0.92rem;
+    line-height: 1.46;
+  }
+
+  body.dashboard-home .hud-clock-wrap {
+    min-height: 152px;
+    gap: 0.35rem;
+    justify-self: end;
+  }
+
+  body.dashboard-home .hud-clock {
+    width: min(100%, 160px);
+  }
+
+  body.dashboard-home .hud-clock-label {
+    display: block;
+    font-size: 0.62rem;
+    text-align: center;
+  }
+
+  body.dashboard-home .focus-card {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "label"
+      "value"
+      "text"
+      "bars"
+      "note"
+      "actions";
+    gap: 0.55rem;
+    padding: 1rem;
+  }
+
+  body.dashboard-home .focus-card > .mini-label,
+  body.dashboard-home .focus-value {
+    justify-self: start;
+  }
+
+  body.dashboard-home .focus-value {
+    font-size: 2.1rem;
+  }
+
+  body.dashboard-home .focus-text {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  body.dashboard-home .focus-footnote {
+    font-size: 0.94rem;
+    line-height: 1.38;
+  }
+
+  body.dashboard-home .focus-bars {
+    min-height: 40px;
+    gap: 0.28rem;
+  }
+
+  body.dashboard-home .focus-card .page-tools {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  body.dashboard-home .focus-card .soft-pill {
+    min-height: 40px;
+    padding: 0.55rem 0.65rem;
+    font-size: 0.88rem;
+  }
+
+  body.dashboard-home .stats-grid {
+    gap: 0.65rem;
+  }
+
+  body.dashboard-home .stat-card {
+    min-height: 104px;
+    padding: 0.68rem 0.62rem;
+    justify-items: center;
+    text-align: center;
+  }
+
+  body.dashboard-home .stat-card .mini-label {
+    font-size: 0.72rem;
+  }
+
+  body.dashboard-home .stat-card strong {
+    margin: 0.18rem 0;
+    font-size: 1.55rem;
+  }
+
+  body.dashboard-home .stat-card span {
+    font-size: 0.82rem;
+    line-height: 1.25;
+  }
+
+  body.dashboard-home .tasks-card {
+    padding: 1rem;
+  }
+
+  body.dashboard-home .section-head {
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+
+  body.dashboard-home .section-head .mini-label {
+    font-size: 0.74rem;
+  }
+
+  body.dashboard-home .section-head h3 {
+    font-size: 1.45rem;
+  }
+
+  body.dashboard-home .inline-button {
+    min-height: 40px;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.82rem;
+  }
+
+  body.dashboard-home .task-list {
+    gap: 0.7rem;
+  }
+
+  body.dashboard-home .task-row {
+    gap: 0.7rem;
+    padding: 0.85rem 0.95rem;
+  }
+
+  body.dashboard-home .task-status {
+    width: 16px;
+    height: 16px;
+  }
+
+  body.dashboard-home .task-main strong {
+    display: block;
+    overflow: visible;
+    font-size: 1.08rem;
+    text-overflow: clip;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: initial;
+  }
+
+  body.dashboard-home .task-main small {
+    font-size: 0.82rem;
+    line-height: 1.34;
+  }
+
+  body.dashboard-home .task-main small.task-meta {
+    flex-wrap: wrap;
+    gap: 0.18rem 0.38rem;
+    overflow: visible;
+    white-space: normal;
+  }
+
+  body.dashboard-home .task-main .task-meta-due,
+  body.dashboard-home .task-main .task-meta-goal,
+  body.dashboard-home .task-main .task-meta-extra {
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  body.dashboard-home .task-tag {
+    padding: 0.28rem 0.58rem;
+    font-size: 0.78rem;
+  }
+
+  body.dashboard-home .bottom-tabbar {
+    gap: 0.18rem;
+    padding: 0.35rem 0.35rem calc(0.45rem + var(--safe-bottom));
+  }
+
+  body.dashboard-home .tab-link {
+    min-height: 44px;
+    padding: 0.35rem 0.2rem;
+    font-size: 0.65rem;
+    line-height: 1.12;
+  }
+}
+
+@media (max-width: 560px) {
+  body.dashboard-home .page-shell {
+    padding:
+      max(0.65rem, var(--safe-top))
+      max(0.65rem, var(--safe-right))
+      max(0.65rem, var(--safe-bottom))
+      max(0.65rem, var(--safe-left));
+  }
+
+  body.dashboard-home .topbar {
+    padding: 0.9rem;
+  }
+
+  body.dashboard-home .topbar h2,
+  body.dashboard-home .brand-wordmark {
+    font-size: 1.6rem;
+  }
+
+  body.dashboard-home .topbar .mini-label {
+    font-size: 0.66rem;
+  }
+
+  body.dashboard-home .brand-subline {
+    font-size: 0.76rem;
+  }
+
+  body.dashboard-home .ghost-chip,
+  body.dashboard-home .profile-chip,
+  body.dashboard-home .logout-button {
+    min-height: 38px;
+    min-width: 38px;
+    padding: 0.5rem;
+  }
+
+  body.dashboard-home .hero-card {
+    grid-template-columns: minmax(0, 1.15fr) minmax(122px, 0.78fr);
+    gap: 0.65rem;
+    padding: 0.9rem;
+  }
+
+  body.dashboard-home .hero-copy h3 {
+    font-size: 1.3rem;
+  }
+
+  body.dashboard-home .hero-copy p {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
+  body.dashboard-home .hud-clock {
+    width: min(100%, 128px);
+  }
+
+  body.dashboard-home .hud-clock-label {
+    font-size: 0.54rem;
+  }
+
+  body.dashboard-home .focus-card,
+  body.dashboard-home .tasks-card {
+    padding: 0.9rem;
+  }
+
+  body.dashboard-home .focus-value {
+    font-size: 1.82rem;
+  }
+
+  body.dashboard-home .focus-text {
+    font-size: 0.88rem;
+  }
+
+  body.dashboard-home .focus-footnote {
+    font-size: 0.84rem;
+  }
+
+  body.dashboard-home .focus-card .page-tools {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.dashboard-home .focus-card .soft-pill {
+    font-size: 0.8rem;
+  }
+
+  body.dashboard-home .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.dashboard-home .stat-card {
+    min-height: 94px;
+    padding: 0.62rem 0.56rem;
+  }
+
+  body.dashboard-home .stat-card strong {
+    font-size: 1.4rem;
+  }
+
+  body.dashboard-home .stat-card span {
+    font-size: 0.78rem;
+  }
+
+  body.dashboard-home .section-head h3 {
+    font-size: 1.28rem;
+  }
+
+  body.dashboard-home .inline-button {
+    font-size: 0.78rem;
+  }
+
+  body.dashboard-home .task-row {
+    padding: 0.8rem 0.82rem;
+  }
+
+  body.dashboard-home .task-main strong {
+    font-size: 0.98rem;
+  }
+
+  body.dashboard-home .task-main small {
+    font-size: 0.78rem;
+  }
+
+  body.dashboard-home .task-tag {
+    font-size: 0.72rem;
+  }
+
+  body.dashboard-home .tab-link {
+    min-height: 40px;
+    font-size: 0.54rem;
   }
 }
 
