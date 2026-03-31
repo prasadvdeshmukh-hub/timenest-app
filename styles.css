@@ -426,26 +426,31 @@ a {
 }
 
 .hud-clock-label {
-  color: rgba(0, 200, 255, 0.42);
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 0.72rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
+  display: none !important;
 }
 
 .login-tagline {
+  width: 100%;
   max-width: none;
   text-align: center;
   color: #dffbff;
   font-family: "Orbitron", "Space Grotesk", sans-serif;
-  font-size: clamp(0.72rem, 1.2vw, 0.92rem);
-  letter-spacing: 0.14em;
+  font-size: clamp(0.58rem, 1vw, 0.86rem);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
   text-shadow:
     0 0 12px rgba(0, 200, 255, 0.18),
     0 0 24px rgba(108, 99, 255, 0.14);
   animation: tagline-line-flash 10s ease-in-out infinite;
+}
+
+.stat-label {
+  margin: 0;
+  color: rgba(166, 195, 255, 0.72);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 .tagline-char {
@@ -459,6 +464,28 @@ a {
   display: grid;
   gap: 1rem;
   align-content: start;
+  justify-items: stretch;
+}
+
+.focus-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: start;
+  justify-self: stretch;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.focus-head .focus-text {
+  display: block;
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
+  justify-self: start;
+  text-align: left;
 }
 
 .focus-metric {
@@ -662,6 +689,65 @@ a {
   background: rgba(255, 255, 255, 0.04);
 }
 
+.tool-panel-grid {
+  display: grid;
+}
+
+.task-tools-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.task-tools-head h3 {
+  margin: 0;
+  font-family: "Space Grotesk", "Outfit", sans-serif;
+  font-size: 1.45rem;
+  letter-spacing: -0.04em;
+}
+
+.task-tool-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.task-tool-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0.72rem 0.82rem;
+  border: 1px solid rgba(164, 203, 255, 0.16);
+  border-radius: 16px;
+  background: rgba(16, 28, 52, 0.66);
+  color: var(--text-primary);
+  font-family: "Space Grotesk", "Outfit", sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
+}
+
+.task-tool-tab.is-active {
+  background: linear-gradient(135deg, rgba(84, 229, 255, 0.16), rgba(113, 144, 255, 0.22));
+  border-color: rgba(175, 212, 255, 0.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 10px 20px rgba(24, 80, 180, 0.12);
+}
+
+.task-tool-tab:hover,
+.task-tool-tab:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(175, 212, 255, 0.28);
+  outline: none;
+}
+
 /* Home dashboard gets a larger type scale than the secondary screens. */
 body.dashboard-home {
   --dashboard-stage-max: 1120px;
@@ -671,16 +757,25 @@ body.dashboard-home .dashboard-frame {
   gap: 1.35rem;
 }
 
+body.dashboard-home .brand-cluster {
+  gap: 0.55rem;
+}
+
+body.dashboard-home .mini-label {
+  display: none;
+}
+
 body.dashboard-home .topbar,
 body.dashboard-home .hero-card,
 body.dashboard-home .focus-card,
+body.dashboard-home .task-tools-card,
 body.dashboard-home .tasks-card {
-  padding: 1.55rem;
+  padding: 1.65rem;
 }
 
 body.dashboard-home .topbar h2,
 body.dashboard-home .brand-wordmark {
-  font-size: 2.4rem;
+  font-size: 2.55rem;
 }
 
 body.dashboard-home .topbar .mini-label {
@@ -688,10 +783,11 @@ body.dashboard-home .topbar .mini-label {
 }
 
 body.dashboard-home .brand-subline {
-  max-width: 20rem;
-  font-size: 1rem;
-  line-height: 1.45;
-  white-space: normal;
+  max-width: none;
+  font-size: 1.04rem;
+  line-height: 1.3;
+  letter-spacing: 0.065em;
+  white-space: nowrap;
   animation: tagline-line-flash 5.6s ease-in-out infinite;
 }
 
@@ -713,24 +809,35 @@ body.dashboard-home .profile-chip {
 }
 
 body.dashboard-home .hero-card {
-  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 340px);
-  gap: 1.35rem;
+  grid-template-columns: minmax(0, 1.35fr) minmax(220px, 300px);
+  gap: 1.2rem;
+}
+
+body.dashboard-home .hero-copy {
+  display: grid;
+  align-content: start;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
 }
 
 body.dashboard-home .hero-copy h3 {
   margin: 0.55rem 0 0.95rem;
-  font-size: clamp(3.2rem, 5vw, 5rem);
+  font-size: clamp(3.35rem, 5vw, 5rem);
+  line-height: 0.98;
+  overflow-wrap: anywhere;
 }
 
 body.dashboard-home .hero-copy p {
-  max-width: 36rem;
-  font-size: 1.15rem;
+  max-width: none;
+  font-size: 1.22rem;
   line-height: 1.82;
+  overflow-wrap: anywhere;
 }
 
 body.dashboard-home .hud-clock-wrap {
-  min-height: 320px;
-  gap: 0.7rem;
+  min-height: 300px;
+  gap: 0.35rem;
 }
 
 body.dashboard-home .hud-clock {
@@ -743,20 +850,48 @@ body.dashboard-home .hud-clock-label {
 }
 
 body.dashboard-home .focus-card {
-  gap: 1.15rem;
+  gap: 1rem;
+  justify-items: stretch;
 }
 
-body.dashboard-home .focus-card > .mini-label {
-  font-size: 0.9rem;
+body.dashboard-home .focus-head {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.2rem;
+  align-items: start;
+  justify-self: stretch;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 body.dashboard-home .focus-value {
-  font-size: clamp(4.4rem, 7vw, 6.2rem);
+  justify-self: end;
+  align-self: start;
+  min-width: max-content;
+  font-family: "Outfit", "Segoe UI", sans-serif;
+  font-size: clamp(1.9rem, 3.6vw, 2.6rem);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 0.84;
+  text-align: right;
+}
+
+body.dashboard-home .focus-head .focus-text {
+  display: block;
+  align-self: start;
+  justify-self: start;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0;
+  text-indent: 0;
+  overflow-wrap: anywhere;
+  text-align: left;
 }
 
 body.dashboard-home .focus-text,
 body.dashboard-home .focus-footnote {
-  font-size: 1rem;
+  font-size: 1.08rem;
   line-height: 1.55;
 }
 
@@ -764,11 +899,30 @@ body.dashboard-home .focus-bars {
   min-height: 88px;
 }
 
+body.dashboard-home .tool-panel-grid {
+  margin-top: 0.2rem;
+}
+
+body.dashboard-home .task-tools-head h3 {
+  font-size: 1.72rem;
+}
+
+body.dashboard-home .task-tool-tab {
+  min-height: 54px;
+  font-size: 1rem;
+}
+
 body.dashboard-home .page-tools {
   gap: 0.75rem;
 }
 
+body.dashboard-home .task-tools-card .page-tools {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 body.dashboard-home .soft-pill {
+  min-height: 48px;
   padding: 0.6rem 1rem;
 }
 
@@ -785,8 +939,8 @@ body.dashboard-home .stat-card {
   text-align: center;
 }
 
-body.dashboard-home .stat-card .mini-label {
-  font-size: 0.82rem;
+body.dashboard-home .stat-label {
+  font-size: 0.76rem;
   line-height: 1.2;
 }
 
@@ -804,12 +958,8 @@ body.dashboard-home .section-head {
   align-items: center;
 }
 
-body.dashboard-home .section-head .mini-label {
-  font-size: 0.86rem;
-}
-
 body.dashboard-home .section-head h3 {
-  font-size: 2rem;
+  font-size: 2.05rem;
 }
 
 body.dashboard-home .inline-button {
@@ -846,12 +996,21 @@ body.dashboard-home .task-tag {
 }
 
 body.dashboard-home .bottom-tabbar {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   width: min(calc(100vw - var(--safe-left) - var(--safe-right) - 1.8rem), 1120px);
+  align-items: stretch;
+  justify-items: stretch;
 }
 
 body.dashboard-home .tab-link {
-  min-height: 56px;
-  font-size: 0.96rem;
+  width: 100%;
+  justify-self: stretch;
+  align-self: stretch;
+  min-height: 60px;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: keep-all;
+  font-size: 1rem;
 }
 
 .progress-copy {
@@ -1744,20 +1903,23 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .topbar {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 0.7rem;
-    padding: 1rem;
-    align-items: start;
+    position: relative;
+    display: block;
+    padding: 1.1rem;
   }
 
   body.dashboard-home .brand-cluster {
-    align-items: flex-start;
+    display: block;
     min-width: 0;
+  }
+
+  body.dashboard-home .brand-cluster > div {
+    width: 100%;
   }
 
   body.dashboard-home .topbar h2,
   body.dashboard-home .brand-wordmark {
-    font-size: 1.85rem;
+    font-size: 2.02rem;
   }
 
   body.dashboard-home .topbar .mini-label {
@@ -1765,15 +1927,21 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .brand-subline {
-    max-width: none;
-    font-size: 0.84rem;
+    display: block;
+    width: 100%;
+    margin-top: 0.72rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
   }
 
   body.dashboard-home .top-actions {
-    justify-self: end;
-    align-self: start;
+    position: absolute;
+    top: 1.1rem;
+    right: 1.1rem;
     gap: 0.36rem;
     flex-wrap: nowrap;
+    margin-left: 0;
   }
 
   body.dashboard-home .ghost-chip,
@@ -1786,85 +1954,126 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .hero-grid {
+    grid-template-columns: 1fr;
     gap: 0.9rem;
   }
 
   body.dashboard-home .hero-card {
-    grid-template-columns: minmax(0, 1.2fr) minmax(150px, 0.82fr);
-    gap: 0.8rem;
+    grid-template-columns: minmax(0, 1fr) minmax(132px, 156px);
+    gap: 0.62rem;
     padding: 1rem;
-    align-items: center;
+    align-items: start;
+  }
+
+  body.dashboard-home .hero-copy {
+    width: 100%;
+    min-width: 0;
   }
 
   body.dashboard-home .hero-copy h3 {
     margin: 0.2rem 0 0.45rem;
-    font-size: 1.56rem;
+    font-size: 1.58rem;
+    line-height: 1.02;
   }
 
   body.dashboard-home .hero-copy p {
+    max-width: none;
     font-size: 0.92rem;
-    line-height: 1.46;
+    line-height: 1.42;
+    overflow-wrap: anywhere;
   }
 
   body.dashboard-home .hud-clock-wrap {
-    min-height: 152px;
-    gap: 0.35rem;
+    min-height: 156px;
+    gap: 0.3rem;
     justify-self: end;
+    align-self: start;
   }
 
   body.dashboard-home .hud-clock {
-    width: min(100%, 160px);
-  }
-
-  body.dashboard-home .hud-clock-label {
-    display: block;
-    font-size: 0.62rem;
-    text-align: center;
+    width: min(100%, 156px);
   }
 
   body.dashboard-home .focus-card {
     grid-template-columns: 1fr;
-    grid-template-areas:
-      "label"
-      "value"
-      "text"
-      "bars"
-      "note"
-      "actions";
-    gap: 0.55rem;
-    padding: 1rem;
+    gap: 0.95rem;
+    min-height: 220px;
+    padding: 1.08rem 1rem;
+    align-content: stretch;
+    justify-items: stretch;
   }
 
-  body.dashboard-home .focus-card > .mini-label,
-  body.dashboard-home .focus-value {
-    justify-self: start;
+  body.dashboard-home .focus-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.72rem;
+    justify-self: stretch;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    box-sizing: border-box;
   }
 
   body.dashboard-home .focus-value {
-    font-size: 2.1rem;
+    flex: 0 0 auto;
+    margin-left: auto;
+    min-width: max-content;
+    font-family: "Outfit", "Segoe UI", sans-serif;
+    font-size: clamp(1.18rem, 6.2vw, 1.58rem);
+    font-weight: 500;
+    line-height: 0.86;
+    text-align: right;
   }
 
   body.dashboard-home .focus-text {
-    font-size: 1rem;
-    line-height: 1.4;
+    flex: 1 1 auto;
+    font-size: 0.84rem;
+    line-height: 1.22;
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    text-align: left;
   }
 
   body.dashboard-home .focus-footnote {
-    font-size: 0.94rem;
-    line-height: 1.38;
+    font-size: 0.74rem;
+    line-height: 1.22;
   }
 
   body.dashboard-home .focus-bars {
-    min-height: 40px;
-    gap: 0.28rem;
+    min-height: 86px;
+    gap: 0.34rem;
   }
 
-  body.dashboard-home .focus-card .page-tools {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  body.dashboard-home .tool-panel-grid {
+    gap: 0.7rem;
+  }
+
+  body.dashboard-home .task-tools-card {
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  body.dashboard-home .task-tools-head h3 {
+    font-size: 1.32rem;
+  }
+
+  body.dashboard-home .task-tool-tabs {
+    gap: 0.35rem;
+  }
+
+  body.dashboard-home .task-tool-tab {
+    min-height: 44px;
+    padding: 0.48rem 0.36rem;
+    font-size: 0.84rem;
+  }
+
+  body.dashboard-home .task-tools-card .page-tools {
     gap: 0.45rem;
   }
 
-  body.dashboard-home .focus-card .soft-pill {
+  body.dashboard-home .task-tools-card .soft-pill {
     min-height: 40px;
     padding: 0.55rem 0.65rem;
     font-size: 0.88rem;
@@ -1881,8 +2090,8 @@ body.dashboard-home .tab-link {
     text-align: center;
   }
 
-  body.dashboard-home .stat-card .mini-label {
-    font-size: 0.72rem;
+  body.dashboard-home .stat-label {
+    font-size: 0.62rem;
   }
 
   body.dashboard-home .stat-card strong {
@@ -1900,16 +2109,11 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .section-head {
-    flex-wrap: wrap;
     gap: 0.7rem;
   }
 
-  body.dashboard-home .section-head .mini-label {
-    font-size: 0.74rem;
-  }
-
   body.dashboard-home .section-head h3 {
-    font-size: 1.45rem;
+    font-size: 1.6rem;
   }
 
   body.dashboard-home .inline-button {
@@ -1966,14 +2170,17 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .bottom-tabbar {
-    gap: 0.18rem;
-    padding: 0.35rem 0.35rem calc(0.45rem + var(--safe-bottom));
+    gap: 0.22rem;
+    padding: 0.42rem 0.42rem calc(0.5rem + var(--safe-bottom));
   }
 
   body.dashboard-home .tab-link {
-    min-height: 44px;
-    padding: 0.35rem 0.2rem;
-    font-size: 0.65rem;
+    min-height: 48px;
+    padding: 0.45rem 0.24rem;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: keep-all;
+    font-size: 0.74rem;
     line-height: 1.12;
   }
 }
@@ -1994,7 +2201,7 @@ body.dashboard-home .tab-link {
 
   body.dashboard-home .topbar h2,
   body.dashboard-home .brand-wordmark {
-    font-size: 1.6rem;
+    font-size: 1.64rem;
   }
 
   body.dashboard-home .topbar .mini-label {
@@ -2002,7 +2209,14 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .brand-subline {
-    font-size: 0.76rem;
+    margin-top: 0.62rem;
+    font-size: 0.64rem;
+    letter-spacing: 0.028em;
+  }
+
+  body.dashboard-home .top-actions {
+    top: 0.9rem;
+    right: 0.9rem;
   }
 
   body.dashboard-home .ghost-chip,
@@ -2014,51 +2228,116 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .hero-card {
-    grid-template-columns: minmax(0, 1.15fr) minmax(122px, 0.78fr);
-    gap: 0.65rem;
+    grid-template-columns: minmax(0, 1fr) minmax(108px, 124px);
+    gap: 0.48rem;
     padding: 0.9rem;
+    align-items: start;
+  }
+
+  body.dashboard-home .hero-copy {
+    width: 100%;
+    min-width: 0;
   }
 
   body.dashboard-home .hero-copy h3 {
-    font-size: 1.3rem;
+    font-size: 1.28rem;
+    line-height: 1.02;
   }
 
   body.dashboard-home .hero-copy p {
+    max-width: none;
     font-size: 0.8rem;
-    line-height: 1.4;
+    line-height: 1.34;
+    overflow-wrap: anywhere;
+  }
+
+  body.dashboard-home .hud-clock-wrap {
+    min-height: 132px;
+    align-self: start;
+    justify-self: end;
   }
 
   body.dashboard-home .hud-clock {
-    width: min(100%, 128px);
-  }
-
-  body.dashboard-home .hud-clock-label {
-    font-size: 0.54rem;
+    width: min(100%, 124px);
   }
 
   body.dashboard-home .focus-card,
+  body.dashboard-home .task-tools-card,
   body.dashboard-home .tasks-card {
     padding: 0.9rem;
   }
 
+  body.dashboard-home .focus-card {
+    grid-template-columns: 1fr;
+    gap: 0.82rem;
+    min-height: 198px;
+    padding: 0.95rem 0.92rem;
+    justify-items: stretch;
+  }
+
+  body.dashboard-home .focus-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.48rem;
+    justify-self: stretch;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
   body.dashboard-home .focus-value {
-    font-size: 1.82rem;
+    flex: 0 0 auto;
+    margin-left: auto;
+    min-width: max-content;
+    font-family: "Outfit", "Segoe UI", sans-serif;
+    font-size: clamp(0.92rem, 4.8vw, 1.18rem);
+    font-weight: 500;
+    line-height: 0.84;
+    text-align: right;
   }
 
   body.dashboard-home .focus-text {
-    font-size: 0.88rem;
+    flex: 1 1 auto;
+    font-size: 0.68rem;
+    line-height: 1.14;
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    text-align: left;
   }
 
   body.dashboard-home .focus-footnote {
-    font-size: 0.84rem;
+    font-size: 0.62rem;
+    line-height: 1.16;
   }
 
-  body.dashboard-home .focus-card .page-tools {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  body.dashboard-home .focus-bars {
+    min-height: 74px;
+    gap: 0.28rem;
   }
 
-  body.dashboard-home .focus-card .soft-pill {
-    font-size: 0.8rem;
+  body.dashboard-home .task-tools-head h3 {
+    font-size: 1.14rem;
+  }
+
+  body.dashboard-home .task-tool-tabs {
+    gap: 0.24rem;
+  }
+
+  body.dashboard-home .task-tool-tab {
+    min-height: 40px;
+    font-size: 0.68rem;
+    padding: 0.4rem 0.22rem;
+  }
+
+  body.dashboard-home .task-tools-card .page-tools {
+    gap: 0.35rem;
+  }
+
+  body.dashboard-home .task-tools-card .soft-pill {
+    font-size: 0.78rem;
   }
 
   body.dashboard-home .stats-grid {
@@ -2070,6 +2349,10 @@ body.dashboard-home .tab-link {
     padding: 0.62rem 0.56rem;
   }
 
+  body.dashboard-home .stat-label {
+    font-size: 0.54rem;
+  }
+
   body.dashboard-home .stat-card strong {
     font-size: 1.4rem;
   }
@@ -2079,7 +2362,7 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .section-head h3 {
-    font-size: 1.28rem;
+    font-size: 1.36rem;
   }
 
   body.dashboard-home .inline-button {
@@ -2103,8 +2386,11 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .tab-link {
-    min-height: 40px;
-    font-size: 0.54rem;
+    min-height: 44px;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: keep-all;
+    font-size: 0.62rem;
   }
 }
 
@@ -2651,13 +2937,14 @@ body.dashboard-home .tab-link {
 @media (max-width: 780px) {
   .login-shell {
     grid-template-columns: 1fr;
-    gap: 0.9rem;
+    gap: 0.75rem;
+    min-height: 100svh;
     padding:
-      max(1rem, var(--safe-top))
-      max(1rem, var(--safe-right))
-      max(1rem, var(--safe-bottom))
-      max(1rem, var(--safe-left));
-    align-items: start;
+      max(0.75rem, var(--safe-top))
+      max(0.75rem, var(--safe-right))
+      max(0.75rem, var(--safe-bottom))
+      max(0.75rem, var(--safe-left));
+    align-items: center;
   }
 
   .login-copy {
@@ -2665,154 +2952,232 @@ body.dashboard-home .tab-link {
   }
 
   .login-card {
-    min-height: auto;
-    padding: 1rem;
-    gap: 0.9rem;
+    min-height: calc(100svh - max(1.5rem, var(--safe-top) + var(--safe-bottom)));
+    padding: 0.8rem;
+    gap: 0.6rem;
   }
 
-  .login-card-top,
+  .login-card-top {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
   .login-options {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
   }
 
   .login-link {
     display: none;
   }
 
-  .login-main-grid {
-    gap: 0.7rem;
-    grid-template-rows: auto auto;
-  }
-
-  .login-clock-wrap {
-    --login-clock-size: clamp(190px, 62vw, 250px);
-    --login-clock-orbit-size: calc(var(--login-clock-size) + 2rem);
+  .login-card-top .brand-cluster {
     gap: 0.35rem;
-    min-height: 0;
-    padding-top: 0;
   }
 
-  .login-actions,
-  .login-form {
-    grid-template-columns: 1fr;
-  }
-
-  .login-actions {
-    gap: 0.5rem;
-  }
-
-  .login-action {
-    min-height: 48px;
-    padding: 0.78rem 0.88rem;
-  }
-
-  .login-form-shell {
-    padding: 0.85rem;
-    gap: 0.72rem;
-    border-radius: 20px;
-  }
-
-  .prototype-notice {
-    padding: 0.75rem 0.82rem;
-    border-radius: 16px;
-  }
-
-  .prototype-notice strong,
-  .prototype-notice span {
-    font-size: 0.8rem;
-  }
-
-  .login-form-header h3 {
-    font-size: 1.05rem;
-    margin: 0.15rem 0 0.3rem;
-  }
-
+  .login-card-top .mini-label,
+  .prototype-notice,
+  .login-middle-link,
   .login-form-header p:last-child,
   .login-divider {
     display: none;
   }
 
-  .field input {
-    padding: 0.76rem 0.85rem;
+  .login-card-top .brand-wordmark {
+    font-size: 1.18rem;
   }
 
-  .remember-choice {
-    font-size: 0.8rem;
+  .login-main-grid {
+    gap: 0.42rem;
+    grid-template-rows: auto auto;
   }
 
-  .login-toggles {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .login-clock-wrap {
+    --login-clock-size: clamp(100px, 28vw, 138px);
+    --login-clock-orbit-size: calc(var(--login-clock-size) + 0.65rem);
+    gap: 0.16rem;
+    min-height: 0;
+    padding-top: 0;
+    animation: none;
   }
 
   .login-tagline {
-    max-width: 18rem;
-    white-space: normal;
+    display: block;
+    width: 100%;
+    max-width: none;
+    font-size: 0.52rem;
+    letter-spacing: 0.055em;
+    white-space: nowrap;
     text-align: center;
+  }
+
+  .login-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.32rem;
+  }
+
+  .login-action {
+    flex-direction: column;
+    gap: 0.22rem;
+    min-height: 56px;
+    padding: 0.42rem 0.22rem;
+    border-radius: 14px;
+    font-size: 0.62rem;
+    text-align: center;
+  }
+
+  .login-form-shell {
+    gap: 0.42rem;
+    padding: 0.64rem;
+    border-radius: 18px;
+  }
+
+  .login-form-header .mini-label {
+    display: none;
+  }
+
+  .login-form-header h3 {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .login-action-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+  }
+
+  .login-form {
+    grid-template-columns: 1fr;
+    gap: 0.42rem;
+  }
+
+  .field {
+    gap: 0.2rem;
+  }
+
+  .field span,
+  .remember-choice {
+    font-size: 0.68rem;
+  }
+
+  .field input {
+    padding: 0.56rem 0.66rem;
+    border-radius: 14px;
   }
 }
 
 @media (max-width: 560px) {
   .login-shell {
     padding:
-      max(0.75rem, var(--safe-top))
-      max(0.75rem, var(--safe-right))
-      max(0.75rem, var(--safe-bottom))
-      max(0.75rem, var(--safe-left));
-    gap: 0.75rem;
+      max(0.55rem, var(--safe-top))
+      max(0.55rem, var(--safe-right))
+      max(0.55rem, var(--safe-bottom))
+      max(0.55rem, var(--safe-left));
+    gap: 0.55rem;
   }
 
   .login-card {
-    padding: 0.82rem;
-    gap: 0.72rem;
+    min-height: calc(100svh - max(1.1rem, var(--safe-top) + var(--safe-bottom)));
+    padding: 0.68rem;
+    gap: 0.5rem;
   }
 
   .login-card-top {
-    gap: 0.55rem;
+    gap: 0.38rem;
+  }
+
+  .login-card-top .brand-wordmark {
+    font-size: 1rem;
   }
 
   .login-main-grid {
-    gap: 0.55rem;
+    gap: 0.34rem;
   }
 
   .login-clock-wrap {
-    --login-clock-size: clamp(148px, 56vw, 172px);
-    --login-clock-orbit-size: calc(var(--login-clock-size) + 1rem);
-  }
-
-  .login-toggles {
-    grid-template-columns: 1fr;
+    --login-clock-size: clamp(82px, 24vw, 104px);
+    --login-clock-orbit-size: calc(var(--login-clock-size) + 0.4rem);
   }
 
   .login-tagline {
-    display: none;
+    display: block;
+    font-size: 0.4rem;
+    letter-spacing: 0.035em;
   }
 
   .login-form-shell {
-    padding: 0.64rem;
-    gap: 0.55rem;
-  }
-
-  .prototype-notice {
-    padding: 0.68rem 0.72rem;
+    padding: 0.54rem;
+    gap: 0.36rem;
   }
 
   .login-form-header h3 {
-    font-size: 0.92rem;
+    font-size: 0.82rem;
   }
 
   .login-action {
-    min-height: 42px;
-    padding: 0.64rem 0.72rem;
+    min-height: 50px;
+    padding: 0.34rem 0.16rem;
+    font-size: 0.54rem;
   }
 
   .field span,
   .remember-choice {
-    font-size: 0.72rem;
+    font-size: 0.6rem;
   }
 
   .field input {
-    padding: 0.66rem 0.78rem;
+    padding: 0.5rem 0.62rem;
+  }
+}
+
+@media (max-width: 780px) and (max-height: 760px) {
+  .login-card {
+    min-height: calc(100svh - max(1.1rem, var(--safe-top) + var(--safe-bottom)));
+    padding: 0.64rem;
+    gap: 0.42rem;
+  }
+
+  .login-clock-wrap {
+    --login-clock-size: clamp(84px, 22vh, 108px);
+    --login-clock-orbit-size: calc(var(--login-clock-size) + 0.35rem);
+    gap: 0.12rem;
+  }
+
+  .login-tagline {
+    font-size: 0.36rem;
+    letter-spacing: 0.03em;
+  }
+
+  .login-form-shell {
+    gap: 0.32rem;
+    padding: 0.5rem;
+  }
+
+  .login-form-header h3 {
+    font-size: 0.76rem;
+  }
+
+  .login-actions {
+    gap: 0.24rem;
+  }
+
+  .login-action {
+    min-height: 46px;
+    padding: 0.28rem 0.16rem;
+    font-size: 0.5rem;
+  }
+
+  .field span,
+  .remember-choice {
+    font-size: 0.56rem;
+  }
+
+  .field input {
+    padding: 0.44rem 0.56rem;
   }
 }
 

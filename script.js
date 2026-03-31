@@ -392,7 +392,7 @@ if (clockCanvas && clockContext) {
 
 const loginCard = document.querySelector(".login-card");
 const loginActions = document.querySelectorAll(".login-action, .login-submit");
-const animatedTaglines = document.querySelectorAll(".login-tagline, .brand-subline");
+const animatedTaglines = document.querySelectorAll("[data-animate-chars='true']");
 
 animatedTaglines.forEach((tagline) => {
   const text = tagline.dataset.text || tagline.textContent;

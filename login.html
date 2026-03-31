@@ -13,7 +13,7 @@
     />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
+  <body class="login-page">
     <div class="aurora aurora-left" aria-hidden="true"></div>
     <div class="aurora aurora-right" aria-hidden="true"></div>
 
@@ -54,9 +54,6 @@
         <article class="login-card panel">
           <div class="login-card-top">
             <div class="brand-cluster">
-              <div class="brand-mark" aria-hidden="true">
-                <span class="brand-core"></span>
-              </div>
               <div>
                 <p class="mini-label">Prototype Preview</p>
                 <h2 class="brand-wordmark">TimeNest</h2>
@@ -69,7 +66,13 @@
           <div class="login-main-grid">
             <div class="login-clock-wrap">
               <canvas id="hud-clock" class="hud-clock hud-clock-login"></canvas>
-              <div class="login-tagline" data-text="Master Your Time. Achieve Your Goals.">Master Your Time. Achieve Your Goals.</div>
+              <div
+                class="login-tagline"
+                data-text="Master Your Time. Achieve Your Goals."
+                data-animate-chars="true"
+              >
+                Master Your Time. Achieve Your Goals.
+              </div>
               <div class="clock-orbit-dots" aria-hidden="true">
                 <span></span>
                 <span></span>

@@ -21,13 +21,15 @@
         <div class="dashboard-frame">
           <header class="topbar panel">
             <div class="brand-cluster">
-              <div class="brand-mark" aria-hidden="true">
-                <span class="brand-core"></span>
-              </div>
               <div>
-                <p class="mini-label">Future Productivity Hub</p>
                 <h2>TimeNest</h2>
-                <p class="brand-subline">Master Your Time. Achieve Your Goals.</p>
+                <p
+                  class="brand-subline"
+                  data-text="Master Your Time. Achieve Your Goals."
+                  data-animate-chars="true"
+                >
+                  Master Your Time. Achieve Your Goals.
+                </p>
               </div>
             </div>
 
@@ -91,7 +93,6 @@
           <section class="hero-grid">
             <article class="hero-card panel">
               <div class="hero-copy">
-                <p class="mini-label">Dashboard</p>
                 <h3>Good evening, Vihaan</h3>
                 <p>
                   You have 6 active goals, 9 tasks due today, 9 goals completed
@@ -102,15 +103,13 @@
 
               <div class="hud-clock-wrap" aria-hidden="true">
                 <canvas id="hud-clock" class="hud-clock"></canvas>
-                <div class="hud-clock-label">HUD Holographic Clock</div>
               </div>
             </article>
 
             <article class="focus-card panel">
-              <p class="mini-label">Live Snapshot</p>
-              <div class="focus-metric">
-                <span class="focus-value">83%</span>
+              <div class="focus-head">
                 <span class="focus-text">Execution rhythm this week</span>
+                <span class="focus-value">83%</span>
               </div>
               <div class="focus-bars" aria-hidden="true">
                 <span></span>
@@ -123,31 +122,41 @@
               <p class="focus-footnote">
                 Daily summary scheduled for 8:00 AM and 8:00 PM.
               </p>
-              <div class="page-tools">
-                <a class="soft-pill" href="./task-editor.html">Add Task</a>
-                <a class="soft-pill" href="./task-detail.html">Edit Task</a>
+            </article>
+          </section>
+
+          <section class="tool-panel-grid" aria-label="Task and habit shortcuts">
+            <article class="task-tools-card panel">
+              <div class="task-tools-head">
+                <h3>Task Add / Edit</h3>
+              </div>
+
+              <div class="task-tool-tabs" aria-label="Quick links">
+                <a class="task-tool-tab is-active" href="./daily-tasks.html">Daily Task</a>
+                <a class="task-tool-tab" href="./short-term-goals.html">Goals</a>
+                <a class="task-tool-tab" href="./habits.html">Habits</a>
               </div>
             </article>
           </section>
 
           <section class="stats-grid" aria-label="Goal progress summary">
             <article class="stat-card panel accent-cyan">
-              <p class="mini-label">Completed Goals</p>
+              <p class="stat-label">Completed Goals</p>
               <strong>12</strong>
               <span>Finished this month</span>
             </article>
             <article class="stat-card panel accent-blue">
-              <p class="mini-label">In Progress</p>
+              <p class="stat-label">In Progress</p>
               <strong>06</strong>
               <span>Short-term + long-term</span>
             </article>
             <article class="stat-card panel accent-gold">
-              <p class="mini-label">Completed On Time</p>
+              <p class="stat-label">Completed On Time</p>
               <strong>09</strong>
               <span>Deadline accuracy</span>
             </article>
             <article class="stat-card panel accent-coral">
-              <p class="mini-label">Delayed Goals</p>
+              <p class="stat-label">Delayed Goals</p>
               <strong>03</strong>
               <span>Needs follow-up</span>
             </article>
@@ -156,10 +165,7 @@
           <section class="content-grid">
             <article class="tasks-card panel">
               <div class="section-head">
-                <div>
-                  <p class="mini-label">Action Center</p>
-                  <h3>Today's Tasks</h3>
-                </div>
+                <h3>Today's Tasks</h3>
                 <a class="inline-button" href="./daily-tasks.html">View All</a>
               </div>
 
@@ -206,10 +212,7 @@
 
             <article class="tasks-card panel">
               <div class="section-head">
-                <div>
-                  <p class="mini-label">Timeline</p>
-                  <h3>Upcoming Tasks</h3>
-                </div>
+                <h3>Upcoming Tasks</h3>
                 <a class="inline-button" href="./calendar.html">Calendar</a>
               </div>
 
@@ -259,9 +262,8 @@
 
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
       <a class="tab-link is-active" href="./index.html">Dashboard</a>
-      <a class="tab-link" href="./short-term-goals.html">Short-Term Goal</a>
-      <a class="tab-link" href="./long-term-goals.html">Long-Term Goal</a>
-      <a class="tab-link" href="./daily-tasks.html">Daily Task</a>
+      <a class="tab-link" href="./short-term-goals.html">Goals</a>
+      <a class="tab-link" href="./daily-tasks.html">Tasks</a>
       <a class="tab-link" href="./habits.html">Habits</a>
     </nav>
 
