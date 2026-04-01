@@ -10,6 +10,13 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script>
+      (() => {
+        const savedTheme = localStorage.getItem("timenest-theme");
+        document.documentElement.dataset.theme =
+          savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark";
+      })();
+    </script>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body class="dashboard-home">
@@ -34,9 +41,15 @@
             </div>
 
             <nav class="top-actions" aria-label="Profile and session actions">
-              <a class="ghost-chip" href="./settings.html">
+              <button
+                class="ghost-chip theme-toggle"
+                type="button"
+                data-theme-toggle
+                aria-pressed="false"
+                aria-label="Switch theme"
+              >
                 <span class="action-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true" data-theme-icon>
                     <path
                       d="M20 14.2A8 8 0 0 1 9.8 4a8.5 8.5 0 1 0 10.2 10.2Z"
                       fill="none"
@@ -47,8 +60,8 @@
                     />
                   </svg>
                 </span>
-                <span class="action-label">Dark Mode</span>
-              </a>
+                <span class="action-label" data-theme-label>Dark Mode</span>
+              </button>
               <a class="profile-chip" href="./profile.html">
                 <span class="action-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
@@ -133,33 +146,33 @@
 
               <div class="task-tool-tabs" aria-label="Quick links">
                 <a class="task-tool-tab is-active" href="./daily-tasks.html">Daily Task</a>
-                <a class="task-tool-tab" href="./short-term-goals.html">Goals</a>
-                <a class="task-tool-tab" href="./habits.html">Habits</a>
+                <a class="task-tool-tab" href="./goals.html">Goals</a>
+                <a class="task-tool-tab" href="./calendar.html?view=habits">Habits</a>
               </div>
             </article>
           </section>
 
           <section class="stats-grid" aria-label="Goal progress summary">
-            <article class="stat-card panel accent-cyan">
+            <a class="stat-card stat-link panel accent-cyan" href="./goal-detail.html?metric=completed-goals">
               <p class="stat-label">Completed Goals</p>
               <strong>12</strong>
               <span>Finished this month</span>
-            </article>
-            <article class="stat-card panel accent-blue">
+            </a>
+            <a class="stat-card stat-link panel accent-blue" href="./goal-detail.html?metric=in-progress">
               <p class="stat-label">In Progress</p>
               <strong>06</strong>
               <span>Short-term + long-term</span>
-            </article>
-            <article class="stat-card panel accent-gold">
+            </a>
+            <a class="stat-card stat-link panel accent-gold" href="./goal-detail.html?metric=completed-on-time">
               <p class="stat-label">Completed On Time</p>
               <strong>09</strong>
               <span>Deadline accuracy</span>
-            </article>
-            <article class="stat-card panel accent-coral">
+            </a>
+            <a class="stat-card stat-link panel accent-coral" href="./goal-detail.html?metric=delayed-goals">
               <p class="stat-label">Delayed Goals</p>
               <strong>03</strong>
               <span>Needs follow-up</span>
-            </article>
+            </a>
           </section>
 
           <section class="content-grid">
@@ -262,10 +275,84 @@
 
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
       <a class="tab-link is-active" href="./index.html">Dashboard</a>
-      <a class="tab-link" href="./short-term-goals.html">Goals</a>
+      <a class="tab-link" href="./goals.html">Goals</a>
       <a class="tab-link" href="./daily-tasks.html">Tasks</a>
-      <a class="tab-link" href="./habits.html">Habits</a>
+      <a class="tab-link" href="./calendar.html?view=habits">Habits</a>
     </nav>
+
+    <button
+      class="floating-add-button"
+      type="button"
+      data-quick-add-open
+      aria-controls="quick-add-sheet"
+      aria-expanded="false"
+      aria-label="Add a goal, task, or habit"
+    >
+      <span aria-hidden="true">+</span>
+    </button>
+
+    <div class="quick-add-backdrop" data-quick-add-backdrop hidden></div>
+
+    <section
+      class="quick-add-sheet panel"
+      id="quick-add-sheet"
+      data-quick-add-sheet
+      aria-modal="true"
+      aria-label="Quick add"
+      hidden
+    >
+      <div class="quick-add-head">
+        <div>
+          <p class="mini-label">Quick Add</p>
+          <h3>Add from dashboard</h3>
+        </div>
+        <button class="quick-add-close" type="button" data-quick-add-close aria-label="Close quick add">
+          &times;
+        </button>
+      </div>
+
+      <div class="quick-add-step is-active" data-quick-add-step="root">
+        <div class="quick-add-grid">
+          <button class="quick-add-option" type="button" data-add-choice="goal">
+            <strong>Goal</strong>
+            <span>Pick short-term or long-term before you continue.</span>
+          </button>
+          <button class="quick-add-option" type="button" data-add-url="./task-editor.html?entry=quick-add">
+            <strong>Task</strong>
+            <span>Open the task editor with date, priority, and reminder fields.</span>
+          </button>
+          <button class="quick-add-option" type="button" data-add-url="./habit-editor.html?entry=quick-add">
+            <strong>Habit</strong>
+            <span>Create a recurring habit with streak tracking and reminders.</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="quick-add-step" data-quick-add-step="goal">
+        <div class="quick-add-grid">
+          <button
+            class="quick-add-option"
+            type="button"
+            data-add-url="./goal-editor.html?goalType=short-term&entry=quick-add"
+          >
+            <strong>Short-Term Goal</strong>
+            <span>Build a goal for the next 30 to 90 days.</span>
+          </button>
+          <button
+            class="quick-add-option"
+            type="button"
+            data-add-url="./goal-editor.html?goalType=long-term&entry=quick-add"
+          >
+            <strong>Long-Term Goal</strong>
+            <span>Set up a larger goal with milestones across the year.</span>
+          </button>
+        </div>
+
+        <div class="quick-add-actions">
+          <button class="inline-button" type="button" data-quick-add-back>Back</button>
+        </div>
+      </div>
+    </section>
 
     <script src="./script.js"></script>
   </body>

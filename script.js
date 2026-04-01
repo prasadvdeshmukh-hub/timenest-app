@@ -440,3 +440,863 @@ loginActions.forEach((button) => {
     );
   });
 });
+
+const themeToggle = document.querySelector("[data-theme-toggle]");
+const themeLabel = document.querySelector("[data-theme-label]");
+const themeIcon = document.querySelector("[data-theme-icon]");
+
+const themeIcons = {
+  dark: `
+    <path
+      d="M20 14.2A8 8 0 0 1 9.8 4a8.5 8.5 0 1 0 10.2 10.2Z"
+      fill="none"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="1.8"
+    />
+  `,
+  light: `
+    <circle cx="12" cy="12" r="4.25" fill="none" stroke="currentColor" stroke-width="1.8" />
+    <path
+      d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9 5.3 5.3"
+      fill="none"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="1.8"
+    />
+  `
+};
+
+function getActiveTheme() {
+  return document.documentElement.dataset.theme === "light" ? "light" : "dark";
+}
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  localStorage.setItem("timenest-theme", theme);
+
+  if (themeToggle) {
+    themeToggle.setAttribute("aria-pressed", String(theme === "light"));
+    themeToggle.setAttribute(
+      "aria-label",
+      theme === "light" ? "Switch to dark mode" : "Switch to light mode"
+    );
+  }
+
+  if (themeLabel) {
+    themeLabel.textContent = theme === "light" ? "Light Mode" : "Dark Mode";
+  }
+
+  if (themeIcon) {
+    themeIcon.innerHTML = themeIcons[theme];
+  }
+}
+
+applyTheme(localStorage.getItem("timenest-theme") === "light" ? "light" : "dark");
+
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    applyTheme(getActiveTheme() === "light" ? "dark" : "light");
+  });
+}
+
+const quickAddOpenButton = document.querySelector("[data-quick-add-open]");
+const quickAddSheet = document.querySelector("[data-quick-add-sheet]");
+const quickAddBackdrop = document.querySelector("[data-quick-add-backdrop]");
+const quickAddSteps = document.querySelectorAll("[data-quick-add-step]");
+const quickAddBackButton = document.querySelector("[data-quick-add-back]");
+const quickAddCloseButtons = document.querySelectorAll("[data-quick-add-close]");
+const quickAddChoiceButtons = document.querySelectorAll("[data-add-choice]");
+const quickAddUrlButtons = document.querySelectorAll("[data-add-url]");
+
+function setQuickAddStep(step) {
+  quickAddSteps.forEach((panel) => {
+    panel.classList.toggle("is-active", panel.dataset.quickAddStep === step);
+  });
+}
+
+function openQuickAdd() {
+  if (!quickAddSheet || !quickAddBackdrop || !quickAddOpenButton) {
+    return;
+  }
+
+  setQuickAddStep("root");
+  quickAddSheet.hidden = false;
+  quickAddBackdrop.hidden = false;
+  quickAddOpenButton.setAttribute("aria-expanded", "true");
+}
+
+function closeQuickAdd() {
+  if (!quickAddSheet || !quickAddBackdrop || !quickAddOpenButton) {
+    return;
+  }
+
+  quickAddSheet.hidden = true;
+  quickAddBackdrop.hidden = true;
+  quickAddOpenButton.setAttribute("aria-expanded", "false");
+}
+
+if (quickAddOpenButton && quickAddSheet && quickAddBackdrop) {
+  quickAddOpenButton.addEventListener("click", openQuickAdd);
+  quickAddBackdrop.addEventListener("click", closeQuickAdd);
+
+  quickAddCloseButtons.forEach((button) => {
+    button.addEventListener("click", closeQuickAdd);
+  });
+
+  quickAddChoiceButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (button.dataset.addChoice === "goal") {
+        setQuickAddStep("goal");
+      }
+    });
+  });
+
+  quickAddUrlButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const targetUrl = button.dataset.addUrl;
+      if (targetUrl) {
+        window.location.href = targetUrl;
+      }
+    });
+  });
+
+  if (quickAddBackButton) {
+    quickAddBackButton.addEventListener("click", () => setQuickAddStep("root"));
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !quickAddSheet.hidden) {
+      closeQuickAdd();
+    }
+  });
+}
+
+const goalDetailViews = {
+  "completed-goals": {
+    eyebrow: "Completed Goals",
+    title: "Completed goals closed with strong finish quality",
+    summary:
+      "These goals crossed the line this month with the core tasks wrapped, documented, and reviewed.",
+    statusText: "Completed",
+    statusTone: "good",
+    start: "Closed: 28 Mar 2026",
+    target: "Review: 05 Apr 2026",
+    progressValue: "100%",
+    timelineLabel: "Completion Highlights",
+    tasks: [
+      { title: "Ship dashboard responsiveness pass", meta: "Done · Mobile and tablet review complete", badge: "Done", tone: "good" },
+      { title: "Finish investor roadmap pack", meta: "Done · Shared with stakeholders on time", badge: "Done", tone: "good" },
+      { title: "Close workout cycle streak", meta: "Done · 30-day strength plan archived", badge: "Done", tone: "good" },
+      { title: "Publish Q1 learning wrap-up", meta: "Done · Notes and next sprint synced", badge: "Done", tone: "good" }
+    ],
+    timeline: [
+      { label: "Week 1", title: "Final tasks cleared", copy: "Outstanding actions were completed and marked verified." },
+      { label: "Week 2", title: "Quality review finished", copy: "Each closed goal was checked for deadline accuracy and follow-up needs." },
+      { label: "Week 3", title: "Results shared", copy: "Wins were rolled into the next planning cycle and monthly recap." }
+    ]
+  },
+  "in-progress": {
+    eyebrow: "Goals In Progress",
+    title: "Active goals moving through the current sprint",
+    summary:
+      "This drill-down shows the goals still moving, the next tasks underneath them, and where momentum is strongest.",
+    statusText: "In Progress",
+    statusTone: "warn",
+    start: "Started: 01 Apr 2026",
+    target: "Next checkpoint: 12 Apr 2026",
+    progressValue: "68%",
+    timelineLabel: "Momentum Map",
+    tasks: [
+      { title: "Refine dashboard light theme", meta: "Today · UI polish sprint", badge: "Active", tone: "warn" },
+      { title: "Connect recurring habit history", meta: "Tomorrow · Calendar flow", badge: "Planned", tone: "warn" },
+      { title: "Update goal editor shortcuts", meta: "03 Apr · Quick-add path", badge: "Queued", tone: "warn" },
+      { title: "Review delayed goal recovery plan", meta: "04 Apr · Weekly operations check", badge: "At Risk", tone: "alert" }
+    ],
+    timeline: [
+      { label: "Now", title: "Execution sprint", copy: "Active work is concentrated on dashboard, habits, and editing flows." },
+      { label: "Next", title: "Validation pass", copy: "Once UI tasks land, the app flow will be checked against mobile use cases." },
+      { label: "Later", title: "Reminder tuning", copy: "After the UI stabilizes, reminders and recurrences get their next pass." }
+    ]
+  },
+  "completed-on-time": {
+    eyebrow: "Completed On Time",
+    title: "On-time delivery trend across current goal work",
+    summary:
+      "These tasks and milestones landed on schedule, which is why this metric is staying healthy this month.",
+    statusText: "On Time",
+    statusTone: "good",
+    start: "Window: Mar 2026",
+    target: "Accuracy: 91%",
+    progressValue: "91%",
+    timelineLabel: "Deadline Discipline",
+    tasks: [
+      { title: "Morning summary automation", meta: "Done · 08:00 AM trigger delivered on schedule", badge: "On Time", tone: "good" },
+      { title: "Investor roadmap submission", meta: "Done · Sent before 07:30 PM deadline", badge: "On Time", tone: "good" },
+      { title: "Budget review checkpoint", meta: "Done · Completed within target window", badge: "On Time", tone: "good" },
+      { title: "Marathi practice streak review", meta: "Done · Logged before night cutoff", badge: "On Time", tone: "good" }
+    ],
+    timeline: [
+      { label: "08:00", title: "Morning planning", copy: "Daily prep keeps the highest-value tasks visible early." },
+      { label: "18:00", title: "Priority check", copy: "A late-day checkpoint reduces deadline slippage on important work." },
+      { label: "20:00", title: "Closeout review", copy: "Evening review locks in what shipped and what needs rescheduling." }
+    ]
+  },
+  "delayed-goals": {
+    eyebrow: "Delayed Goals",
+    title: "Goals needing intervention before they drift further",
+    summary:
+      "These goals are behind plan and need narrowed scope, updated dates, or better task support to recover.",
+    statusText: "Needs Follow-Up",
+    statusTone: "alert",
+    start: "Delayed since: 30 Mar 2026",
+    target: "Recovery review: 03 Apr 2026",
+    progressValue: "42%",
+    timelineLabel: "Recovery Plan",
+    tasks: [
+      { title: "Reset annual savings checkpoint", meta: "Today · Rework milestone pacing", badge: "Delayed", tone: "alert" },
+      { title: "Fix sleep routine inconsistency", meta: "Tomorrow · Habit misses need review", badge: "Delayed", tone: "alert" },
+      { title: "Update hosting renewal follow-up", meta: "03 Apr · Deadline slipped once", badge: "Watch", tone: "warn" },
+      { title: "Break large feature goal into smaller tasks", meta: "04 Apr · Reduce delivery risk", badge: "Action", tone: "warn" }
+    ],
+    timeline: [
+      { label: "Step 1", title: "Identify blockers", copy: "Separate deadline risk from workload size and missing reminders." },
+      { label: "Step 2", title: "Shrink next milestone", copy: "Convert the recovery target into a smaller, achievable checkpoint." },
+      { label: "Step 3", title: "Track daily", copy: "Use the dashboard to review recovery progress until the goal is back on track." }
+    ]
+  }
+};
+
+function renderGoalDetailItems(items) {
+  return items
+    .map(
+      (item) => `
+        <a class="surface-item" href="./task-detail.html">
+          <div>
+            <strong>${item.title}</strong>
+            <small>${item.meta}</small>
+          </div>
+          <span class="status-pill ${item.tone}">${item.badge}</span>
+        </a>
+      `
+    )
+    .join("");
+}
+
+function renderGoalTimeline(items) {
+  return items
+    .map(
+      (item) => `
+        <div class="timeline-item">
+          <span class="timeline-time">${item.label}</span>
+          <div><strong>${item.title}</strong><small>${item.copy}</small></div>
+        </div>
+      `
+    )
+    .join("");
+}
+
+const goalDetailTitle = document.getElementById("goal-detail-title");
+const goalDetailSummary = document.getElementById("goal-detail-summary");
+const goalDetailEyebrow = document.getElementById("goal-detail-eyebrow");
+const goalDetailStatus = document.getElementById("goal-detail-status");
+const goalDetailStart = document.getElementById("goal-detail-start");
+const goalDetailTarget = document.getElementById("goal-detail-target");
+const goalDetailProgressValue = document.getElementById("goal-detail-progress-value");
+const goalDetailProgressBar = document.getElementById("goal-detail-progress-bar");
+const goalDetailTaskList = document.getElementById("goal-detail-task-list");
+const goalDetailTimeline = document.getElementById("goal-detail-timeline");
+const goalDetailTimelineLabel = document.getElementById("goal-detail-timeline-label");
+
+if (
+  goalDetailTitle &&
+  goalDetailSummary &&
+  goalDetailEyebrow &&
+  goalDetailStatus &&
+  goalDetailStart &&
+  goalDetailTarget &&
+  goalDetailProgressValue &&
+  goalDetailProgressBar &&
+  goalDetailTaskList &&
+  goalDetailTimeline &&
+  goalDetailTimelineLabel
+) {
+  const metric = new URLSearchParams(window.location.search).get("metric");
+  const detailView = goalDetailViews[metric] || null;
+
+  if (detailView) {
+    goalDetailEyebrow.textContent = detailView.eyebrow;
+    goalDetailTitle.textContent = detailView.title;
+    goalDetailSummary.textContent = detailView.summary;
+    goalDetailStatus.textContent = detailView.statusText;
+    goalDetailStatus.className = `status-pill ${detailView.statusTone}`;
+    goalDetailStart.textContent = detailView.start;
+    goalDetailTarget.textContent = detailView.target;
+    goalDetailProgressValue.textContent = detailView.progressValue;
+    goalDetailProgressBar.style.width = detailView.progressValue;
+    goalDetailTaskList.innerHTML = renderGoalDetailItems(detailView.tasks);
+    goalDetailTimeline.innerHTML = renderGoalTimeline(detailView.timeline);
+    goalDetailTimelineLabel.textContent = detailView.timelineLabel;
+    document.title = `TimeNest ${detailView.eyebrow}`;
+  }
+}
+
+const goalEditorTitle = document.getElementById("goal-editor-title");
+const goalEditorEyebrow = document.getElementById("goal-editor-eyebrow");
+const goalEditorTypeLabel = document.getElementById("goal-editor-type-label");
+const goalEditorTypeInput = document.getElementById("goal-editor-type-input");
+
+if (goalEditorTitle && goalEditorEyebrow && goalEditorTypeLabel && goalEditorTypeInput) {
+  const goalType = new URLSearchParams(window.location.search).get("goalType");
+  const goalTypeConfig = {
+    "short-term": {
+      eyebrow: "Short-Term Goal",
+      title: "Create or update a short-term goal",
+      label: "Goal Type",
+      value: "Short-Term Goal",
+      placeholder: "Short-Term Goal"
+    },
+    "long-term": {
+      eyebrow: "Long-Term Goal",
+      title: "Create or update a long-term goal",
+      label: "Goal Type",
+      value: "Long-Term Goal",
+      placeholder: "Long-Term Goal"
+    }
+  };
+
+  const selectedGoalType = goalTypeConfig[goalType];
+  if (selectedGoalType) {
+    goalEditorEyebrow.textContent = selectedGoalType.eyebrow;
+    goalEditorTitle.textContent = selectedGoalType.title;
+    goalEditorTypeLabel.textContent = selectedGoalType.label;
+    goalEditorTypeInput.value = selectedGoalType.value;
+    goalEditorTypeInput.placeholder = selectedGoalType.placeholder;
+    document.title = `TimeNest ${selectedGoalType.eyebrow}`;
+  }
+}
+
+const goalViewRadios = document.querySelectorAll('input[name="goal-view"]');
+const goalRangeRadios = document.querySelectorAll('input[name="goal-range"]');
+const goalDashboardPanels = document.querySelectorAll("[data-goal-view]");
+const goalNavLinks = document.querySelectorAll("[data-goal-nav]");
+const goalMetricGroups = document.querySelectorAll("[data-goal-metrics]");
+
+const goalMetricData = {
+  short: {
+    all: [
+      { label: "Completed", value: "12" },
+      { label: "Active", value: "08" },
+      { label: "Delayed", value: "03" },
+      { label: "On Time", value: "91%" }
+    ],
+    month: [
+      { label: "Completed", value: "04" },
+      { label: "Active", value: "05" },
+      { label: "Delayed", value: "01" },
+      { label: "On Time", value: "94%" }
+    ]
+  },
+  long: {
+    all: [
+      { label: "Ahead", value: "03" },
+      { label: "Review", value: "02" },
+      { label: "At Risk", value: "01" },
+      { label: "Health", value: "78%" }
+    ],
+    month: [
+      { label: "Ahead", value: "01" },
+      { label: "Review", value: "02" },
+      { label: "At Risk", value: "00" },
+      { label: "Health", value: "84%" }
+    ]
+  }
+};
+
+function getSelectedGoalRange() {
+  const checkedRange = document.querySelector('input[name="goal-range"]:checked');
+  return checkedRange?.value === "month" ? "month" : "all";
+}
+
+function updateGoalMetrics(view, range) {
+  const selectedView = goalMetricData[view] ? view : "short";
+  const selectedRange = range === "month" ? "month" : "all";
+  const metrics = goalMetricData[selectedView][selectedRange];
+  const metricGroup = document.querySelector(`[data-goal-metrics="${selectedView}"]`);
+
+  if (!metricGroup || !metrics) {
+    return;
+  }
+
+  metricGroup.querySelectorAll("[data-goal-metric-card]").forEach((card, index) => {
+    const metric = metrics[index];
+    const label = card.querySelector("[data-goal-metric-label]");
+    const value = card.querySelector("[data-goal-metric-value]");
+
+    if (!metric || !label || !value) {
+      return;
+    }
+
+    label.textContent = metric.label;
+    value.textContent = metric.value;
+  });
+}
+
+function applyGoalDashboardView(view, options = {}) {
+  const selectedView = goalMetricData[view] ? view : "short";
+  const selectedRange = options.range === "month" || options.range === "all"
+    ? options.range
+    : getSelectedGoalRange();
+  const shouldUpdateUrl = options.updateUrl !== false;
+
+  goalViewRadios.forEach((radio) => {
+    radio.checked = radio.value === selectedView;
+  });
+
+  goalRangeRadios.forEach((radio) => {
+    radio.checked = radio.value === selectedRange;
+  });
+
+  goalDashboardPanels.forEach((panel) => {
+    panel.hidden = panel.dataset.goalView !== selectedView;
+  });
+
+  goalNavLinks.forEach((link) => {
+    link.classList.toggle("is-active", link.dataset.goalNav === selectedView);
+  });
+
+  localStorage.setItem("timenest-goal-view", selectedView);
+  updateGoalMetrics(selectedView, selectedRange);
+  document.title = selectedView === "long" ? "TimeNest Goals - Long-Term" : "TimeNest Goals";
+
+  if (shouldUpdateUrl && window.history && typeof window.history.replaceState === "function") {
+    const params = new URLSearchParams(window.location.search);
+    params.set("view", selectedView);
+    params.set("range", selectedRange);
+    const query = params.toString();
+    const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}`;
+    window.history.replaceState({}, "", nextUrl);
+  }
+}
+
+if (goalViewRadios.length && goalDashboardPanels.length && goalMetricGroups.length) {
+  const params = new URLSearchParams(window.location.search);
+  const requestedView = params.get("view");
+  const requestedRange = params.get("range");
+  const storedView = localStorage.getItem("timenest-goal-view");
+  const initialView = goalMetricData[requestedView]
+    ? requestedView
+    : goalMetricData[storedView]
+      ? storedView
+      : "short";
+  const initialRange = requestedRange === "month" ? "month" : "all";
+
+  applyGoalDashboardView(initialView, { range: initialRange, updateUrl: false });
+
+  goalViewRadios.forEach((radio) => {
+    radio.addEventListener("change", () => {
+      if (radio.checked) {
+        applyGoalDashboardView(radio.value, { range: getSelectedGoalRange() });
+      }
+    });
+  });
+
+  goalRangeRadios.forEach((radio) => {
+    radio.addEventListener("change", () => {
+      if (radio.checked) {
+        const selectedView = document.querySelector('input[name="goal-view"]:checked')?.value || "short";
+        applyGoalDashboardView(selectedView, { range: radio.value });
+      }
+    });
+  });
+}
+
+const habitCalendarData = {
+  "workout-habit": {
+    name: "Workout Habit",
+    summary:
+      "Daily at 06:30 AM. Green dots show finished workouts, red dots show missed sessions, and gray dots mark future days.",
+    streak: 14,
+    reliability: 88,
+    completedDays: [1, 2, 4, 5, 7, 8, 9, 11, 12, 14, 15, 16, 18, 19, 21, 22, 23, 25, 26, 28]
+  },
+  "marathi-practice": {
+    name: "Marathi Practice",
+    summary:
+      "Daily at 08:00 PM. This tracker helps you keep the language streak visible for every day of the month.",
+    streak: 11,
+    reliability: 76,
+    completedDays: [1, 3, 4, 5, 7, 8, 10, 11, 13, 14, 16, 18, 19, 21, 22, 24, 25, 27]
+  },
+  "sleep-routine": {
+    name: "Sleep Routine",
+    summary:
+      "Night routine at 10:30 PM. Review the month to see where the habit stayed consistent and where recovery is needed.",
+    streak: 7,
+    reliability: 61,
+    completedDays: [2, 3, 5, 6, 9, 10, 12, 13, 17, 18, 20, 21, 24, 25, 27]
+  }
+};
+
+function slugifyHabitName(value) {
+  return (value || "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+const habitCalendarGrid = document.getElementById("habit-calendar-grid");
+const habitCalendarTitle = document.getElementById("habit-calendar-title");
+const habitCalendarSummary = document.getElementById("habit-calendar-summary");
+const habitCalendarStreak = document.getElementById("habit-calendar-streak");
+const habitCalendarSideCopy = document.getElementById("habit-calendar-side-copy");
+const habitCalendarMonthLabel = document.getElementById("habit-calendar-month-label");
+const habitSelectors = document.querySelectorAll(".habit-selector");
+
+if (
+  habitCalendarGrid &&
+  habitCalendarTitle &&
+  habitCalendarSummary &&
+  habitCalendarStreak &&
+  habitCalendarSideCopy &&
+  habitCalendarMonthLabel
+) {
+  const params = new URLSearchParams(window.location.search);
+  const requestedHabit = slugifyHabitName(params.get("habit"));
+  const activeHabitKey = habitCalendarData[requestedHabit]
+    ? requestedHabit
+    : Object.keys(habitCalendarData)[0];
+  const activeHabit = habitCalendarData[activeHabitKey];
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const todayKey = `${year}-${month}-${today.getDate()}`;
+  const monthLabel = today.toLocaleDateString(undefined, {
+    month: "long",
+    year: "numeric"
+  });
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const weekdayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const completedDays = new Set(activeHabit.completedDays);
+
+  habitCalendarTitle.textContent = `${activeHabit.name} calendar`;
+  habitCalendarSummary.textContent = activeHabit.summary;
+  habitCalendarStreak.textContent = `${activeHabit.streak} Days`;
+  habitCalendarSideCopy.textContent = `${activeHabit.reliability}% completion reliability this month.`;
+  habitCalendarMonthLabel.textContent = monthLabel;
+
+  habitSelectors.forEach((selector) => {
+    selector.classList.toggle(
+      "is-active",
+      slugifyHabitName(new URL(selector.href).searchParams.get("habit")) === activeHabitKey
+    );
+  });
+
+  habitCalendarGrid.innerHTML = "";
+
+  weekdayLabels.forEach((label) => {
+    const weekday = document.createElement("div");
+    weekday.className = "habit-weekday";
+    weekday.textContent = label;
+    habitCalendarGrid.appendChild(weekday);
+  });
+
+  for (let index = 0; index < firstDay; index += 1) {
+    const emptyCell = document.createElement("div");
+    emptyCell.className = "habit-day-cell is-empty";
+    habitCalendarGrid.appendChild(emptyCell);
+  }
+
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const currentDate = new Date(year, month, day);
+    const isFuture = currentDate > new Date(year, month, today.getDate());
+    const isComplete = !isFuture && completedDays.has(day);
+    const cell = document.createElement("div");
+    const cellKey = `${year}-${month}-${day}`;
+    const dotTone = isFuture ? "future" : isComplete ? "complete" : "missed";
+    const stateLabel = isFuture ? "Future" : isComplete ? "Completed" : "Missed";
+
+    cell.className = `habit-day-cell ${isFuture ? "is-future" : ""}`.trim();
+    if (cellKey === todayKey) {
+      cell.classList.add("is-today");
+    }
+
+    cell.innerHTML = `
+      <strong class="habit-day-number">${day}</strong>
+      <div class="habit-day-meta">
+        <span class="habit-status-dot is-${dotTone}" aria-hidden="true"></span>
+        <span class="habit-day-state">${stateLabel}</span>
+      </div>
+    `;
+
+    habitCalendarGrid.appendChild(cell);
+  }
+
+  const trailingCellCount = (7 - ((firstDay + daysInMonth) % 7)) % 7;
+  for (let index = 0; index < trailingCellCount; index += 1) {
+    const emptyCell = document.createElement("div");
+    emptyCell.className = "habit-day-cell is-empty";
+    habitCalendarGrid.appendChild(emptyCell);
+  }
+}
+
+const taskBoard = document.querySelector("[data-task-board]");
+const taskBoardEmptyState = document.querySelector("[data-task-empty]");
+const taskFilterButtons = Array.from(document.querySelectorAll("[data-task-filter]"));
+const taskFilterState = document.querySelector("[data-task-filter-state]");
+const taskEmptyTitle = document.querySelector("[data-task-empty-title]");
+const taskEmptyCopy = document.querySelector("[data-task-empty-copy]");
+const defaultTaskEmptyTitle = taskEmptyTitle?.textContent || "No tasks left on this screen";
+const defaultTaskEmptyCopy =
+  taskEmptyCopy?.textContent || "Use Add Task or Add Subtask to create a new item.";
+let activeTaskFilter = "";
+
+function getTaskItems() {
+  if (!taskBoard) {
+    return [];
+  }
+
+  return Array.from(taskBoard.querySelectorAll("[data-task-item]"));
+}
+
+function getTaskFilterLabel(filter) {
+  const matchingButton = taskFilterButtons.find(
+    (button) => button.dataset.taskFilter === filter
+  );
+  return matchingButton?.querySelector(".mini-label")?.textContent?.trim() || "All Tasks";
+}
+
+function taskMatchesFilter(taskItem, filter) {
+  if (!taskItem) {
+    return false;
+  }
+
+  if (!filter) {
+    return true;
+  }
+
+  if (filter === "completed") {
+    return taskItem.classList.contains("is-complete");
+  }
+
+  const taskGroups = (taskItem.dataset.taskGroups || "").split(/\s+/).filter(Boolean);
+  return taskGroups.includes(filter);
+}
+
+function updateTaskSummaryCounts() {
+  const taskItems = getTaskItems();
+  if (!taskFilterButtons.length) {
+    return;
+  }
+
+  taskFilterButtons.forEach((button) => {
+    const filter = button.dataset.taskFilter || "";
+    const countElement = button.querySelector("[data-task-count]");
+    if (!countElement) {
+      return;
+    }
+
+    const matchingCount = taskItems.filter((taskItem) => taskMatchesFilter(taskItem, filter)).length;
+    countElement.textContent = String(matchingCount).padStart(2, "0");
+  });
+}
+
+function syncSubtaskEmptyState(taskItem) {
+  if (!taskItem) {
+    return;
+  }
+
+  const subtaskRows = taskItem.querySelectorAll("[data-subtask-item]");
+  const subtaskEmptyState = taskItem.querySelector("[data-subtask-empty]");
+
+  if (subtaskEmptyState) {
+    subtaskEmptyState.hidden = subtaskRows.length !== 0;
+  }
+}
+
+function syncTaskBoardEmptyState() {
+  if (!taskBoard || !taskBoardEmptyState) {
+    return;
+  }
+
+  const visibleTaskCount = getTaskItems().filter((taskItem) => !taskItem.hidden).length;
+  taskBoardEmptyState.hidden = visibleTaskCount !== 0;
+
+  if (!taskEmptyTitle || !taskEmptyCopy) {
+    return;
+  }
+
+  if (!visibleTaskCount && activeTaskFilter) {
+    const filterLabel = getTaskFilterLabel(activeTaskFilter).toLowerCase();
+    taskEmptyTitle.textContent = `No ${filterLabel} tasks`;
+    taskEmptyCopy.textContent = "Try another summary card or add a new task.";
+    return;
+  }
+
+  taskEmptyTitle.textContent = defaultTaskEmptyTitle;
+  taskEmptyCopy.textContent = defaultTaskEmptyCopy;
+}
+
+function updateTaskFilterState() {
+  if (!taskFilterState) {
+    return;
+  }
+
+  if (!activeTaskFilter) {
+    taskFilterState.textContent = "Showing all tasks";
+    return;
+  }
+
+  taskFilterState.textContent = `Showing ${getTaskFilterLabel(activeTaskFilter).toLowerCase()} tasks`;
+}
+
+function applyTaskBoardFilter(filter = activeTaskFilter) {
+  activeTaskFilter = filter || "";
+
+  getTaskItems().forEach((taskItem) => {
+    taskItem.hidden = !taskMatchesFilter(taskItem, activeTaskFilter);
+  });
+
+  taskFilterButtons.forEach((button) => {
+    const isActive = button.dataset.taskFilter === activeTaskFilter;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+
+  updateTaskSummaryCounts();
+  updateTaskFilterState();
+  syncTaskBoardEmptyState();
+}
+
+function setTaskCompletionState(taskItem, isComplete) {
+  if (!taskItem) {
+    return;
+  }
+
+  const completeButton = taskItem.querySelector(".task-card-actions [data-complete-toggle]");
+  const completeText = taskItem.querySelector(".task-card-actions [data-complete-text]");
+  const statusPill = taskItem.querySelector("[data-status-pill]");
+  const pendingLabel = taskItem.dataset.pendingLabel || "Pending";
+  const completeLabel = taskItem.dataset.completeLabel || "Completed";
+  const pendingTone = taskItem.dataset.pendingTone || "warn";
+
+  taskItem.classList.toggle("is-complete", isComplete);
+
+  if (completeButton) {
+    completeButton.setAttribute("aria-pressed", String(isComplete));
+  }
+
+  if (completeText) {
+    completeText.textContent = isComplete ? completeLabel : "Mark Complete";
+  }
+
+  if (statusPill) {
+    statusPill.textContent = isComplete ? completeLabel : pendingLabel;
+    statusPill.className = `status-pill ${isComplete ? "good" : pendingTone}`;
+  }
+}
+
+function setSubtaskCompletionState(subtaskItem, isComplete) {
+  if (!subtaskItem) {
+    return;
+  }
+
+  const completeButton = subtaskItem.querySelector("[data-complete-toggle]");
+  const completeText = subtaskItem.querySelector("[data-complete-text]");
+  const stateLabel = subtaskItem.querySelector("[data-state-label]");
+  const pendingLabel = subtaskItem.dataset.pendingLabel || "Pending";
+  const completeLabel = subtaskItem.dataset.completeLabel || "Completed";
+
+  subtaskItem.classList.toggle("is-complete", isComplete);
+
+  if (completeButton) {
+    completeButton.setAttribute("aria-pressed", String(isComplete));
+  }
+
+  if (completeText) {
+    completeText.textContent = isComplete ? completeLabel : "Complete";
+  }
+
+  if (stateLabel) {
+    stateLabel.textContent = isComplete ? completeLabel : pendingLabel;
+  }
+}
+
+if (taskBoard) {
+  getTaskItems().forEach((taskItem) => {
+    syncSubtaskEmptyState(taskItem);
+    setTaskCompletionState(taskItem, taskItem.classList.contains("is-complete"));
+
+    taskItem.querySelectorAll("[data-subtask-item]").forEach((subtaskItem) => {
+      setSubtaskCompletionState(subtaskItem, subtaskItem.classList.contains("is-complete"));
+    });
+  });
+
+  taskFilterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const selectedFilter = button.dataset.taskFilter || "";
+      applyTaskBoardFilter(activeTaskFilter === selectedFilter ? "" : selectedFilter);
+    });
+  });
+
+  applyTaskBoardFilter();
+
+  taskBoard.addEventListener("click", (event) => {
+    const clickedDelete = event.target.closest("[data-delete-item]");
+    if (clickedDelete) {
+      const itemKind = clickedDelete.dataset.deleteItem || "item";
+      const itemLabel = clickedDelete.dataset.deleteLabel || itemKind;
+      const confirmed = window.confirm(`Delete this ${itemKind}: ${itemLabel}?`);
+
+      if (!confirmed) {
+        return;
+      }
+
+      if (itemKind === "subtask") {
+        const subtaskItem = clickedDelete.closest("[data-subtask-item]");
+        const parentTask = clickedDelete.closest("[data-task-item]");
+
+        if (subtaskItem) {
+          subtaskItem.remove();
+          syncSubtaskEmptyState(parentTask);
+          applyTaskBoardFilter(activeTaskFilter);
+        }
+
+        return;
+      }
+
+      const taskItem = clickedDelete.closest("[data-task-item]");
+      if (taskItem) {
+        taskItem.remove();
+        applyTaskBoardFilter(activeTaskFilter);
+      }
+
+      return;
+    }
+
+    const clickedComplete = event.target.closest("[data-complete-toggle]");
+    if (!clickedComplete) {
+      return;
+    }
+
+    const subtaskItem = clickedComplete.closest("[data-subtask-item]");
+    if (subtaskItem) {
+      setSubtaskCompletionState(
+        subtaskItem,
+        clickedComplete.getAttribute("aria-pressed") !== "true"
+      );
+      applyTaskBoardFilter(activeTaskFilter);
+      return;
+    }
+
+    const taskItem = clickedComplete.closest("[data-task-item]");
+    if (taskItem) {
+      setTaskCompletionState(taskItem, clickedComplete.getAttribute("aria-pressed") !== "true");
+      applyTaskBoardFilter(activeTaskFilter);
+    }
+  });
+}

@@ -795,28 +795,35 @@ body.dashboard-home .topbar .mini-label {
 
 body.dashboard-home .brand-subline {
   max-width: none;
-  font-size: 1.04rem;
+  font-size: 1.1rem;
   line-height: 1.3;
   letter-spacing: 0.065em;
   white-space: nowrap;
-  animation: tagline-line-flash 5.6s ease-in-out infinite;
+  animation: tagline-line-flash 4.4s ease-in-out infinite;
+}
+
+body.dashboard-home .tagline-char {
+  animation-duration: 6.8s;
 }
 
 body.dashboard-home .ghost-chip,
 body.dashboard-home .profile-chip,
 body.dashboard-home .logout-button,
 body.dashboard-home .inline-button,
-body.dashboard-home .soft-pill {
-  font-size: 0.95rem;
+body.dashboard-home .soft-pill,
+body.dashboard-home .task-tool-tab {
+  font-size: 1rem;
 }
 
 body.dashboard-home .ghost-chip,
 body.dashboard-home .logout-button {
-  padding: 0.9rem 1.15rem;
+  min-height: 50px;
+  padding: 0.98rem 1.22rem;
 }
 
 body.dashboard-home .profile-chip {
-  padding: 0.58rem 1rem 0.58rem 0.72rem;
+  min-height: 50px;
+  padding: 0.64rem 1.08rem 0.64rem 0.78rem;
 }
 
 body.dashboard-home .hero-card {
@@ -902,7 +909,7 @@ body.dashboard-home .focus-head .focus-text {
 
 body.dashboard-home .focus-text,
 body.dashboard-home .focus-footnote {
-  font-size: 1.08rem;
+  font-size: 1.14rem;
   line-height: 1.55;
 }
 
@@ -919,8 +926,12 @@ body.dashboard-home .task-tools-head h3 {
 }
 
 body.dashboard-home .task-tool-tab {
-  min-height: 54px;
-  font-size: 1rem;
+  min-height: 58px;
+  padding: 0.82rem 0.92rem;
+  font-size: 1.04rem;
+  line-height: 1.22;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 body.dashboard-home .page-tools {
@@ -945,23 +956,23 @@ body.dashboard-home .stat-card {
   display: grid;
   justify-items: center;
   align-content: center;
-  min-height: 152px;
-  padding: 1.1rem 1rem;
+  min-height: 164px;
+  padding: 1.2rem 1.08rem;
   text-align: center;
 }
 
 body.dashboard-home .stat-label {
-  font-size: 0.76rem;
+  font-size: 0.8rem;
   line-height: 1.2;
 }
 
 body.dashboard-home .stat-card strong {
   margin: 0.95rem 0 0.55rem;
-  font-size: clamp(3.9rem, 6vw, 5.7rem);
+  font-size: clamp(4rem, 6vw, 5.8rem);
 }
 
 body.dashboard-home .stat-card span {
-  font-size: 1rem;
+  font-size: 1.02rem;
   line-height: 1.55;
 }
 
@@ -974,8 +985,12 @@ body.dashboard-home .section-head h3 {
 }
 
 body.dashboard-home .inline-button {
-  min-height: 44px;
-  padding: 0.8rem 1.1rem;
+  min-height: 48px;
+  padding: 0.9rem 1.18rem;
+  font-size: 1rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 
 body.dashboard-home .task-list {
@@ -984,7 +999,7 @@ body.dashboard-home .task-list {
 
 body.dashboard-home .task-row {
   gap: 1rem;
-  padding: 1.15rem 1.2rem;
+  padding: 1.22rem 1.26rem;
 }
 
 body.dashboard-home .task-main {
@@ -1002,26 +1017,109 @@ body.dashboard-home .task-main small {
 }
 
 body.dashboard-home .task-tag {
-  padding: 0.48rem 0.82rem;
-  font-size: 0.92rem;
+  padding: 0.56rem 0.9rem;
+  font-size: 0.96rem;
 }
 
-body.dashboard-home .bottom-tabbar {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  width: min(calc(100vw - var(--safe-left) - var(--safe-right) - 1.8rem), 1120px);
-  align-items: stretch;
-  justify-items: stretch;
+.stat-link {
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
 }
 
-body.dashboard-home .tab-link {
-  width: 100%;
-  justify-self: stretch;
-  align-self: stretch;
-  min-height: 60px;
-  white-space: nowrap;
-  overflow-wrap: normal;
-  word-break: keep-all;
-  font-size: 1rem;
+.stat-link:hover,
+.stat-link:focus-visible {
+  transform: translateY(-4px);
+  border-color: rgba(175, 212, 255, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 20px 32px rgba(24, 80, 180, 0.16);
+  outline: none;
+}
+
+html[data-theme="light"] body.dashboard-home {
+  color-scheme: light;
+  --panel: rgba(255, 255, 255, 0.8);
+  --stroke: rgba(77, 112, 165, 0.14);
+  --text-primary: #12233f;
+  --text-secondary: rgba(24, 48, 84, 0.72);
+  --shadow-md: 0 22px 44px rgba(75, 110, 162, 0.16);
+  background:
+    radial-gradient(circle at 14% 16%, rgba(102, 165, 255, 0.22), transparent 26%),
+    radial-gradient(circle at 88% 12%, rgba(255, 184, 124, 0.2), transparent 24%),
+    radial-gradient(circle at 48% 110%, rgba(118, 234, 214, 0.18), transparent 34%),
+    linear-gradient(160deg, #f7fbff 0%, #eef5ff 32%, #edf4fb 68%, #f9fcff 100%);
+}
+
+html[data-theme="light"] body.dashboard-home::before {
+  background-image:
+    linear-gradient(rgba(18, 35, 63, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18, 35, 63, 0.05) 1px, transparent 1px);
+  opacity: 0.5;
+}
+
+html[data-theme="light"] body.dashboard-home .aurora-left {
+  background: rgba(78, 124, 255, 0.16);
+}
+
+html[data-theme="light"] body.dashboard-home .aurora-right {
+  background: rgba(255, 161, 114, 0.16);
+}
+
+html[data-theme="light"] body.dashboard-home .panel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.72) 30%),
+    var(--panel);
+}
+
+html[data-theme="light"] body.dashboard-home .ghost-chip,
+html[data-theme="light"] body.dashboard-home .profile-chip,
+html[data-theme="light"] body.dashboard-home .logout-button,
+html[data-theme="light"] body.dashboard-home .inline-button,
+html[data-theme="light"] body.dashboard-home .task-tool-tab,
+html[data-theme="light"] body.dashboard-home .task-row,
+html[data-theme="light"] body.dashboard-home .stat-card {
+  border-color: rgba(77, 112, 165, 0.16);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 12px 26px rgba(88, 120, 170, 0.12);
+}
+
+html[data-theme="light"] body.dashboard-home .task-tool-tab.is-active {
+  background: linear-gradient(135deg, rgba(102, 165, 255, 0.22), rgba(255, 195, 143, 0.26));
+  border-color: rgba(77, 112, 165, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 14px 24px rgba(102, 140, 194, 0.16);
+}
+
+html[data-theme="light"] body.dashboard-home .logout-button {
+  background: linear-gradient(135deg, rgba(255, 220, 201, 0.8), rgba(255, 240, 226, 0.94));
+}
+
+html[data-theme="light"] body.dashboard-home .action-icon {
+  border-color: rgba(77, 112, 165, 0.16);
+  background: linear-gradient(135deg, rgba(102, 165, 255, 0.18), rgba(118, 234, 214, 0.18));
+  color: #24518c;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.76);
+}
+
+html[data-theme="light"] body.dashboard-home .brand-subline,
+html[data-theme="light"] body.dashboard-home .stat-label {
+  color: rgba(36, 67, 115, 0.72);
+}
+
+html[data-theme="light"] body.dashboard-home .focus-bars span {
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.96), rgba(91, 140, 255, 0.36));
+}
+
+html[data-theme="light"] body.dashboard-home .task-tag {
+  border-color: rgba(77, 112, 165, 0.14);
+  background: rgba(18, 35, 63, 0.06);
+  color: #17345d;
 }
 
 .progress-copy {
@@ -1611,8 +1709,8 @@ body.dashboard-home .tab-link {
     right: max(0.5rem, var(--safe-right));
     bottom: 0;
     transform: none;
-    gap: 0.12rem;
-    padding: 0.22rem 0.22rem calc(0.28rem + var(--safe-bottom));
+    gap: 0.22rem;
+    padding: 0.5rem 0.5rem calc(0.58rem + var(--safe-bottom));
     border-radius: 20px 20px 0 0;
     border-bottom: 0;
     background:
@@ -1625,14 +1723,13 @@ body.dashboard-home .tab-link {
 
   .tab-link {
     min-width: 0;
-    min-height: 30px;
-    padding: 0.18rem 0.08rem;
-    font-size: 0.5rem;
-    line-height: 1.02;
+    min-height: 56px;
+    padding: 0.62rem 0.36rem;
+    font-size: 0.82rem;
+    line-height: 1.18;
     border-radius: 11px;
-    background: rgba(255, 255, 255, 0.04);
     overflow-wrap: anywhere;
-    word-break: break-word;
+    word-break: normal;
   }
 }
 
@@ -1876,20 +1973,20 @@ body.dashboard-home .tab-link {
   .bottom-tabbar {
     left: max(0.3rem, var(--safe-left));
     right: max(0.3rem, var(--safe-right));
-    gap: 0.1rem;
-    padding: 0.18rem 0.18rem calc(0.18rem + var(--safe-bottom));
+    gap: 0.22rem;
+    padding: 0.5rem 0.5rem calc(0.58rem + var(--safe-bottom));
     border-radius: 18px 18px 0 0;
   }
 
   .tab-link {
     min-width: 0;
-    min-height: 28px;
-    padding: 0.14rem 0.04rem;
-    font-size: 0.42rem;
-    line-height: 1;
+    min-height: 52px;
+    padding: 0.62rem 0.36rem;
+    font-size: 0.7rem;
+    line-height: 1.14;
     border-radius: 10px;
     overflow-wrap: anywhere;
-    word-break: break-word;
+    word-break: normal;
   }
 }
 
@@ -1947,7 +2044,7 @@ body.dashboard-home .tab-link {
     display: block;
     width: 100%;
     margin-top: 0.72rem;
-    font-size: 0.78rem;
+    font-size: 0.84rem;
     letter-spacing: 0.04em;
     white-space: nowrap;
   }
@@ -1964,10 +2061,10 @@ body.dashboard-home .tab-link {
   body.dashboard-home .ghost-chip,
   body.dashboard-home .profile-chip,
   body.dashboard-home .logout-button {
-    min-height: 40px;
-    min-width: 40px;
-    padding: 0.55rem 0.7rem;
-    font-size: 0.72rem;
+    min-height: 46px;
+    min-width: 46px;
+    padding: 0.68rem 0.82rem;
+    font-size: 0.82rem;
   }
 
   body.dashboard-home .hero-grid {
@@ -2045,7 +2142,7 @@ body.dashboard-home .tab-link {
 
   body.dashboard-home .focus-text {
     flex: 1 1 auto;
-    font-size: 0.84rem;
+    font-size: 0.9rem;
     line-height: 1.22;
     min-width: 0;
     max-width: 100%;
@@ -2054,7 +2151,7 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .focus-footnote {
-    font-size: 0.74rem;
+    font-size: 0.8rem;
     line-height: 1.22;
   }
 
@@ -2081,9 +2178,10 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .task-tool-tab {
-    min-height: 44px;
-    padding: 0.48rem 0.36rem;
-    font-size: 0.84rem;
+    min-height: 50px;
+    padding: 0.66rem 0.48rem;
+    font-size: 0.92rem;
+    line-height: 1.18;
   }
 
   body.dashboard-home .task-tools-card .page-tools {
@@ -2101,24 +2199,24 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .stat-card {
-    min-height: 104px;
-    padding: 0.68rem 0.62rem;
+    min-height: 122px;
+    padding: 0.82rem 0.76rem;
     justify-items: center;
     text-align: center;
   }
 
   body.dashboard-home .stat-label {
-    font-size: 0.62rem;
+    font-size: 0.72rem;
   }
 
   body.dashboard-home .stat-card strong {
     margin: 0.18rem 0;
-    font-size: 1.55rem;
+    font-size: 1.72rem;
   }
 
   body.dashboard-home .stat-card span {
-    font-size: 0.82rem;
-    line-height: 1.25;
+    font-size: 0.9rem;
+    line-height: 1.3;
   }
 
   body.dashboard-home .tasks-card {
@@ -2134,9 +2232,9 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .inline-button {
-    min-height: 40px;
-    padding: 0.55rem 0.85rem;
-    font-size: 0.82rem;
+    min-height: 46px;
+    padding: 0.68rem 0.92rem;
+    font-size: 0.9rem;
   }
 
   body.dashboard-home .task-list {
@@ -2186,20 +2284,20 @@ body.dashboard-home .tab-link {
     font-size: 0.78rem;
   }
 
-  body.dashboard-home .bottom-tabbar {
-    gap: 0.22rem;
-    padding: 0.42rem 0.42rem calc(0.5rem + var(--safe-bottom));
+  body.dashboard-home .floating-add-button {
+    width: 58px;
+    height: 58px;
+    left: max(0.95rem, calc(var(--safe-left) + 0.8rem));
+    bottom: calc(6.2rem + var(--safe-bottom));
+    font-size: 1.8rem;
   }
 
-  body.dashboard-home .tab-link {
-    min-height: 48px;
-    padding: 0.45rem 0.24rem;
-    white-space: nowrap;
-    overflow-wrap: normal;
-    word-break: keep-all;
-    font-size: 0.74rem;
-    line-height: 1.12;
+  body.dashboard-home .quick-add-sheet {
+    width: min(calc(100vw - 1.6rem), 380px);
+    bottom: calc(6.35rem + var(--safe-bottom));
+    padding: 1rem;
   }
+
 }
 
 @media (max-width: 560px) {
@@ -2227,7 +2325,7 @@ body.dashboard-home .tab-link {
 
   body.dashboard-home .brand-subline {
     margin-top: 0.62rem;
-    font-size: 0.64rem;
+    font-size: 0.7rem;
     letter-spacing: 0.028em;
   }
 
@@ -2239,9 +2337,9 @@ body.dashboard-home .tab-link {
   body.dashboard-home .ghost-chip,
   body.dashboard-home .profile-chip,
   body.dashboard-home .logout-button {
-    min-height: 38px;
-    min-width: 38px;
-    padding: 0.5rem;
+    min-height: 42px;
+    min-width: 42px;
+    padding: 0.56rem;
   }
 
   body.dashboard-home .hero-card {
@@ -2317,7 +2415,7 @@ body.dashboard-home .tab-link {
 
   body.dashboard-home .focus-text {
     flex: 1 1 auto;
-    font-size: 0.68rem;
+    font-size: 0.74rem;
     line-height: 1.14;
     min-width: 0;
     max-width: 100%;
@@ -2326,7 +2424,7 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .focus-footnote {
-    font-size: 0.62rem;
+    font-size: 0.68rem;
     line-height: 1.16;
   }
 
@@ -2344,9 +2442,9 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .task-tool-tab {
-    min-height: 40px;
-    font-size: 0.68rem;
-    padding: 0.4rem 0.22rem;
+    min-height: 46px;
+    font-size: 0.78rem;
+    padding: 0.54rem 0.28rem;
   }
 
   body.dashboard-home .task-tools-card .page-tools {
@@ -2362,20 +2460,21 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .stat-card {
-    min-height: 94px;
-    padding: 0.62rem 0.56rem;
+    min-height: 110px;
+    padding: 0.7rem 0.62rem;
   }
 
   body.dashboard-home .stat-label {
-    font-size: 0.54rem;
+    font-size: 0.62rem;
   }
 
   body.dashboard-home .stat-card strong {
-    font-size: 1.4rem;
+    font-size: 1.52rem;
   }
 
   body.dashboard-home .stat-card span {
-    font-size: 0.78rem;
+    font-size: 0.84rem;
+    line-height: 1.26;
   }
 
   body.dashboard-home .section-head h3 {
@@ -2383,7 +2482,39 @@ body.dashboard-home .tab-link {
   }
 
   body.dashboard-home .inline-button {
-    font-size: 0.78rem;
+    min-height: 42px;
+    font-size: 0.84rem;
+  }
+
+  body.dashboard-home .floating-add-button {
+    width: 54px;
+    height: 54px;
+    left: max(0.85rem, calc(var(--safe-left) + 0.65rem));
+    bottom: calc(5.85rem + var(--safe-bottom));
+    font-size: 1.65rem;
+    border-radius: 18px;
+  }
+
+  body.dashboard-home .quick-add-sheet {
+    width: min(calc(100vw - 1.2rem), 340px);
+    bottom: calc(5.95rem + var(--safe-bottom));
+    padding: 0.92rem;
+  }
+
+  body.dashboard-home .quick-add-head h3 {
+    font-size: 1.2rem;
+  }
+
+  body.dashboard-home .quick-add-option {
+    padding: 0.88rem;
+  }
+
+  body.dashboard-home .quick-add-option strong {
+    font-size: 0.92rem;
+  }
+
+  body.dashboard-home .quick-add-option span {
+    font-size: 0.76rem;
   }
 
   body.dashboard-home .task-row {
@@ -2402,13 +2533,6 @@ body.dashboard-home .tab-link {
     font-size: 0.72rem;
   }
 
-  body.dashboard-home .tab-link {
-    min-height: 44px;
-    white-space: nowrap;
-    overflow-wrap: normal;
-    word-break: keep-all;
-    font-size: 0.62rem;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2429,6 +2553,7 @@ body.dashboard-home .tab-link {
   gap: 2rem;
   min-height: 100svh;
   padding: 1.5rem;
+  padding-bottom: calc(7rem + var(--safe-bottom));
   align-items: center;
 }
 
@@ -2771,6 +2896,19 @@ body.dashboard-home .tab-link {
   font: inherit;
 }
 
+.field input[type="date"],
+.field input[type="time"] {
+  color-scheme: dark;
+  min-height: 52px;
+}
+
+.field input[type="date"]::-webkit-calendar-picker-indicator,
+.field input[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.88;
+  filter: invert(0.92) sepia(0.08) saturate(0.8) hue-rotate(170deg);
+}
+
 .field input[readonly] {
   color: rgba(231, 239, 255, 0.7);
   cursor: not-allowed;
@@ -2961,6 +3099,7 @@ body.dashboard-home .tab-link {
       max(0.75rem, var(--safe-right))
       max(0.75rem, var(--safe-bottom))
       max(0.75rem, var(--safe-left));
+    padding-bottom: calc(6.8rem + var(--safe-bottom));
     align-items: center;
   }
 
@@ -3094,6 +3233,7 @@ body.dashboard-home .tab-link {
       max(0.55rem, var(--safe-right))
       max(0.55rem, var(--safe-bottom))
       max(0.55rem, var(--safe-left));
+    padding-bottom: calc(6.4rem + var(--safe-bottom));
     gap: 0.55rem;
   }
 
@@ -3294,6 +3434,16 @@ body.dashboard-home .tab-link {
   letter-spacing: -0.04em;
 }
 
+#goal-editor-title {
+  max-width: 100%;
+  font-size: clamp(1rem, 4vw, 1.72rem);
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .hero-panel-large p,
 .hero-panel-side p,
 .page-card p,
@@ -3305,6 +3455,260 @@ body.dashboard-home .tab-link {
 
 .metric-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.goal-toggle-panel,
+.goal-dashboard-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.goals-page .app-main {
+  display: grid;
+  gap: 1rem;
+}
+
+.goals-page .page-card,
+.goals-page .hero-panel-large,
+.goals-page .hero-panel-side,
+.goals-page .goal-card {
+  overflow: hidden;
+}
+
+.goal-toggle-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 1rem;
+  flex-wrap: nowrap;
+}
+
+.goal-toggle-head .section-title {
+  margin-bottom: 0;
+}
+
+.goal-toggle-copy {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.goal-view-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.goal-view-option {
+  position: relative;
+  display: block;
+}
+
+.goal-view-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.goal-view-option span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 58px;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(164, 203, 255, 0.14);
+  border-radius: 18px;
+  background: rgba(16, 28, 52, 0.58);
+  color: var(--text-primary);
+  font-family: "Space Grotesk", "Outfit", sans-serif;
+  font-size: clamp(0.74rem, 1.7vw, 0.96rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.14;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
+}
+
+.goal-view-option input:checked + span {
+  border-color: rgba(175, 212, 255, 0.32);
+  background: linear-gradient(135deg, rgba(84, 229, 255, 0.18), rgba(113, 144, 255, 0.18));
+  box-shadow: 0 16px 28px rgba(11, 27, 56, 0.2);
+  transform: translateY(-1px);
+}
+
+.goal-view-option:hover span,
+.goal-view-option input:focus-visible + span {
+  border-color: rgba(175, 212, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+.goal-range-panel {
+  padding-block: 0.9rem;
+}
+
+.goal-range-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 180px));
+  justify-content: start;
+  gap: 0.8rem;
+}
+
+.goal-range-option {
+  position: relative;
+  display: block;
+}
+
+.goal-range-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.goal-range-option span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0.82rem 1rem;
+  border: 1px solid rgba(164, 203, 255, 0.14);
+  border-radius: 18px;
+  background: rgba(16, 28, 52, 0.56);
+  color: var(--text-primary);
+  font-family: "Space Grotesk", "Outfit", sans-serif;
+  font-size: clamp(0.72rem, 1.45vw, 0.92rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.goal-range-option input:checked + span {
+  border-color: rgba(175, 212, 255, 0.32);
+  background: linear-gradient(135deg, rgba(84, 229, 255, 0.16), rgba(113, 144, 255, 0.16));
+  box-shadow: 0 14px 24px rgba(11, 27, 56, 0.18);
+}
+
+.goal-range-option:hover span,
+.goal-range-option input:focus-visible + span {
+  border-color: rgba(175, 212, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+.goal-dashboard-panel[hidden] {
+  display: none !important;
+}
+
+.goal-page-hero {
+  grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.72fr);
+}
+
+.goal-page-hero .hero-panel-large,
+.goal-page-hero .hero-panel-side,
+.goal-card {
+  display: grid;
+  gap: 0.82rem;
+  align-content: start;
+}
+
+.goal-page-hero .hero-panel-side {
+  justify-items: start;
+}
+
+.goal-hero-title {
+  max-width: 100%;
+  font-size: clamp(0.98rem, 2.2vw, 1.34rem);
+  line-height: 1.04;
+  letter-spacing: -0.055em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#goal-toggle-title {
+  max-width: 100%;
+  font-size: clamp(0.9rem, 2.2vw, 1.28rem);
+  line-height: 1.06;
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.goal-metric-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.72rem;
+}
+
+.goal-metric-grid .mini-metric {
+  min-width: 0;
+  padding: 0.85rem 0.55rem;
+  text-align: center;
+}
+
+.goal-metric-grid .mini-label {
+  margin: 0;
+  font-size: clamp(0.58rem, 1.45vw, 0.8rem);
+  line-height: 1.08;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.goal-metric-grid .mini-metric strong {
+  margin-top: 0.32rem;
+  font-size: clamp(1.02rem, 2.2vw, 1.5rem);
+  line-height: 1;
+}
+
+.goal-page-hero .chip-row,
+.goal-grid .chip-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.58rem;
+}
+
+.goal-page-hero .chip-row .soft-pill,
+.goal-page-hero .chip-row .status-pill,
+.goal-grid .chip-row .soft-pill,
+.goal-grid .chip-row .status-pill {
+  min-width: 0;
+  width: 100%;
+  min-height: 44px;
+  padding-inline: 0.72rem;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.goal-card h2 {
+  margin-bottom: 0;
+  font-size: clamp(0.98rem, 1.95vw, 1.2rem);
+  line-height: 1.14;
+}
+
+.goal-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.58;
 }
 
 .mini-metric {
@@ -3471,6 +3875,143 @@ body.dashboard-home .tab-link {
   background: rgba(16, 28, 52, 0.56);
 }
 
+.habit-link {
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
+}
+
+.habit-link:hover,
+.habit-link:focus-visible {
+  transform: translateY(-3px);
+  border-color: rgba(175, 212, 255, 0.26);
+  box-shadow: 0 18px 28px rgba(24, 80, 180, 0.14);
+  outline: none;
+}
+
+.habit-tracker-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.habit-selector-row {
+  gap: 0.6rem;
+}
+
+.habit-selector {
+  text-decoration: none;
+}
+
+.habit-selector.is-active {
+  background: linear-gradient(135deg, rgba(84, 229, 255, 0.18), rgba(113, 144, 255, 0.24));
+  border-color: rgba(175, 212, 255, 0.28);
+}
+
+.habit-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.habit-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.habit-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.04);
+}
+
+.habit-status-dot.is-complete {
+  background: #34d399;
+}
+
+.habit-status-dot.is-missed {
+  background: #fb7185;
+}
+
+.habit-status-dot.is-future {
+  background: #94a3b8;
+}
+
+.habit-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.habit-weekday,
+.habit-day-cell {
+  border: 1px solid rgba(164, 203, 255, 0.12);
+  border-radius: 18px;
+  background: rgba(16, 28, 52, 0.5);
+}
+
+.habit-weekday {
+  padding: 0.7rem 0.5rem;
+  color: rgba(166, 195, 255, 0.74);
+  font-family: "Space Grotesk", "Outfit", sans-serif;
+  font-size: 0.82rem;
+  text-align: center;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.habit-day-cell {
+  min-height: 102px;
+  padding: 0.75rem 0.62rem;
+  display: grid;
+  align-content: space-between;
+  gap: 0.65rem;
+}
+
+.habit-day-cell.is-today {
+  border-color: rgba(92, 232, 255, 0.34);
+  box-shadow: inset 0 1px 0 rgba(92, 232, 255, 0.16);
+}
+
+.habit-day-cell.is-future {
+  opacity: 0.86;
+}
+
+.habit-day-cell.is-empty {
+  min-height: 0;
+  padding: 0;
+  border-style: dashed;
+  background: transparent;
+  opacity: 0.18;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.habit-day-number {
+  display: block;
+  font-family: "Space Grotesk", "Outfit", sans-serif;
+  font-size: 1rem;
+}
+
+.habit-day-meta {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.habit-day-state {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+
 .form-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -3505,6 +4046,327 @@ body.dashboard-home .tab-link {
   gap: 0.75rem;
 }
 
+.tasks-page-main,
+.task-screen-grid,
+.task-management-list,
+.subtask-stack,
+.task-control-panel,
+.task-reminder-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.task-control-panel {
+  gap: 0.55rem;
+  padding: 0.82rem 0.95rem;
+}
+
+.task-control-head,
+.task-panel-head,
+.task-card-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.task-control-head,
+.task-panel-head {
+  flex-wrap: wrap;
+}
+
+.task-control-copy,
+.task-card-copy,
+.task-panel-head > div {
+  min-width: 0;
+}
+
+.task-control-copy {
+  flex: 0 1 auto;
+  display: grid;
+  gap: 0;
+  align-content: center;
+}
+
+.task-control-copy .mini-label {
+  margin: 0;
+  line-height: 1.05;
+}
+
+.task-control-tools {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  flex: 1 1 248px;
+  gap: 0.5rem;
+  width: min(100%, 280px);
+  align-self: center;
+}
+
+.task-control-pill {
+  min-width: 0;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+}
+
+.task-summary-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.72rem;
+}
+
+.task-summary-grid .mini-metric {
+  min-width: 0;
+  padding: 0.8rem 0.42rem;
+  text-align: center;
+}
+
+.task-summary-card {
+  display: grid;
+  width: 100%;
+  appearance: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  border: 1px solid rgba(164, 203, 255, 0.12);
+  background: rgba(10, 22, 44, 0.62);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.task-summary-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(142, 210, 255, 0.28);
+}
+
+.task-summary-card.is-active {
+  border-color: rgba(0, 200, 255, 0.4);
+  background: linear-gradient(180deg, rgba(20, 50, 88, 0.94), rgba(8, 25, 50, 0.88));
+  box-shadow: 0 14px 32px rgba(0, 128, 255, 0.18);
+}
+
+.task-summary-card:focus-visible {
+  outline: 2px solid rgba(0, 200, 255, 0.52);
+  outline-offset: 2px;
+}
+
+.task-summary-grid .mini-label {
+  margin: 0;
+  font-size: clamp(0.58rem, 1.35vw, 0.8rem);
+  line-height: 1.06;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-summary-grid .mini-metric strong {
+  margin-top: 0.26rem;
+  font-size: clamp(1.02rem, 2.1vw, 1.52rem);
+  line-height: 1;
+}
+
+.task-screen-grid {
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.82fr);
+}
+
+.task-panel-tip {
+  max-width: 300px;
+  text-align: center;
+}
+
+.task-management-card {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+  border: 1px solid rgba(164, 203, 255, 0.12);
+  border-radius: 24px;
+  background: rgba(10, 22, 44, 0.62);
+}
+
+.task-management-card.is-complete {
+  border-color: rgba(110, 255, 190, 0.26);
+  background: linear-gradient(180deg, rgba(15, 34, 42, 0.92), rgba(10, 22, 34, 0.82));
+}
+
+.task-card-top {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.task-card-copy {
+  display: grid;
+  gap: 0.28rem;
+}
+
+.task-card-copy h3,
+.task-empty-state h3 {
+  margin: 0;
+  font-family: "Space Grotesk", "Outfit", sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: -0.04em;
+}
+
+.task-card-meta {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.task-card-actions,
+.subtask-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.task-card-actions {
+  justify-content: flex-start;
+}
+
+.task-action-pill {
+  flex: 1 1 158px;
+  min-width: 0;
+  min-height: 44px;
+  padding-inline: 0.9rem;
+  text-decoration: none;
+  cursor: pointer;
+  justify-content: center;
+}
+
+.task-complete-pill {
+  cursor: pointer;
+  gap: 0.5rem;
+}
+
+.task-complete-dot {
+  width: 10px;
+  height: 10px;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+  flex: 0 0 auto;
+}
+
+.task-management-card.is-complete .task-complete-dot,
+.subtask-row.is-complete .task-complete-dot {
+  background: currentColor;
+}
+
+.icon-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(164, 203, 255, 0.14);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    color 180ms ease;
+}
+
+.icon-action svg {
+  width: 18px;
+  height: 18px;
+}
+
+.icon-action:hover,
+.icon-action:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(175, 212, 255, 0.28);
+  outline: none;
+}
+
+.icon-action.is-danger {
+  color: #ffb4a2;
+}
+
+.icon-action.is-danger:hover,
+.icon-action.is-danger:focus-visible {
+  border-color: rgba(255, 143, 116, 0.28);
+  color: #ffd2c7;
+}
+
+.subtask-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.7rem;
+  align-items: center;
+  padding: 0.88rem 0.95rem;
+  border: 1px solid rgba(164, 203, 255, 0.1);
+  border-radius: 18px;
+  background: rgba(16, 28, 52, 0.48);
+}
+
+.subtask-row.is-complete {
+  border-color: rgba(110, 255, 190, 0.2);
+  background: rgba(16, 34, 38, 0.6);
+}
+
+.subtask-copy {
+  min-width: 0;
+}
+
+.subtask-copy strong {
+  display: block;
+  margin-bottom: 0.18rem;
+}
+
+.subtask-copy small {
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.subtask-empty,
+.task-empty-state p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.task-empty-state {
+  justify-items: center;
+  padding: 1.15rem;
+  text-align: center;
+}
+
+[data-task-empty][hidden],
+[data-subtask-empty][hidden],
+[data-task-item][hidden] {
+  display: none !important;
+}
+
+html[data-theme="light"] .task-summary-card {
+  border-color: rgba(77, 112, 165, 0.16);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+html[data-theme="light"] .task-summary-card.is-active {
+  border-color: rgba(47, 109, 240, 0.3);
+  background: linear-gradient(180deg, rgba(227, 244, 255, 0.98), rgba(244, 250, 255, 0.96));
+  box-shadow: 0 12px 24px rgba(60, 100, 188, 0.16);
+}
+
+html[data-theme="light"] .task-management-card,
+html[data-theme="light"] .subtask-row,
+html[data-theme="light"] .icon-action {
+  border-color: rgba(77, 112, 165, 0.16);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+html[data-theme="light"] .task-management-card.is-complete,
+html[data-theme="light"] .subtask-row.is-complete {
+  background: linear-gradient(180deg, rgba(235, 255, 244, 0.94), rgba(244, 250, 255, 0.92));
+}
+
 .bottom-tabbar {
   position: fixed;
   left: calc(50% + (var(--safe-left) - var(--safe-right)) / 2);
@@ -3512,9 +4374,9 @@ body.dashboard-home .tab-link {
   z-index: 20;
   transform: translateX(-50%);
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.45rem;
-  width: min(calc(100vw - var(--safe-left) - var(--safe-right) - 1.8rem), var(--dashboard-stage-max));
+  width: min(calc(100vw - var(--safe-left) - var(--safe-right) - 1.8rem), 1120px);
   max-width: calc(100vw - var(--safe-left) - var(--safe-right) - 1.8rem);
   padding: 0.72rem 0.72rem calc(0.78rem + var(--safe-bottom));
   border: 1px solid rgba(164, 203, 255, 0.18);
@@ -3546,8 +4408,11 @@ body.dashboard-home .tab-link {
   align-items: center;
   justify-content: center;
   align-content: center;
-  min-height: 50px;
-  padding: 0.78rem 0.84rem;
+  width: 100%;
+  justify-self: stretch;
+  align-self: stretch;
+  min-height: 60px;
+  padding: 0.82rem 0.68rem;
   border: 1px solid rgba(164, 203, 255, 0.1);
   border-radius: 16px;
   background: linear-gradient(180deg, rgba(19, 33, 60, 0.8), rgba(10, 20, 38, 0.9));
@@ -3556,12 +4421,14 @@ body.dashboard-home .tab-link {
   text-decoration: none;
   text-align: center;
   font-family: "Space Grotesk", "Outfit", sans-serif;
-  font-size: 0.88rem;
+  font-size: 0.94rem;
   font-weight: 600;
   letter-spacing: 0.01em;
-  line-height: 1.08;
+  line-height: 1.14;
   white-space: normal;
-  word-break: break-word;
+  word-break: normal;
+  overflow-wrap: break-word;
+  text-wrap: balance;
   overflow: hidden;
   transition:
     transform 180ms ease,
@@ -3579,14 +4446,6 @@ body.dashboard-home .tab-link {
   pointer-events: none;
 }
 
-.tab-link.is-active {
-  background: linear-gradient(135deg, rgba(84, 229, 255, 0.2), rgba(113, 144, 255, 0.28));
-  border-color: rgba(175, 212, 255, 0.28);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    0 10px 20px rgba(48, 112, 224, 0.18);
-}
-
 .tab-link:hover,
 .tab-link:focus-visible {
   transform: translateY(-2px);
@@ -3597,6 +4456,262 @@ body.dashboard-home .tab-link {
   outline: none;
 }
 
+html[data-theme="light"] .bottom-tabbar {
+  border-color: rgba(77, 112, 165, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(239, 246, 255, 0.98) 52%, rgba(232, 241, 252, 0.99)),
+    rgba(245, 250, 255, 0.94);
+  box-shadow:
+    0 -18px 34px rgba(114, 144, 190, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+html[data-theme="light"] .bottom-tabbar::before {
+  background: linear-gradient(90deg, transparent, rgba(102, 140, 194, 0.42), transparent);
+}
+
+html[data-theme="light"] .tab-link {
+  border-color: rgba(77, 112, 165, 0.16);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 12px 26px rgba(88, 120, 170, 0.12);
+  color: #12233f;
+}
+
+html[data-theme="light"] .goal-view-option span {
+  border-color: rgba(88, 121, 168, 0.16);
+  background: rgba(243, 248, 255, 0.96);
+  color: #163252;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+html[data-theme="light"] .goal-view-option input:checked + span {
+  border-color: rgba(89, 147, 216, 0.28);
+  background: linear-gradient(135deg, rgba(130, 221, 255, 0.48), rgba(160, 184, 255, 0.5));
+  box-shadow: 0 16px 26px rgba(142, 175, 216, 0.24);
+}
+
+html[data-theme="light"] .goal-range-option span {
+  border-color: rgba(88, 121, 168, 0.16);
+  background: rgba(243, 248, 255, 0.96);
+  color: #163252;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+html[data-theme="light"] .goal-range-option input:checked + span {
+  border-color: rgba(89, 147, 216, 0.28);
+  background: linear-gradient(135deg, rgba(130, 221, 255, 0.48), rgba(160, 184, 255, 0.5));
+  box-shadow: 0 16px 26px rgba(142, 175, 216, 0.24);
+}
+
+html[data-theme="light"] .field input[type="date"],
+html[data-theme="light"] .field input[type="time"] {
+  color-scheme: light;
+}
+
+html[data-theme="light"] .field input[type="date"]::-webkit-calendar-picker-indicator,
+html[data-theme="light"] .field input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: none;
+}
+
+@media (max-width: 780px) {
+  .bottom-tabbar {
+    width: auto;
+    left: max(0.5rem, var(--safe-left));
+    right: max(0.5rem, var(--safe-right));
+    bottom: 0;
+    transform: none;
+    gap: 0.2rem;
+    padding: 0.34rem 0.34rem calc(0.4rem + var(--safe-bottom));
+    border-radius: 20px 20px 0 0;
+  }
+
+  .tab-link {
+    min-width: 0;
+    min-height: 48px;
+    padding: 0.5rem 0.22rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    line-height: 1.1;
+    letter-spacing: 0;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+
+  .goal-view-option span {
+    min-height: 54px;
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .bottom-tabbar {
+    left: max(0.3rem, var(--safe-left));
+    right: max(0.3rem, var(--safe-right));
+    gap: 0.16rem;
+    padding: 0.28rem 0.28rem calc(0.32rem + var(--safe-bottom));
+    border-radius: 18px 18px 0 0;
+  }
+
+  .tab-link {
+    min-height: 44px;
+    padding: 0.42rem 0.12rem;
+    border-radius: 10px;
+    font-size: 0.62rem;
+    line-height: 1.06;
+  }
+}
+
+.floating-add-button {
+  position: fixed;
+  left: max(1.15rem, calc(var(--safe-left) + 1rem));
+  bottom: calc(6rem + var(--safe-bottom));
+  z-index: 26;
+  width: 64px;
+  height: 64px;
+  border: 0;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(92, 232, 255, 0.96), rgba(113, 144, 255, 0.96));
+  color: #06111f;
+  font-family: "Space Grotesk", "Outfit", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow:
+    0 18px 34px rgba(24, 80, 180, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    filter 180ms ease;
+}
+
+.floating-add-button:hover,
+.floating-add-button:focus-visible {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 22px 38px rgba(24, 80, 180, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  outline: none;
+}
+
+.quick-add-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 24;
+  background: rgba(2, 6, 14, 0.52);
+  backdrop-filter: blur(8px);
+}
+
+.quick-add-sheet {
+  position: fixed;
+  left: 50%;
+  bottom: calc(6.1rem + var(--safe-bottom));
+  z-index: 25;
+  transform: translateX(-50%);
+  width: min(calc(100vw - 2rem), 420px);
+  padding: 1.2rem;
+}
+
+.quick-add-head,
+.quick-add-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.quick-add-head {
+  margin-bottom: 1rem;
+}
+
+.quick-add-head h3 {
+  margin: 0.12rem 0 0;
+  font-family: "Space Grotesk", "Outfit", sans-serif;
+  font-size: 1.45rem;
+  letter-spacing: -0.04em;
+}
+
+.quick-add-close {
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(164, 203, 255, 0.16);
+  border-radius: 14px;
+  background: rgba(16, 28, 52, 0.7);
+  color: var(--text-primary);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.quick-add-step {
+  display: none;
+}
+
+.quick-add-step.is-active {
+  display: block;
+}
+
+.quick-add-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.quick-add-option {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid rgba(164, 203, 255, 0.16);
+  border-radius: 18px;
+  background: rgba(16, 28, 52, 0.66);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
+}
+
+.quick-add-option strong {
+  display: block;
+  margin-bottom: 0.32rem;
+  font-family: "Space Grotesk", "Outfit", sans-serif;
+  font-size: 1.02rem;
+}
+
+.quick-add-option span {
+  display: block;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.quick-add-option:hover,
+.quick-add-option:focus-visible,
+.quick-add-close:hover,
+.quick-add-close:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(175, 212, 255, 0.28);
+  outline: none;
+}
+
+html[data-theme="light"] body.dashboard-home .floating-add-button {
+  color: #10223f;
+  box-shadow:
+    0 18px 32px rgba(98, 137, 190, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+}
+
+html[data-theme="light"] body.dashboard-home .quick-add-backdrop {
+  background: rgba(135, 157, 193, 0.28);
+}
+
+html[data-theme="light"] body.dashboard-home .quick-add-option,
+html[data-theme="light"] body.dashboard-home .quick-add-close {
+  border-color: rgba(77, 112, 165, 0.16);
+  background: rgba(255, 255, 255, 0.78);
+}
+
 @media (max-width: 1200px) {
   .app-page-shell,
   .page-hero,
@@ -3605,6 +4720,18 @@ body.dashboard-home .tab-link {
   .metric-grid,
   .habit-grid,
   .channel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .goal-dashboard-panel .goal-metric-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .task-summary-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .task-screen-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -3700,6 +4827,210 @@ body.dashboard-home .tab-link {
     min-height: 40px;
     font-size: 0.76rem;
   }
+
+  .task-panel-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .task-control-panel {
+    padding: 0.72rem 0.78rem;
+    gap: 0.45rem;
+  }
+
+  .task-control-head {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .task-control-tools {
+    width: min(100%, 250px);
+  }
+
+  .task-summary-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  .task-summary-grid .mini-metric {
+    padding: 0.62rem 0.22rem;
+    border-radius: 16px;
+  }
+
+  .task-summary-grid .mini-label {
+    font-size: 0.5rem;
+    line-height: 1.02;
+  }
+
+  .task-summary-grid .mini-metric strong {
+    font-size: 0.96rem;
+  }
+
+  .task-management-card {
+    padding: 0.86rem;
+    border-radius: 20px;
+  }
+
+  .task-card-copy h3,
+  .task-empty-state h3 {
+    font-size: 0.98rem;
+  }
+
+  .task-card-meta {
+    font-size: 0.76rem;
+    line-height: 1.32;
+  }
+
+  .task-card-actions,
+  .subtask-actions {
+    gap: 0.45rem;
+  }
+
+  .task-action-pill {
+    min-height: 40px;
+    padding-inline: 0.74rem;
+    font-size: 0.72rem;
+  }
+
+  .icon-action {
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+  }
+
+  .subtask-row {
+    grid-template-columns: 1fr;
+    align-items: start;
+    padding: 0.78rem 0.8rem;
+  }
+
+  .subtask-actions {
+    justify-content: flex-start;
+  }
+
+  .goals-page .app-main {
+    gap: 0.72rem;
+  }
+
+  .goals-page .page-card,
+  .goals-page .hero-panel-large,
+  .goals-page .hero-panel-side,
+  .goals-page .goal-card {
+    padding: 0.86rem;
+    border-radius: 20px;
+  }
+
+  #goal-toggle-title {
+    font-size: 0.94rem;
+  }
+
+  .goal-range-toggle {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .goal-range-option span {
+    min-height: 48px;
+    padding: 0.72rem 0.3rem;
+    font-size: 0.7rem;
+  }
+
+  .goal-page-hero .chip-row,
+  .goal-grid .chip-row {
+    gap: 0.38rem;
+  }
+
+  .goal-page-hero .chip-row .soft-pill,
+  .goal-page-hero .chip-row .status-pill,
+  .goal-grid .chip-row .soft-pill,
+  .goal-grid .chip-row .status-pill {
+    min-height: 40px;
+    padding-inline: 0.3rem;
+    font-size: 0.68rem;
+  }
+
+  .goal-view-toggle {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .goal-view-option span {
+    min-height: 50px;
+    padding: 0.72rem 0.32rem;
+    font-size: 0.72rem;
+  }
+
+  .goal-hero-title {
+    font-size: 0.96rem;
+  }
+
+  .goal-card h2 {
+    font-size: 0.94rem;
+    line-height: 1.14;
+  }
+
+  .goal-card p {
+    font-size: 0.76rem;
+    line-height: 1.42;
+  }
+
+  .goal-metric-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.42rem;
+  }
+
+  .goal-metric-grid .mini-metric {
+    padding: 0.62rem 0.24rem;
+    border-radius: 16px;
+  }
+
+  .goal-metric-grid .mini-label {
+    font-size: 0.52rem;
+    line-height: 1.02;
+  }
+
+  .goal-metric-grid .mini-metric strong {
+    margin-top: 0.24rem;
+    font-size: 0.98rem;
+  }
+
+  .habit-selector-row {
+    gap: 0.45rem;
+  }
+
+  .habit-legend {
+    gap: 0.65rem;
+  }
+
+  .habit-legend-item {
+    font-size: 0.78rem;
+  }
+
+  .habit-calendar-grid {
+    gap: 0.35rem;
+  }
+
+  .habit-weekday {
+    padding: 0.48rem 0.24rem;
+    font-size: 0.64rem;
+  }
+
+  .habit-day-cell {
+    min-height: 76px;
+    padding: 0.5rem 0.36rem;
+    gap: 0.42rem;
+    border-radius: 14px;
+  }
+
+  .habit-day-number {
+    font-size: 0.82rem;
+  }
+
+  .habit-day-state {
+    font-size: 0.62rem;
+    line-height: 1.2;
+  }
 }
 
 @media (max-width: 560px) {
@@ -3722,5 +5053,167 @@ body.dashboard-home .tab-link {
 
   .surface-item {
     flex-direction: column;
+  }
+
+  .goals-page .app-main {
+    gap: 0.6rem;
+  }
+
+  .goals-page .page-card,
+  .goals-page .hero-panel-large,
+  .goals-page .hero-panel-side,
+  .goals-page .goal-card {
+    padding: 0.76rem;
+    border-radius: 18px;
+  }
+
+  .task-control-panel {
+    padding: 0.62rem 0.66rem;
+    gap: 0.34rem;
+  }
+
+  .task-control-copy .mini-label {
+    font-size: 0.62rem;
+  }
+
+  .task-control-tools {
+    gap: 0.34rem;
+    width: min(100%, 220px);
+  }
+
+  .task-control-pill {
+    min-height: 36px;
+    padding-inline: 0.4rem;
+    font-size: 0.64rem;
+  }
+
+  .task-summary-grid {
+    gap: 0.24rem;
+  }
+
+  .task-summary-grid .mini-metric {
+    padding: 0.5rem 0.1rem;
+    border-radius: 14px;
+  }
+
+  .task-summary-grid .mini-label {
+    font-size: 0.42rem;
+  }
+
+  .task-summary-grid .mini-metric strong {
+    font-size: 0.82rem;
+  }
+
+  .task-action-pill {
+    flex: 1 1 100%;
+    justify-content: center;
+    font-size: 0.66rem;
+  }
+
+  .icon-action {
+    width: 38px;
+    height: 38px;
+  }
+
+  #goal-toggle-title {
+    font-size: 0.82rem;
+  }
+
+  .goal-range-toggle {
+    gap: 0.34rem;
+  }
+
+  .goal-range-option span {
+    min-height: 44px;
+    padding: 0.62rem 0.18rem;
+    font-size: 0.62rem;
+    border-radius: 14px;
+  }
+
+  .goal-page-hero .chip-row,
+  .goal-grid .chip-row {
+    gap: 0.28rem;
+  }
+
+  .goal-page-hero .chip-row .soft-pill,
+  .goal-page-hero .chip-row .status-pill,
+  .goal-grid .chip-row .soft-pill,
+  .goal-grid .chip-row .status-pill {
+    min-height: 38px;
+    padding-inline: 0.18rem;
+    font-size: 0.62rem;
+  }
+
+  .goal-view-toggle {
+    gap: 0.34rem;
+  }
+
+  .goal-view-option span {
+    min-height: 46px;
+    padding: 0.64rem 0.22rem;
+    font-size: 0.64rem;
+    border-radius: 14px;
+  }
+
+  .goal-metric-grid {
+    gap: 0.3rem;
+  }
+
+  .goal-metric-grid .mini-metric {
+    padding: 0.54rem 0.16rem;
+    border-radius: 14px;
+  }
+
+  .goal-metric-grid .mini-label {
+    font-size: 0.46rem;
+  }
+
+  .goal-metric-grid .mini-metric strong {
+    font-size: 0.88rem;
+  }
+
+  .goal-hero-title {
+    font-size: 0.84rem;
+  }
+
+  .goal-card h2 {
+    font-size: 0.84rem;
+  }
+
+  .goal-card p {
+    font-size: 0.68rem;
+    line-height: 1.34;
+  }
+
+  .habit-calendar-grid {
+    gap: 0.22rem;
+  }
+
+  .habit-weekday {
+    padding: 0.38rem 0.14rem;
+    border-radius: 12px;
+    font-size: 0.52rem;
+    letter-spacing: 0.04em;
+  }
+
+  .habit-day-cell {
+    min-height: 62px;
+    padding: 0.42rem 0.24rem;
+    gap: 0.32rem;
+    border-radius: 12px;
+  }
+
+  .habit-status-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .habit-day-number {
+    font-size: 0.72rem;
+  }
+
+  .habit-day-state {
+    font-size: 0.54rem;
+    line-height: 1.1;
   }
 }

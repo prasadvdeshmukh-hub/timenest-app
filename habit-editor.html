@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>TimeNest Habit Editor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="aurora aurora-left" aria-hidden="true"></div>
+    <div class="aurora aurora-right" aria-hidden="true"></div>
+    <main class="app-page-shell">
+      <aside class="app-sidebar">
+        <div class="sidebar-card panel">
+          <a class="brand-link" href="./index.html">
+            <div class="brand-cluster">
+              <div class="brand-mark"><span class="brand-core"></span></div>
+              <div>
+                <p class="mini-label">Habit Builder</p>
+                <h2>TimeNest</h2>
+                <p class="brand-subline">Master Your Time. Achieve Your Goals.</p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <nav class="sidebar-nav">
+          <a class="sidebar-link" href="./habits.html">Habit Library <span>14</span></a>
+          <a class="sidebar-link" href="./calendar.html?view=habits">Habit Calendar <span>30</span></a>
+          <a class="sidebar-link is-active" href="./habit-editor.html">Habit Editor <span>01</span></a>
+        </nav>
+      </aside>
+      <section class="app-main">
+        <article class="page-card panel">
+          <p class="mini-label">Habit Editor</p>
+          <h2 class="section-title">Create a habit with reminders, streak rules, and calendar tracking</h2>
+          <div class="form-grid">
+            <label class="field"><span>Habit Name</span><input type="text" placeholder="Morning Workout" /></label>
+            <label class="field"><span>Category</span><input type="text" placeholder="Health / Learning / Focus" /></label>
+            <label class="field"><span>Schedule</span><input type="text" placeholder="Daily / Weekdays / Custom Days" /></label>
+            <label class="field"><span>Preferred Time</span><input type="time" value="06:30" /></label>
+            <label class="field"><span>Reminder Channel</span><input type="text" placeholder="Push / In-App / Email" /></label>
+            <label class="field"><span>Linked Goal</span><input type="text" placeholder="Fitness Goal" /></label>
+            <label class="field full"><span>Success Rule</span><input type="text" placeholder="Mark complete once the workout is finished." /></label>
+            <label class="field full"><span>Notes</span><input type="text" placeholder="Add cues, rewards, or tracking notes." /></label>
+          </div>
+          <div class="form-actions">
+            <span class="soft-pill">Save Habit</span>
+            <a class="soft-pill" href="./calendar.html?view=habits">Preview Calendar</a>
+            <a class="soft-pill" href="./habits.html">Back to Habits</a>
+          </div>
+        </article>
+      </section>
+    </main>
+    <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
+      <a class="tab-link" href="./index.html">Dashboard</a>
+      <a class="tab-link" href="./goals.html">Goals</a>
+      <a class="tab-link" href="./daily-tasks.html">Tasks</a>
+      <a class="tab-link is-active" href="./calendar.html?view=habits">Habits</a>
+    </nav>
+  </body>
+</html>

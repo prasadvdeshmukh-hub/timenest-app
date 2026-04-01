@@ -16,7 +16,7 @@
       <aside class="app-sidebar">
         <div class="sidebar-card panel"><a class="brand-link" href="./index.html"><div class="brand-cluster"><div class="brand-mark"><span class="brand-core"></span></div><div><p class="mini-label">Goal Detail</p><h2>TimeNest</h2><p class="brand-subline">Master Your Time. Achieve Your Goals.</p></div></div></a></div>
         <nav class="sidebar-nav">
-          <a class="sidebar-link" href="./short-term-goals.html">Back to Goals <span>12</span></a>
+          <a class="sidebar-link" href="./goals.html">Back to Goals <span>12</span></a>
           <a class="sidebar-link" href="./task-detail.html">Task Detail <span>04</span></a>
           <a class="sidebar-link" href="./task-editor.html">Edit Task <span>02</span></a>
           <a class="sidebar-link" href="./goal-editor.html">Edit Goal <span>01</span></a>
@@ -25,26 +25,26 @@
       <section class="app-main">
         <section class="page-hero">
           <article class="hero-panel-large panel">
-            <p class="mini-label">Goal Detail</p>
-            <h1 class="section-title">Launch TimeNest MVP</h1>
-            <p>Responsive Flutter app with dashboard, goals, tasks, habits, calendar, and multi-channel reminders.</p>
+            <p class="mini-label" id="goal-detail-eyebrow">Goal Detail</p>
+            <h1 class="section-title" id="goal-detail-title">Launch TimeNest MVP</h1>
+            <p id="goal-detail-summary">Responsive Flutter app with dashboard, goals, tasks, habits, calendar, and multi-channel reminders.</p>
             <div class="chip-row">
-              <span class="status-pill good">In Progress</span>
-              <span class="soft-pill">Start: 01 Apr 2026</span>
-              <span class="soft-pill">Target: 30 Jun 2026</span>
+              <span class="status-pill good" id="goal-detail-status">In Progress</span>
+              <span class="soft-pill" id="goal-detail-start">Start: 01 Apr 2026</span>
+              <span class="soft-pill" id="goal-detail-target">Target: 30 Jun 2026</span>
               <a class="soft-pill" href="./task-editor.html">Add Task</a>
             </div>
           </article>
           <article class="hero-panel-side panel">
             <p class="mini-label">Progress</p>
-            <strong class="value-big">81%</strong>
-            <div class="progress-bar"><span style="width:81%"></span></div>
+            <strong class="value-big" id="goal-detail-progress-value">81%</strong>
+            <div class="progress-bar"><span id="goal-detail-progress-bar" style="width:81%"></span></div>
           </article>
         </section>
         <section class="content-split">
           <article class="page-card panel">
             <p class="mini-label">Tasks Under Goal</p>
-            <div class="surface-list">
+            <div class="surface-list" id="goal-detail-task-list">
               <a class="surface-item" href="./task-detail.html"><div><strong>Finalize dashboard UI</strong><small>Today · 07:30 PM</small></div><span class="status-pill good">Done</span></a>
               <a class="surface-item" href="./task-detail.html"><div><strong>Build auth screens</strong><small>Tomorrow · 10:00 AM</small></div><span class="status-pill warn">Pending</span></a>
               <a class="surface-item" href="./task-detail.html"><div><strong>Connect recurring task engine</strong><small>02 Apr · 06:00 PM</small></div><span class="status-pill warn">Planned</span></a>
@@ -52,8 +52,8 @@
             </div>
           </article>
           <article class="page-card panel">
-            <p class="mini-label">Drill-Down</p>
-            <div class="timeline-stack">
+            <p class="mini-label" id="goal-detail-timeline-label">Drill-Down</p>
+            <div class="timeline-stack" id="goal-detail-timeline">
               <div class="timeline-item"><span class="timeline-time">Phase 1</span><div><strong>UI review screens</strong><small>Login, dashboard, goals, and tasks ready.</small></div></div>
               <div class="timeline-item"><span class="timeline-time">Phase 2</span><div><strong>Auth and data setup</strong><small>Google login and Firestore schema connection.</small></div></div>
               <div class="timeline-item"><span class="timeline-time">Phase 3</span><div><strong>Reminder system</strong><small>Push, in-app, email, SMS, and WhatsApp hooks.</small></div></div>
@@ -64,10 +64,10 @@
     </main>
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
       <a class="tab-link" href="./index.html">Dashboard</a>
-      <a class="tab-link" href="./short-term-goals.html">Short-Term Goal</a>
-      <a class="tab-link" href="./long-term-goals.html">Long-Term Goal</a>
-      <a class="tab-link" href="./daily-tasks.html">Daily Task</a>
-      <a class="tab-link" href="./habits.html">Habits</a>
+      <a class="tab-link is-active" href="./goals.html">Goals</a>
+      <a class="tab-link" href="./daily-tasks.html">Tasks</a>
+      <a class="tab-link" href="./calendar.html?view=habits">Habits</a>
     </nav>
+    <script src="./script.js"></script>
   </body>
 </html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>TimeNest Goals</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="goals-page">
+    <div class="aurora aurora-left" aria-hidden="true"></div>
+    <div class="aurora aurora-right" aria-hidden="true"></div>
+    <main class="app-page-shell">
+      <aside class="app-sidebar">
+        <div class="sidebar-card panel">
+          <a class="brand-link" href="./index.html">
+            <div class="brand-cluster">
+              <div class="brand-mark"><span class="brand-core"></span></div>
+              <div>
+                <p class="mini-label">Goal Cluster</p>
+                <h2>TimeNest</h2>
+                <p class="brand-subline">Master Your Time. Achieve Your Goals.</p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <nav class="sidebar-nav">
+          <a class="sidebar-link" href="./index.html">Dashboard <span>01</span></a>
+          <a class="sidebar-link is-active" data-goal-nav="short" href="./goals.html?view=short">Short-Term <span>12</span></a>
+          <a class="sidebar-link" data-goal-nav="long" href="./goals.html?view=long">Long-Term <span>06</span></a>
+          <a class="sidebar-link" href="./daily-tasks.html">Daily Tasks <span>09</span></a>
+          <a class="sidebar-link" href="./habits.html">Habits <span>14</span></a>
+          <a class="sidebar-link" href="./calendar.html">Calendar <span>07</span></a>
+        </nav>
+      </aside>
+      <section class="app-main">
+        <article class="page-card panel goal-toggle-panel">
+          <div class="goal-toggle-head">
+            <div class="goal-toggle-copy">
+              <p class="mini-label">Goal View</p>
+              <h2 class="section-title" id="goal-toggle-title">Select the dashboard you want to view</h2>
+            </div>
+          </div>
+          <div class="goal-view-toggle" role="radiogroup" aria-label="Goal dashboard view">
+            <label class="goal-view-option">
+              <input type="radio" name="goal-view" value="short" checked />
+              <span>Short-Term Goals</span>
+            </label>
+            <label class="goal-view-option">
+              <input type="radio" name="goal-view" value="long" />
+              <span>Long-Term Goals</span>
+            </label>
+          </div>
+        </article>
+
+        <article class="page-card panel goal-range-panel">
+          <div class="goal-range-toggle" role="radiogroup" aria-label="Goal metric date range">
+            <label class="goal-range-option">
+              <input type="radio" name="goal-range" value="all" checked />
+              <span>All</span>
+            </label>
+            <label class="goal-range-option">
+              <input type="radio" name="goal-range" value="month" />
+              <span>This Month</span>
+            </label>
+          </div>
+        </article>
+
+        <section class="goal-dashboard-panel" data-goal-view="short">
+          <section class="metric-grid goal-metric-grid" data-goal-metrics="short">
+            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>Completed</p><strong data-goal-metric-value>12</strong></article>
+            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>Active</p><strong data-goal-metric-value>08</strong></article>
+            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>Delayed</p><strong data-goal-metric-value>03</strong></article>
+            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>On Time</p><strong data-goal-metric-value>91%</strong></article>
+          </section>
+
+          <section class="page-hero goal-page-hero">
+            <article class="hero-panel-large panel">
+              <h1 class="section-title goal-hero-title">Short-term goals for the next 30 to 90 days</h1>
+              <div class="chip-row">
+                <a class="soft-pill" href="./goal-editor.html?goalType=short-term">Add Goal</a>
+                <a class="soft-pill" href="./task-editor.html">Add Task</a>
+                <a class="soft-pill" href="./goal-detail.html?metric=in-progress">Goal Detail</a>
+                <span class="status-pill good">8 On Track</span>
+              </div>
+            </article>
+            <article class="hero-panel-side panel">
+              <p class="mini-label">Snapshot</p>
+              <strong class="value-big">12</strong>
+              <p>Short-term goals active with a steady execution pace and clear due-date visibility.</p>
+            </article>
+          </section>
+
+          <section class="goal-grid">
+            <article class="goal-card">
+              <p class="mini-label">Fitness Goal</p>
+              <h2>Finish 30-day strength cycle</h2>
+              <p>4 sessions left and recovery tasks are already scheduled.</p>
+              <div class="progress-bar"><span style="width: 84%"></span></div>
+              <div class="chip-row">
+                <span class="status-pill good">On Track</span>
+                <a class="soft-pill" href="./goal-detail.html">View</a>
+              </div>
+            </article>
+            <article class="goal-card">
+              <p class="mini-label">Finance Goal</p>
+              <h2>Build emergency buffer</h2>
+              <p>Auto-save rules are working and two review tasks remain.</p>
+              <div class="progress-bar"><span style="width: 67%"></span></div>
+              <div class="chip-row">
+                <span class="status-pill warn">Attention</span>
+                <a class="soft-pill" href="./goal-detail.html">View</a>
+              </div>
+            </article>
+            <article class="goal-card">
+              <p class="mini-label">Learning Goal</p>
+              <h2>Ship Flutter UI prototype</h2>
+              <p>Main review screens are in progress and dashboard polish is nearly done.</p>
+              <div class="progress-bar"><span style="width: 73%"></span></div>
+              <div class="chip-row">
+                <span class="status-pill good">In Flow</span>
+                <a class="soft-pill" href="./goal-detail.html">View</a>
+              </div>
+            </article>
+            <article class="goal-card">
+              <p class="mini-label">Health Goal</p>
+              <h2>Sleep before 11 PM for 21 days</h2>
+              <p>Night shutdown routine is improving the streak but still needs consistency.</p>
+              <div class="progress-bar"><span style="width: 58%"></span></div>
+              <div class="chip-row">
+                <span class="status-pill alert">Needs Fix</span>
+                <a class="soft-pill" href="./goal-detail.html">View</a>
+              </div>
+            </article>
+          </section>
+        </section>
+
+        <section class="goal-dashboard-panel" data-goal-view="long" hidden>
+          <section class="metric-grid goal-metric-grid" data-goal-metrics="long">
+            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>Ahead</p><strong data-goal-metric-value>03</strong></article>
+            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>Review</p><strong data-goal-metric-value>02</strong></article>
+            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>At Risk</p><strong data-goal-metric-value>01</strong></article>
+            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>Health</p><strong data-goal-metric-value>78%</strong></article>
+          </section>
+
+          <section class="page-hero goal-page-hero">
+            <article class="hero-panel-large panel">
+              <h1 class="section-title goal-hero-title">Long-term goals shaping the next year</h1>
+              <div class="chip-row">
+                <a class="soft-pill" href="./goal-editor.html?goalType=long-term">Add Goal</a>
+                <a class="soft-pill" href="./task-editor.html">Add Task</a>
+                <a class="soft-pill" href="./goal-detail.html?metric=completed-on-time">Goal Detail</a>
+                <span class="status-pill warn">3 Ahead</span>
+              </div>
+            </article>
+            <article class="hero-panel-side panel">
+              <p class="mini-label">Annual Health</p>
+              <strong class="value-big">78%</strong>
+              <p>Three long-term goals are moving ahead of plan and one needs a milestone reset.</p>
+            </article>
+          </section>
+
+          <section class="content-split">
+            <article class="page-card panel">
+              <p class="mini-label">Portfolio</p>
+              <div class="surface-list">
+                <a class="surface-item" href="./goal-detail.html"><div><strong>Launch TimeNest MVP</strong><small>12-month product goal</small></div><span class="status-pill good">81%</span></a>
+                <a class="surface-item" href="./goal-detail.html"><div><strong>Build financial freedom runway</strong><small>18-month savings target</small></div><span class="status-pill warn">63%</span></a>
+                <a class="surface-item" href="./goal-detail.html"><div><strong>Master Marathi communication</strong><small>12-month fluency track</small></div><span class="status-pill good">72%</span></a>
+                <a class="surface-item" href="./goal-detail.html"><div><strong>Reach advanced fitness baseline</strong><small>Annual strength and mobility target</small></div><span class="status-pill alert">49%</span></a>
+              </div>
+            </article>
+            <article class="page-card panel">
+              <p class="mini-label">Quarter Milestones</p>
+              <div class="timeline-stack">
+                <div class="timeline-item"><span class="timeline-time">Q2</span><div><strong>Finalize design system and auth</strong><small>UI sign-off plus first Firebase connection.</small></div></div>
+                <div class="timeline-item"><span class="timeline-time">Q3</span><div><strong>Ship goals, tasks, and reminders</strong><small>Recurring tasks and notification channels ready.</small></div></div>
+                <div class="timeline-item"><span class="timeline-time">Q4</span><div><strong>Launch habits, export, and analytics</strong><small>Retention and premium feature layer.</small></div></div>
+              </div>
+            </article>
+          </section>
+        </section>
+      </section>
+    </main>
+    <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
+      <a class="tab-link" href="./index.html">Dashboard</a>
+      <a class="tab-link is-active" href="./goals.html">Goals</a>
+      <a class="tab-link" href="./daily-tasks.html">Tasks</a>
+      <a class="tab-link" href="./calendar.html?view=habits">Habits</a>
+    </nav>
+    <script src="./script.js"></script>
+  </body>
+</html>

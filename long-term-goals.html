@@ -3,71 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>TimeNest Long-Term Goals</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css" />
+    <title>Redirecting to Goals</title>
+    <meta http-equiv="refresh" content="0; url=./goals.html?view=long" />
   </head>
   <body>
-    <div class="aurora aurora-left" aria-hidden="true"></div>
-    <div class="aurora aurora-right" aria-hidden="true"></div>
-    <main class="app-page-shell">
-      <aside class="app-sidebar">
-        <div class="sidebar-card panel"><a class="brand-link" href="./index.html"><div class="brand-cluster"><div class="brand-mark"><span class="brand-core"></span></div><div><p class="mini-label">Future Arc</p><h2>TimeNest</h2><p class="brand-subline">Master Your Time. Achieve Your Goals.</p></div></div></a></div>
-        <nav class="sidebar-nav">
-          <a class="sidebar-link" href="./index.html">Dashboard <span>01</span></a>
-          <a class="sidebar-link" href="./short-term-goals.html">Short-Term <span>12</span></a>
-          <a class="sidebar-link is-active" href="./long-term-goals.html">Long-Term <span>06</span></a>
-          <a class="sidebar-link" href="./daily-tasks.html">Daily Tasks <span>09</span></a>
-          <a class="sidebar-link" href="./habits.html">Habits <span>14</span></a>
-          <a class="sidebar-link" href="./settings.html">Settings <span>06</span></a>
-        </nav>
-      </aside>
-      <section class="app-main">
-        <section class="page-hero">
-          <article class="hero-panel-large panel">
-            <p class="mini-label">Long-Term Vision</p>
-            <h1 class="section-title">Strategic goals that shape the next year</h1>
-            <p>Measure deeper progress with quarterly checkpoints, milestone plans, and recurring review systems.</p>
-            <div class="page-tools">
-              <a class="soft-pill" href="./goal-editor.html">Add Goal</a>
-              <a class="soft-pill" href="./task-editor.html">Add Task</a>
-            </div>
-          </article>
-          <article class="hero-panel-side panel">
-            <p class="mini-label">Average Health</p>
-            <strong class="value-big">78%</strong>
-            <p>Three goals ahead of schedule and one needs a timeline reset.</p>
-          </article>
-        </section>
-        <section class="content-split">
-          <article class="page-card panel">
-            <p class="mini-label">Portfolio</p>
-            <div class="surface-list">
-              <a class="surface-item" href="./goal-detail.html"><div><strong>Launch TimeNest MVP</strong><small>12-month product goal</small></div><span class="status-pill good">81%</span></a>
-              <a class="surface-item" href="./goal-detail.html"><div><strong>Build financial freedom runway</strong><small>18-month savings target</small></div><span class="status-pill warn">63%</span></a>
-              <a class="surface-item" href="./goal-detail.html"><div><strong>Master Marathi communication</strong><small>12-month fluency track</small></div><span class="status-pill good">72%</span></a>
-              <a class="surface-item" href="./goal-detail.html"><div><strong>Reach advanced fitness baseline</strong><small>Annual strength and mobility target</small></div><span class="status-pill alert">49%</span></a>
-            </div>
-          </article>
-          <article class="page-card panel">
-            <p class="mini-label">Quarter Milestones</p>
-            <div class="timeline-stack">
-              <div class="timeline-item"><span class="timeline-time">Q2</span><div><strong>Finalize design system and auth</strong><small>UI sign-off plus first Firebase connection.</small></div></div>
-              <div class="timeline-item"><span class="timeline-time">Q3</span><div><strong>Ship goals, tasks, and reminders</strong><small>Recurring tasks and notification channels ready.</small></div></div>
-              <div class="timeline-item"><span class="timeline-time">Q4</span><div><strong>Launch habits, export, and analytics</strong><small>Retention and premium feature layer.</small></div></div>
-            </div>
-          </article>
-        </section>
-      </section>
-    </main>
-    <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
-      <a class="tab-link" href="./index.html">Dashboard</a>
-      <a class="tab-link" href="./short-term-goals.html">Short-Term Goal</a>
-      <a class="tab-link is-active" href="./long-term-goals.html">Long-Term Goal</a>
-      <a class="tab-link" href="./daily-tasks.html">Daily Task</a>
-      <a class="tab-link" href="./habits.html">Habits</a>
-    </nav>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      params.set("view", "long");
+      window.location.replace(`./goals.html?${params.toString()}`);
+    </script>
   </body>
 </html>

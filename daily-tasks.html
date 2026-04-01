@@ -23,39 +23,365 @@
           <a class="sidebar-link" href="./calendar.html">Calendar <span>07</span></a>
         </nav>
       </aside>
-      <section class="app-main">
-        <section class="page-hero">
-          <article class="hero-panel-large panel">
-            <p class="mini-label">Daily Task Control</p>
-            <h1 class="section-title">Today, upcoming, and overdue task flow</h1>
-            <p>Every task is attached to a goal, keeps its recurrence rules, and supports quick completion from the task center.</p>
-            <div class="page-tools">
-              <a class="soft-pill" href="./task-editor.html">Add Task</a>
-              <a class="soft-pill" href="./subtask-editor.html">Add Subtask</a>
+      <section class="app-main tasks-page-main">
+        <article class="page-card panel task-control-panel">
+          <div class="task-control-head">
+            <div class="task-control-copy">
+              <p class="mini-label">Daily Task Control</p>
             </div>
-          </article>
-          <article class="hero-panel-side panel">
+            <div class="page-tools task-control-tools">
+              <a class="soft-pill task-control-pill" href="./task-editor.html">Add Task</a>
+              <a class="soft-pill task-control-pill" href="./subtask-editor.html">Add Subtask</a>
+            </div>
+          </div>
+        </article>
+
+        <section class="metric-grid task-summary-grid" aria-label="Daily task summary">
+          <button class="mini-metric panel task-summary-card" type="button" data-task-filter="due-today" aria-controls="task-stream-list" aria-pressed="false">
             <p class="mini-label">Due Today</p>
-            <strong class="value-big">09</strong>
-            <p>4 high priority, 3 recurring, 2 overdue from yesterday.</p>
-          </article>
+            <strong data-task-count>03</strong>
+          </button>
+          <button class="mini-metric panel task-summary-card" type="button" data-task-filter="completed" aria-controls="task-stream-list" aria-pressed="false">
+            <p class="mini-label">Completed</p>
+            <strong data-task-count>01</strong>
+          </button>
+          <button class="mini-metric panel task-summary-card" type="button" data-task-filter="recurring" aria-controls="task-stream-list" aria-pressed="false">
+            <p class="mini-label">Recurring</p>
+            <strong data-task-count>02</strong>
+          </button>
+          <button class="mini-metric panel task-summary-card" type="button" data-task-filter="overdue" aria-controls="task-stream-list" aria-pressed="false">
+            <p class="mini-label">Overdue</p>
+            <strong data-task-count>01</strong>
+          </button>
         </section>
-        <section class="content-split">
-          <article class="page-card panel">
-            <p class="mini-label">Task Streams</p>
-            <div class="surface-list">
-              <a class="surface-item" href="./task-detail.html"><div><strong>Submit investor-ready roadmap</strong><small>Business Growth Goal · 07:30 PM</small></div><span class="status-pill alert">High</span></a>
-              <a class="surface-item" href="./task-detail.html"><div><strong>Complete 45 min workout</strong><small>Fitness Goal · Daily · 06:30 AM</small></div><span class="status-pill good">Done</span></a>
-              <a class="surface-item" href="./task-detail.html"><div><strong>Practice Marathi lesson</strong><small>Learning Goal · Daily · 08:00 PM</small></div><span class="status-pill warn">Pending</span></a>
-              <a class="surface-item" href="./task-detail.html"><div><strong>Budget review snapshot</strong><small>Financial Goal · Tomorrow · 09:00 AM</small></div><span class="status-pill warn">Upcoming</span></a>
+
+        <section class="task-screen-grid">
+          <article class="page-card panel task-stream-panel">
+            <div class="task-panel-head">
+              <div>
+                <p class="mini-label">Task Streams</p>
+                <h2 class="section-title">Main tasks and subtasks</h2>
+              </div>
+              <span class="soft-pill task-panel-tip" data-task-filter-state>Showing all tasks</span>
+            </div>
+
+            <div class="task-management-list" id="task-stream-list" data-task-board>
+              <article class="task-management-card" data-task-item data-task-groups="due-today" data-pending-label="Pending" data-complete-label="Completed" data-pending-tone="alert">
+                <div class="task-card-top">
+                  <div class="task-card-copy">
+                    <div class="task-card-title-row">
+                      <p class="mini-label">Business Growth Goal</p>
+                      <span class="status-pill alert" data-status-pill>Pending</span>
+                    </div>
+                    <h3>Submit investor-ready roadmap</h3>
+                    <p class="task-card-meta">Due 07:30 PM | High priority | Investor review</p>
+                  </div>
+                </div>
+
+                <div class="task-card-actions">
+                  <button class="soft-pill task-action-pill task-complete-pill" type="button" data-complete-toggle aria-pressed="false">
+                    <span class="task-complete-dot" aria-hidden="true"></span>
+                    <span data-complete-text>Mark Complete</span>
+                  </button>
+                  <a class="soft-pill task-action-pill" href="./subtask-editor.html?task=roadmap">Add Subtask</a>
+                  <a class="icon-action" href="./task-editor.html?task=roadmap" aria-label="Edit task">
+                    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                      <path d="M4 20h4l10.5-10.5a1.8 1.8 0 0 0 0-2.5l-1.5-1.5a1.8 1.8 0 0 0-2.5 0L4 16v4Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                    </svg>
+                  </a>
+                  <button class="icon-action is-danger" type="button" data-delete-item="task" data-delete-label="Submit investor-ready roadmap" aria-label="Delete task">
+                    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                      <path d="M5 7h14M10 11v5M14 11v5M8 7l1-2h6l1 2m-9 0 1 11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-11" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="subtask-stack">
+                  <div class="subtask-row" data-subtask-item data-pending-label="Pending" data-complete-label="Completed">
+                    <div class="subtask-copy">
+                      <strong>Update milestone slide</strong>
+                      <small>Due 06:30 PM | <span data-state-label>Pending</span></small>
+                    </div>
+                    <div class="subtask-actions">
+                      <button class="soft-pill task-action-pill task-complete-pill is-subtask" type="button" data-complete-toggle aria-pressed="false">
+                        <span class="task-complete-dot" aria-hidden="true"></span>
+                        <span data-complete-text>Complete</span>
+                      </button>
+                      <a class="icon-action" href="./subtask-editor.html?subtask=milestone-slide" aria-label="Edit subtask">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                          <path d="M4 20h4l10.5-10.5a1.8 1.8 0 0 0 0-2.5l-1.5-1.5a1.8 1.8 0 0 0-2.5 0L4 16v4Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                        </svg>
+                      </a>
+                      <button class="icon-action is-danger" type="button" data-delete-item="subtask" data-delete-label="Update milestone slide" aria-label="Delete subtask">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                          <path d="M5 7h14M10 11v5M14 11v5M8 7l1-2h6l1 2m-9 0 1 11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-11" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="subtask-row" data-subtask-item data-pending-label="Pending" data-complete-label="Completed">
+                    <div class="subtask-copy">
+                      <strong>Validate financial numbers</strong>
+                      <small>Due 07:00 PM | <span data-state-label>Pending</span></small>
+                    </div>
+                    <div class="subtask-actions">
+                      <button class="soft-pill task-action-pill task-complete-pill is-subtask" type="button" data-complete-toggle aria-pressed="false">
+                        <span class="task-complete-dot" aria-hidden="true"></span>
+                        <span data-complete-text>Complete</span>
+                      </button>
+                      <a class="icon-action" href="./subtask-editor.html?subtask=financial-numbers" aria-label="Edit subtask">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                          <path d="M4 20h4l10.5-10.5a1.8 1.8 0 0 0 0-2.5l-1.5-1.5a1.8 1.8 0 0 0-2.5 0L4 16v4Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                        </svg>
+                      </a>
+                      <button class="icon-action is-danger" type="button" data-delete-item="subtask" data-delete-label="Validate financial numbers" aria-label="Delete subtask">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                          <path d="M5 7h14M10 11v5M14 11v5M8 7l1-2h6l1 2m-9 0 1 11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-11" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <p class="subtask-empty" data-subtask-empty hidden>No subtasks left. Use Add Subtask to create one.</p>
+                </div>
+              </article>
+
+              <article class="task-management-card" data-task-item data-task-groups="due-today recurring" data-pending-label="In Progress" data-complete-label="Completed" data-pending-tone="warn">
+                <div class="task-card-top">
+                  <div class="task-card-copy">
+                    <div class="task-card-title-row">
+                      <p class="mini-label">Learning Goal</p>
+                      <span class="status-pill warn" data-status-pill>In Progress</span>
+                    </div>
+                    <h3>Practice Marathi lesson</h3>
+                    <p class="task-card-meta">Daily at 08:00 PM | Recurring habit support</p>
+                  </div>
+                </div>
+
+                <div class="task-card-actions">
+                  <button class="soft-pill task-action-pill task-complete-pill" type="button" data-complete-toggle aria-pressed="false">
+                    <span class="task-complete-dot" aria-hidden="true"></span>
+                    <span data-complete-text>Mark Complete</span>
+                  </button>
+                  <a class="soft-pill task-action-pill" href="./subtask-editor.html?task=marathi-lesson">Add Subtask</a>
+                  <a class="icon-action" href="./task-editor.html?task=marathi-lesson" aria-label="Edit task">
+                    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                      <path d="M4 20h4l10.5-10.5a1.8 1.8 0 0 0 0-2.5l-1.5-1.5a1.8 1.8 0 0 0-2.5 0L4 16v4Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                    </svg>
+                  </a>
+                  <button class="icon-action is-danger" type="button" data-delete-item="task" data-delete-label="Practice Marathi lesson" aria-label="Delete task">
+                    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                      <path d="M5 7h14M10 11v5M14 11v5M8 7l1-2h6l1 2m-9 0 1 11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-11" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="subtask-stack">
+                  <div class="subtask-row is-complete" data-subtask-item data-pending-label="Pending" data-complete-label="Completed">
+                    <div class="subtask-copy">
+                      <strong>Complete guided speaking session</strong>
+                      <small>Done at 07:40 PM | <span data-state-label>Completed</span></small>
+                    </div>
+                    <div class="subtask-actions">
+                      <button class="soft-pill task-action-pill task-complete-pill is-subtask" type="button" data-complete-toggle aria-pressed="true">
+                        <span class="task-complete-dot" aria-hidden="true"></span>
+                        <span data-complete-text>Completed</span>
+                      </button>
+                      <a class="icon-action" href="./subtask-editor.html?subtask=speaking-session" aria-label="Edit subtask">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                          <path d="M4 20h4l10.5-10.5a1.8 1.8 0 0 0 0-2.5l-1.5-1.5a1.8 1.8 0 0 0-2.5 0L4 16v4Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                        </svg>
+                      </a>
+                      <button class="icon-action is-danger" type="button" data-delete-item="subtask" data-delete-label="Complete guided speaking session" aria-label="Delete subtask">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                          <path d="M5 7h14M10 11v5M14 11v5M8 7l1-2h6l1 2m-9 0 1 11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-11" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="subtask-row" data-subtask-item data-pending-label="Pending" data-complete-label="Completed">
+                    <div class="subtask-copy">
+                      <strong>Review new vocabulary</strong>
+                      <small>Due 08:15 PM | <span data-state-label>Pending</span></small>
+                    </div>
+                    <div class="subtask-actions">
+                      <button class="soft-pill task-action-pill task-complete-pill is-subtask" type="button" data-complete-toggle aria-pressed="false">
+                        <span class="task-complete-dot" aria-hidden="true"></span>
+                        <span data-complete-text>Complete</span>
+                      </button>
+                      <a class="icon-action" href="./subtask-editor.html?subtask=vocabulary-review" aria-label="Edit subtask">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                          <path d="M4 20h4l10.5-10.5a1.8 1.8 0 0 0 0-2.5l-1.5-1.5a1.8 1.8 0 0 0-2.5 0L4 16v4Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                        </svg>
+                      </a>
+                      <button class="icon-action is-danger" type="button" data-delete-item="subtask" data-delete-label="Review new vocabulary" aria-label="Delete subtask">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                          <path d="M5 7h14M10 11v5M14 11v5M8 7l1-2h6l1 2m-9 0 1 11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-11" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <p class="subtask-empty" data-subtask-empty hidden>No subtasks left. Use Add Subtask to create one.</p>
+                </div>
+              </article>
+
+              <article class="task-management-card is-complete" data-task-item data-task-groups="due-today recurring" data-pending-label="Scheduled" data-complete-label="Completed" data-pending-tone="good">
+                <div class="task-card-top">
+                  <div class="task-card-copy">
+                    <div class="task-card-title-row">
+                      <p class="mini-label">Fitness Goal</p>
+                      <span class="status-pill good" data-status-pill>Completed</span>
+                    </div>
+                    <h3>Complete 45 min workout</h3>
+                    <p class="task-card-meta">Daily at 06:30 AM | Recurring wellness block</p>
+                  </div>
+                </div>
+
+                <div class="task-card-actions">
+                  <button class="soft-pill task-action-pill task-complete-pill" type="button" data-complete-toggle aria-pressed="true">
+                    <span class="task-complete-dot" aria-hidden="true"></span>
+                    <span data-complete-text>Completed</span>
+                  </button>
+                  <a class="soft-pill task-action-pill" href="./subtask-editor.html?task=workout">Add Subtask</a>
+                  <a class="icon-action" href="./task-editor.html?task=workout" aria-label="Edit task">
+                    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                      <path d="M4 20h4l10.5-10.5a1.8 1.8 0 0 0 0-2.5l-1.5-1.5a1.8 1.8 0 0 0-2.5 0L4 16v4Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                    </svg>
+                  </a>
+                  <button class="icon-action is-danger" type="button" data-delete-item="task" data-delete-label="Complete 45 min workout" aria-label="Delete task">
+                    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                      <path d="M5 7h14M10 11v5M14 11v5M8 7l1-2h6l1 2m-9 0 1 11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-11" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="subtask-stack">
+                  <div class="subtask-row is-complete" data-subtask-item data-pending-label="Pending" data-complete-label="Completed">
+                    <div class="subtask-copy">
+                      <strong>Warm up and mobility</strong>
+                      <small>Done at 06:10 AM | <span data-state-label>Completed</span></small>
+                    </div>
+                    <div class="subtask-actions">
+                      <button class="soft-pill task-action-pill task-complete-pill is-subtask" type="button" data-complete-toggle aria-pressed="true">
+                        <span class="task-complete-dot" aria-hidden="true"></span>
+                        <span data-complete-text>Completed</span>
+                      </button>
+                      <a class="icon-action" href="./subtask-editor.html?subtask=warmup-mobility" aria-label="Edit subtask">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                          <path d="M4 20h4l10.5-10.5a1.8 1.8 0 0 0 0-2.5l-1.5-1.5a1.8 1.8 0 0 0-2.5 0L4 16v4Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                        </svg>
+                      </a>
+                      <button class="icon-action is-danger" type="button" data-delete-item="subtask" data-delete-label="Warm up and mobility" aria-label="Delete subtask">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                          <path d="M5 7h14M10 11v5M14 11v5M8 7l1-2h6l1 2m-9 0 1 11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-11" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <p class="subtask-empty" data-subtask-empty hidden>No subtasks left. Use Add Subtask to create one.</p>
+                </div>
+              </article>
+
+              <article class="task-management-card" data-task-item data-task-groups="overdue" data-pending-label="Overdue" data-complete-label="Completed" data-pending-tone="alert">
+                <div class="task-card-top">
+                  <div class="task-card-copy">
+                    <div class="task-card-title-row">
+                      <p class="mini-label">Operations Goal</p>
+                      <span class="status-pill alert" data-status-pill>Overdue</span>
+                    </div>
+                    <h3>Renew hosting and production services</h3>
+                    <p class="task-card-meta">Missed yesterday at 05:00 PM | Billing review | Critical renewal</p>
+                  </div>
+                </div>
+
+                <div class="task-card-actions">
+                  <button class="soft-pill task-action-pill task-complete-pill" type="button" data-complete-toggle aria-pressed="false">
+                    <span class="task-complete-dot" aria-hidden="true"></span>
+                    <span data-complete-text>Mark Complete</span>
+                  </button>
+                  <a class="soft-pill task-action-pill" href="./subtask-editor.html?task=hosting-renewal">Add Subtask</a>
+                  <a class="icon-action" href="./task-editor.html?task=hosting-renewal" aria-label="Edit task">
+                    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                      <path d="M4 20h4l10.5-10.5a1.8 1.8 0 0 0 0-2.5l-1.5-1.5a1.8 1.8 0 0 0-2.5 0L4 16v4Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                    </svg>
+                  </a>
+                  <button class="icon-action is-danger" type="button" data-delete-item="task" data-delete-label="Renew hosting and production services" aria-label="Delete task">
+                    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                      <path d="M5 7h14M10 11v5M14 11v5M8 7l1-2h6l1 2m-9 0 1 11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-11" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="subtask-stack">
+                  <div class="subtask-row" data-subtask-item data-pending-label="Pending" data-complete-label="Completed">
+                    <div class="subtask-copy">
+                      <strong>Verify invoice amount</strong>
+                      <small>Past due since 04:30 PM | <span data-state-label>Pending</span></small>
+                    </div>
+                    <div class="subtask-actions">
+                      <button class="soft-pill task-action-pill task-complete-pill is-subtask" type="button" data-complete-toggle aria-pressed="false">
+                        <span class="task-complete-dot" aria-hidden="true"></span>
+                        <span data-complete-text>Complete</span>
+                      </button>
+                      <a class="icon-action" href="./subtask-editor.html?subtask=invoice-amount" aria-label="Edit subtask">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                          <path d="M4 20h4l10.5-10.5a1.8 1.8 0 0 0 0-2.5l-1.5-1.5a1.8 1.8 0 0 0-2.5 0L4 16v4Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                        </svg>
+                      </a>
+                      <button class="icon-action is-danger" type="button" data-delete-item="subtask" data-delete-label="Verify invoice amount" aria-label="Delete subtask">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                          <path d="M5 7h14M10 11v5M14 11v5M8 7l1-2h6l1 2m-9 0 1 11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-11" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="subtask-row" data-subtask-item data-pending-label="Pending" data-complete-label="Completed">
+                    <div class="subtask-copy">
+                      <strong>Confirm payment receipt</strong>
+                      <small>Past due since 05:00 PM | <span data-state-label>Pending</span></small>
+                    </div>
+                    <div class="subtask-actions">
+                      <button class="soft-pill task-action-pill task-complete-pill is-subtask" type="button" data-complete-toggle aria-pressed="false">
+                        <span class="task-complete-dot" aria-hidden="true"></span>
+                        <span data-complete-text>Complete</span>
+                      </button>
+                      <a class="icon-action" href="./subtask-editor.html?subtask=payment-receipt" aria-label="Edit subtask">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                          <path d="M4 20h4l10.5-10.5a1.8 1.8 0 0 0 0-2.5l-1.5-1.5a1.8 1.8 0 0 0-2.5 0L4 16v4Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                        </svg>
+                      </a>
+                      <button class="icon-action is-danger" type="button" data-delete-item="subtask" data-delete-label="Confirm payment receipt" aria-label="Delete subtask">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                          <path d="M5 7h14M10 11v5M14 11v5M8 7l1-2h6l1 2m-9 0 1 11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-11" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <p class="subtask-empty" data-subtask-empty hidden>No subtasks left. Use Add Subtask to create one.</p>
+                </div>
+              </article>
+
+              <div class="task-empty-state panel" data-task-empty hidden>
+                <p class="mini-label">Task Streams</p>
+                <h3 data-task-empty-title>No tasks left on this screen</h3>
+                <p data-task-empty-copy>Use Add Task or Add Subtask to create a new item.</p>
+              </div>
             </div>
           </article>
-          <article class="page-card panel">
+
+          <article class="page-card panel task-reminder-panel">
             <p class="mini-label">Reminder Logic</p>
+            <h2 class="section-title">Daily reminder flow</h2>
             <div class="timeline-stack">
-              <div class="timeline-item"><span class="timeline-time">08:00</span><div><strong>Morning summary</strong><small>Push + email digest with top goals and today’s tasks.</small></div></div>
-              <div class="timeline-item"><span class="timeline-time">18:00</span><div><strong>Priority reminder burst</strong><small>Escalates high-priority unfinished work.</small></div></div>
-              <div class="timeline-item"><span class="timeline-time">20:00</span><div><strong>Evening review</strong><small>Shows completed, skipped, and rescheduled items.</small></div></div>
+              <div class="timeline-item"><span class="timeline-time">08:00</span><div><strong>Morning summary</strong><small>Push plus email digest with top goals and today&apos;s tasks.</small></div></div>
+              <div class="timeline-item"><span class="timeline-time">18:00</span><div><strong>Priority reminder burst</strong><small>Escalates unfinished high-priority work before the late evening window.</small></div></div>
+              <div class="timeline-item"><span class="timeline-time">20:00</span><div><strong>Evening review</strong><small>Shows completed, skipped, and rescheduled items for the next plan.</small></div></div>
             </div>
           </article>
         </section>
@@ -63,10 +389,10 @@
     </main>
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
       <a class="tab-link" href="./index.html">Dashboard</a>
-      <a class="tab-link" href="./short-term-goals.html">Short-Term Goal</a>
-      <a class="tab-link" href="./long-term-goals.html">Long-Term Goal</a>
-      <a class="tab-link is-active" href="./daily-tasks.html">Daily Task</a>
-      <a class="tab-link" href="./habits.html">Habits</a>
+      <a class="tab-link" href="./goals.html">Goals</a>
+      <a class="tab-link is-active" href="./daily-tasks.html">Tasks</a>
+      <a class="tab-link" href="./calendar.html?view=habits">Habits</a>
     </nav>
+    <script src="./script.js"></script>
   </body>
 </html>
