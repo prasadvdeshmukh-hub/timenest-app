@@ -22,7 +22,7 @@
         </nav>
       </aside>
       <section class="app-main">
-        <article class="page-card panel">
+        <article class="page-card panel task-editor-panel">
           <p class="mini-label">Task Editor</p>
           <h2 class="section-title">Create a task with date, time, recurrence, and reminders</h2>
           <div class="form-grid">
@@ -32,22 +32,63 @@
             <label class="field"><span>Time</span><input type="time" value="19:30" /></label>
             <label class="field full"><span>Notes</span><input type="text" placeholder="Add notes, task context, or checklist" /></label>
           </div>
-          <div class="segmented-row">
-            <span class="soft-pill">None</span>
-            <span class="soft-pill">Daily</span>
-            <span class="soft-pill">Weekly</span>
-            <span class="soft-pill">Monthly</span>
-            <span class="soft-pill">Yearly</span>
-            <span class="soft-pill">Custom Days</span>
+          <div class="task-editor-compact-stack">
+            <fieldset class="compact-check-group">
+              <legend>Frequency</legend>
+              <div class="compact-check-row" aria-label="Frequency options">
+                <label class="compact-check-chip">
+                  <input type="checkbox" checked />
+                  <span>None</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>Daily</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>Weekly</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>Monthly</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>Yearly</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>Custom Days</span>
+                </label>
+              </div>
+            </fieldset>
+            <fieldset class="compact-check-group">
+              <legend>Preferred Notification</legend>
+              <div class="compact-check-row" aria-label="Preferred notification options">
+                <label class="compact-check-chip">
+                  <input type="checkbox" checked />
+                  <span>Push</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" checked />
+                  <span>In-App</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>Email</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>SMS</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>WhatsApp</span>
+                </label>
+              </div>
+            </fieldset>
           </div>
-          <div class="segmented-row">
-            <span class="soft-pill">Push</span>
-            <span class="soft-pill">In-App</span>
-            <span class="soft-pill">Email</span>
-            <span class="soft-pill">SMS</span>
-            <span class="soft-pill">WhatsApp</span>
-          </div>
-          <div class="form-actions"><span class="soft-pill">Save Task</span><span class="soft-pill">Preview Reminder</span><a class="soft-pill" href="./subtask-editor.html">Add Subtask</a><span class="soft-pill">Reset</span></div>
+          <div class="form-actions task-editor-actions"><span class="soft-pill">Save Task</span><span class="soft-pill">Preview Reminder</span><a class="soft-pill" href="./subtask-editor.html">Add Subtask</a><span class="soft-pill">Reset</span></div>
         </article>
       </section>
     </main>
@@ -57,5 +98,6 @@
       <a class="tab-link is-active" href="./daily-tasks.html">Tasks</a>
       <a class="tab-link" href="./calendar.html?view=habits">Habits</a>
     </nav>
+    <script src="./script.js"></script>
   </body>
 </html>

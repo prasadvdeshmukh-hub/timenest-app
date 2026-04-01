@@ -30,7 +30,6 @@
             <h1 class="section-title">Recurring systems that build long-term consistency</h1>
             <p>Habits are modeled as recurring tasks with streak logic, progress rings, and reminder presets.</p>
             <div class="page-tools">
-              <a class="soft-pill" href="./habit-editor.html">Add Habit</a>
               <a class="soft-pill" href="./calendar.html?view=habits">Open Habit Calendar</a>
             </div>
           </article>
@@ -62,11 +61,15 @@
         </section>
       </section>
     </main>
+    <a class="floating-add-button floating-add-link" href="./habit-editor.html" aria-label="Add Habit" data-hide-on-quick-add>
+      <span aria-hidden="true">+</span>
+    </a>
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
       <a class="tab-link" href="./index.html">Dashboard</a>
       <a class="tab-link" href="./goals.html">Goals</a>
       <a class="tab-link" href="./daily-tasks.html">Tasks</a>
       <a class="tab-link is-active" href="./calendar.html?view=habits">Habits</a>
     </nav>
+    <script src="./script.js"></script>
   </body>
 </html>

@@ -44,17 +44,28 @@
         <section class="page-card panel habit-tracker-panel">
           <div class="section-head">
             <h3 id="habit-calendar-month-label">This Month</h3>
-            <a class="inline-button" href="./habit-editor.html">Add Habit</a>
+            <div class="habit-calendar-controls" aria-label="Habit month controls">
+              <button class="inline-button habit-month-nav" id="habit-month-prev" type="button" aria-label="View previous month">Prev</button>
+              <label class="habit-month-picker" for="habit-calendar-month-input">
+                <span>Month</span>
+                <input type="month" id="habit-calendar-month-input" />
+              </label>
+              <button class="inline-button habit-month-nav" id="habit-month-next" type="button" aria-label="View next month">Next</button>
+            </div>
           </div>
           <div class="habit-legend" aria-label="Habit completion legend">
-            <span class="habit-legend-item"><i class="habit-status-dot is-complete" aria-hidden="true"></i>Completed</span>
-            <span class="habit-legend-item"><i class="habit-status-dot is-missed" aria-hidden="true"></i>Missed</span>
-            <span class="habit-legend-item"><i class="habit-status-dot is-future" aria-hidden="true"></i>Future</span>
+            <span class="habit-legend-item"><i class="habit-status-dot is-complete" aria-hidden="true"></i>Completed <strong class="habit-legend-count" id="habit-completed-count">00</strong></span>
+            <span class="habit-legend-item"><i class="habit-status-dot is-missed" aria-hidden="true"></i>Missed <strong class="habit-legend-count" id="habit-missed-count">00</strong></span>
+            <span class="habit-legend-item"><i class="habit-status-dot is-future" aria-hidden="true"></i>Future <strong class="habit-legend-count" id="habit-future-count">00</strong></span>
           </div>
+          <p class="habit-calendar-tip">Tap today or any earlier day in this month to mark the habit completed or missed.</p>
           <div class="habit-calendar-grid" id="habit-calendar-grid" aria-live="polite"></div>
         </section>
       </section>
     </main>
+    <a class="floating-add-button floating-add-link" href="./habit-editor.html" aria-label="Add Habit" data-hide-on-quick-add>
+      <span aria-hidden="true">+</span>
+    </a>
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
       <a class="tab-link" href="./index.html">Dashboard</a>
       <a class="tab-link" href="./goals.html">Goals</a>

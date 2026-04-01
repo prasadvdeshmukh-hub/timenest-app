@@ -390,6 +390,39 @@ if (clockCanvas && clockContext) {
   drawHudClock();
 }
 
+const nativePickerInputs = Array.from(
+  document.querySelectorAll(
+    'input[type="date"], input[type="time"], input[type="datetime-local"], input[type="month"], input[type="week"]'
+  )
+);
+
+function tryOpenNativePicker(input) {
+  if (
+    !input ||
+    input.disabled ||
+    input.readOnly ||
+    typeof input.showPicker !== "function"
+  ) {
+    return;
+  }
+
+  try {
+    input.showPicker();
+  } catch (error) {
+    // Some browsers restrict picker opening to specific trusted gestures.
+  }
+}
+
+nativePickerInputs.forEach((input) => {
+  input.addEventListener("focus", () => {
+    tryOpenNativePicker(input);
+  });
+
+  input.addEventListener("pointerdown", () => {
+    tryOpenNativePicker(input);
+  });
+});
+
 const loginCard = document.querySelector(".login-card");
 const loginActions = document.querySelectorAll(".login-action, .login-submit");
 const animatedTaglines = document.querySelectorAll("[data-animate-chars='true']");
@@ -510,6 +543,15 @@ const quickAddBackButton = document.querySelector("[data-quick-add-back]");
 const quickAddCloseButtons = document.querySelectorAll("[data-quick-add-close]");
 const quickAddChoiceButtons = document.querySelectorAll("[data-add-choice]");
 const quickAddUrlButtons = document.querySelectorAll("[data-add-url]");
+const pageSearchParams = new URLSearchParams(window.location.search);
+const hideOnQuickAddElements = document.querySelectorAll("[data-hide-on-quick-add]");
+const isQuickAddEntry = pageSearchParams.get("entry") === "quick-add";
+
+if (hideOnQuickAddElements.length && isQuickAddEntry) {
+  hideOnQuickAddElements.forEach((element) => {
+    element.hidden = true;
+  });
+}
 
 function setQuickAddStep(step) {
   quickAddSteps.forEach((panel) => {
@@ -526,6 +568,7 @@ function openQuickAdd() {
   quickAddSheet.hidden = false;
   quickAddBackdrop.hidden = false;
   quickAddOpenButton.setAttribute("aria-expanded", "true");
+  quickAddOpenButton.hidden = true;
 }
 
 function closeQuickAdd() {
@@ -536,11 +579,14 @@ function closeQuickAdd() {
   quickAddSheet.hidden = true;
   quickAddBackdrop.hidden = true;
   quickAddOpenButton.setAttribute("aria-expanded", "false");
+  quickAddOpenButton.hidden = false;
 }
 
 if (quickAddOpenButton && quickAddSheet && quickAddBackdrop) {
+  closeQuickAdd();
   quickAddOpenButton.addEventListener("click", openQuickAdd);
   quickAddBackdrop.addEventListener("click", closeQuickAdd);
+  window.addEventListener("pageshow", closeQuickAdd);
 
   quickAddCloseButtons.forEach((button) => {
     button.addEventListener("click", closeQuickAdd);
@@ -783,6 +829,7 @@ const goalRangeRadios = document.querySelectorAll('input[name="goal-range"]');
 const goalDashboardPanels = document.querySelectorAll("[data-goal-view]");
 const goalNavLinks = document.querySelectorAll("[data-goal-nav]");
 const goalMetricGroups = document.querySelectorAll("[data-goal-metrics]");
+const goalAddButton = document.querySelector("[data-goal-add-button]");
 
 const goalMetricData = {
   short: {
@@ -844,6 +891,20 @@ function updateGoalMetrics(view, range) {
   });
 }
 
+function syncGoalAddButton(view) {
+  if (!goalAddButton) {
+    return;
+  }
+
+  const selectedView = view === "long" ? "long" : "short";
+  const goalType = selectedView === "long" ? "long-term" : "short-term";
+  const goalLabel = selectedView === "long" ? "Add Long-Term Goal" : "Add Short-Term Goal";
+
+  goalAddButton.setAttribute("href", `./goal-editor.html?goalType=${goalType}`);
+  goalAddButton.setAttribute("aria-label", goalLabel);
+  goalAddButton.setAttribute("title", goalLabel);
+}
+
 function applyGoalDashboardView(view, options = {}) {
   const selectedView = goalMetricData[view] ? view : "short";
   const selectedRange = options.range === "month" || options.range === "all"
@@ -869,6 +930,7 @@ function applyGoalDashboardView(view, options = {}) {
 
   localStorage.setItem("timenest-goal-view", selectedView);
   updateGoalMetrics(selectedView, selectedRange);
+  syncGoalAddButton(selectedView);
   document.title = selectedView === "long" ? "TimeNest Goals - Long-Term" : "TimeNest Goals";
 
   if (shouldUpdateUrl && window.history && typeof window.history.replaceState === "function") {
@@ -920,7 +982,11 @@ const habitCalendarData = {
       "Daily at 06:30 AM. Green dots show finished workouts, red dots show missed sessions, and gray dots mark future days.",
     streak: 14,
     reliability: 88,
-    completedDays: [1, 2, 4, 5, 7, 8, 9, 11, 12, 14, 15, 16, 18, 19, 21, 22, 23, 25, 26, 28]
+    completedDays: [1, 2],
+    history: {
+      "2026-03": [1, 2, 3, 5, 7, 8, 10, 11, 12, 14, 15, 17, 18, 19, 21, 22, 24, 25, 26, 28, 29, 31],
+      "2026-02": [1, 2, 4, 5, 6, 8, 9, 11, 12, 13, 15, 16, 18, 19, 20, 22, 23, 25, 26, 27]
+    }
   },
   "marathi-practice": {
     name: "Marathi Practice",
@@ -928,7 +994,11 @@ const habitCalendarData = {
       "Daily at 08:00 PM. This tracker helps you keep the language streak visible for every day of the month.",
     streak: 11,
     reliability: 76,
-    completedDays: [1, 3, 4, 5, 7, 8, 10, 11, 13, 14, 16, 18, 19, 21, 22, 24, 25, 27]
+    completedDays: [1],
+    history: {
+      "2026-03": [1, 2, 4, 5, 6, 8, 10, 11, 13, 14, 15, 17, 18, 20, 21, 23, 24, 26, 27, 29, 30],
+      "2026-02": [1, 3, 4, 6, 7, 9, 10, 12, 13, 15, 16, 18, 19, 21, 22, 24, 25, 27]
+    }
   },
   "sleep-routine": {
     name: "Sleep Routine",
@@ -936,9 +1006,31 @@ const habitCalendarData = {
       "Night routine at 10:30 PM. Review the month to see where the habit stayed consistent and where recovery is needed.",
     streak: 7,
     reliability: 61,
-    completedDays: [2, 3, 5, 6, 9, 10, 12, 13, 17, 18, 20, 21, 24, 25, 27]
+    completedDays: [2],
+    history: {
+      "2026-03": [2, 3, 4, 6, 7, 9, 10, 13, 14, 16, 17, 20, 21, 23, 24, 27, 28, 30],
+      "2026-02": [1, 2, 5, 6, 8, 9, 12, 13, 15, 16, 19, 20, 22, 23, 26, 27]
+    }
   }
 };
+
+function parseHabitMonthParam(value) {
+  if (!value || !/^\d{4}-\d{2}$/.test(value)) {
+    return null;
+  }
+
+  const [yearValue, monthValue] = value.split("-").map(Number);
+  if (
+    !Number.isInteger(yearValue) ||
+    !Number.isInteger(monthValue) ||
+    monthValue < 1 ||
+    monthValue > 12
+  ) {
+    return null;
+  }
+
+  return new Date(yearValue, monthValue - 1, 1);
+}
 
 function slugifyHabitName(value) {
   return (value || "")
@@ -948,12 +1040,89 @@ function slugifyHabitName(value) {
     .replace(/^-+|-+$/g, "");
 }
 
+const habitCalendarStorageKey = "timenest-habit-calendar-v1";
+
+function getHabitMonthKey(year, month) {
+  return `${year}-${String(month + 1).padStart(2, "0")}`;
+}
+
+function readHabitCalendarStorage() {
+  try {
+    const rawValue = window.localStorage.getItem(habitCalendarStorageKey);
+    return rawValue ? JSON.parse(rawValue) : {};
+  } catch (error) {
+    return {};
+  }
+}
+
+function writeHabitCalendarStorage(value) {
+  try {
+    window.localStorage.setItem(habitCalendarStorageKey, JSON.stringify(value));
+  } catch (error) {
+    // Ignore storage write failures so the calendar remains usable.
+  }
+}
+
+function getHabitCompletionDays(habitKey, monthKey, fallbackDays) {
+  const storedState = readHabitCalendarStorage();
+  const storedDays = storedState?.[habitKey]?.[monthKey];
+  if (Array.isArray(storedDays)) {
+    return storedDays
+      .map((day) => Number(day))
+      .filter((day) => Number.isInteger(day) && day > 0)
+      .sort((leftDay, rightDay) => leftDay - rightDay);
+  }
+
+  return [...fallbackDays].sort((leftDay, rightDay) => leftDay - rightDay);
+}
+
+function saveHabitCompletionDays(habitKey, monthKey, completedDays) {
+  const storedState = readHabitCalendarStorage();
+  const nextState = {
+    ...storedState,
+    [habitKey]: {
+      ...(storedState[habitKey] || {}),
+      [monthKey]: [...completedDays].sort((leftDay, rightDay) => leftDay - rightDay)
+    }
+  };
+
+  writeHabitCalendarStorage(nextState);
+}
+
+function calculateHabitStreak(completedDays, upToDay) {
+  let streak = 0;
+
+  for (let day = upToDay; day >= 1; day -= 1) {
+    if (!completedDays.has(day)) {
+      break;
+    }
+
+    streak += 1;
+  }
+
+  return streak;
+}
+
+function calculateHabitReliability(completedDays, upToDay) {
+  if (upToDay <= 0) {
+    return 0;
+  }
+
+  return Math.round((completedDays.size / upToDay) * 100);
+}
+
 const habitCalendarGrid = document.getElementById("habit-calendar-grid");
 const habitCalendarTitle = document.getElementById("habit-calendar-title");
 const habitCalendarSummary = document.getElementById("habit-calendar-summary");
 const habitCalendarStreak = document.getElementById("habit-calendar-streak");
 const habitCalendarSideCopy = document.getElementById("habit-calendar-side-copy");
 const habitCalendarMonthLabel = document.getElementById("habit-calendar-month-label");
+const habitCalendarMonthInput = document.getElementById("habit-calendar-month-input");
+const habitCalendarPrevMonth = document.getElementById("habit-month-prev");
+const habitCalendarNextMonth = document.getElementById("habit-month-next");
+const habitCompletedCount = document.getElementById("habit-completed-count");
+const habitMissedCount = document.getElementById("habit-missed-count");
+const habitFutureCount = document.getElementById("habit-future-count");
 const habitSelectors = document.querySelectorAll(".habit-selector");
 
 if (
@@ -962,7 +1131,13 @@ if (
   habitCalendarSummary &&
   habitCalendarStreak &&
   habitCalendarSideCopy &&
-  habitCalendarMonthLabel
+  habitCalendarMonthLabel &&
+  habitCalendarMonthInput &&
+  habitCalendarPrevMonth &&
+  habitCalendarNextMonth &&
+  habitCompletedCount &&
+  habitMissedCount &&
+  habitFutureCount
 ) {
   const params = new URLSearchParams(window.location.search);
   const requestedHabit = slugifyHabitName(params.get("habit"));
@@ -971,89 +1146,258 @@ if (
     : Object.keys(habitCalendarData)[0];
   const activeHabit = habitCalendarData[activeHabitKey];
   const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
-  const todayKey = `${year}-${month}-${today.getDate()}`;
-  const monthLabel = today.toLocaleDateString(undefined, {
-    month: "long",
-    year: "numeric"
-  });
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const currentMonthDate = new Date(today.getFullYear(), today.getMonth(), 1);
+  const requestedMonthDate = parseHabitMonthParam(params.get("month"));
+  const minMonthDate = new Date(currentMonthDate.getFullYear(), currentMonthDate.getMonth() - 11, 1);
+  let selectedMonthDate =
+    requestedMonthDate && requestedMonthDate <= currentMonthDate
+      ? requestedMonthDate
+      : currentMonthDate;
+  if (selectedMonthDate < minMonthDate) {
+    selectedMonthDate = minMonthDate;
+  }
   const weekdayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const completedDays = new Set(activeHabit.completedDays);
+  let activeMonthKey = "";
+  let activeEditableDayLimit = 0;
+  let activeDaysInMonth = 0;
+  let activeViewYear = currentMonthDate.getFullYear();
+  let activeViewMonth = currentMonthDate.getMonth();
+  let completedDays = new Set();
 
   habitCalendarTitle.textContent = `${activeHabit.name} calendar`;
   habitCalendarSummary.textContent = activeHabit.summary;
-  habitCalendarStreak.textContent = `${activeHabit.streak} Days`;
-  habitCalendarSideCopy.textContent = `${activeHabit.reliability}% completion reliability this month.`;
-  habitCalendarMonthLabel.textContent = monthLabel;
 
-  habitSelectors.forEach((selector) => {
-    selector.classList.toggle(
-      "is-active",
-      slugifyHabitName(new URL(selector.href).searchParams.get("habit")) === activeHabitKey
-    );
-  });
-
-  habitCalendarGrid.innerHTML = "";
-
-  weekdayLabels.forEach((label) => {
-    const weekday = document.createElement("div");
-    weekday.className = "habit-weekday";
-    weekday.textContent = label;
-    habitCalendarGrid.appendChild(weekday);
-  });
-
-  for (let index = 0; index < firstDay; index += 1) {
-    const emptyCell = document.createElement("div");
-    emptyCell.className = "habit-day-cell is-empty";
-    habitCalendarGrid.appendChild(emptyCell);
+  function updateHabitCalendarQuery() {
+    const nextUrl = new URL(window.location.href);
+    nextUrl.searchParams.set("habit", activeHabit.name);
+    nextUrl.searchParams.set("month", activeMonthKey);
+    window.history.replaceState({}, "", nextUrl);
   }
 
-  for (let day = 1; day <= daysInMonth; day += 1) {
-    const currentDate = new Date(year, month, day);
-    const isFuture = currentDate > new Date(year, month, today.getDate());
-    const isComplete = !isFuture && completedDays.has(day);
-    const cell = document.createElement("div");
-    const cellKey = `${year}-${month}-${day}`;
-    const dotTone = isFuture ? "future" : isComplete ? "complete" : "missed";
-    const stateLabel = isFuture ? "Future" : isComplete ? "Completed" : "Missed";
-
-    cell.className = `habit-day-cell ${isFuture ? "is-future" : ""}`.trim();
-    if (cellKey === todayKey) {
-      cell.classList.add("is-today");
+  function getDefaultHabitDaysForMonth(monthKey) {
+    if (activeHabit.history?.[monthKey]) {
+      return activeHabit.history[monthKey];
     }
 
-    cell.innerHTML = `
-      <strong class="habit-day-number">${day}</strong>
-      <div class="habit-day-meta">
-        <span class="habit-status-dot is-${dotTone}" aria-hidden="true"></span>
-        <span class="habit-day-state">${stateLabel}</span>
-      </div>
-    `;
-
-    habitCalendarGrid.appendChild(cell);
+    return monthKey === getHabitMonthKey(today.getFullYear(), today.getMonth())
+      ? activeHabit.completedDays
+      : [];
   }
 
-  const trailingCellCount = (7 - ((firstDay + daysInMonth) % 7)) % 7;
-  for (let index = 0; index < trailingCellCount; index += 1) {
-    const emptyCell = document.createElement("div");
-    emptyCell.className = "habit-day-cell is-empty";
-    habitCalendarGrid.appendChild(emptyCell);
+  function syncHabitMonthControls() {
+    habitCalendarMonthInput.value = activeMonthKey;
+    habitCalendarMonthInput.max = getHabitMonthKey(
+      currentMonthDate.getFullYear(),
+      currentMonthDate.getMonth()
+    );
+    habitCalendarMonthInput.min = getHabitMonthKey(
+      minMonthDate.getFullYear(),
+      minMonthDate.getMonth()
+    );
+    habitCalendarPrevMonth.disabled =
+      activeViewYear === minMonthDate.getFullYear() &&
+      activeViewMonth === minMonthDate.getMonth();
+    habitCalendarNextMonth.disabled =
+      activeViewYear === currentMonthDate.getFullYear() &&
+      activeViewMonth === currentMonthDate.getMonth();
   }
+
+  function syncHabitSelectorLinks() {
+    habitSelectors.forEach((selector) => {
+      const selectorUrl = new URL(selector.href, window.location.href);
+      const selectorHabit = selectorUrl.searchParams.get("habit") || selector.textContent?.trim() || "";
+      selectorUrl.searchParams.set("habit", selectorHabit);
+      selectorUrl.searchParams.set("month", activeMonthKey);
+      selector.href = selectorUrl.toString();
+      selector.classList.toggle(
+        "is-active",
+        slugifyHabitName(selectorHabit) === activeHabitKey
+      );
+    });
+  }
+
+  function updateHabitOverview() {
+    const completedCount = completedDays.size;
+    const missedCount = Math.max(activeEditableDayLimit - completedCount, 0);
+    const futureCount = Math.max(activeDaysInMonth - activeEditableDayLimit, 0);
+    const streak = calculateHabitStreak(completedDays, activeEditableDayLimit);
+    const reliability = calculateHabitReliability(completedDays, activeEditableDayLimit);
+    const isCurrentMonthView =
+      activeViewYear === today.getFullYear() && activeViewMonth === today.getMonth();
+    habitCalendarStreak.textContent = `${streak} Days`;
+    habitCalendarSideCopy.textContent = `${reliability}% completion reliability for ${habitCalendarMonthLabel.textContent}. ${isCurrentMonthView ? "Tap today or any earlier day" : "Tap any day"} to update the record.`;
+    habitCompletedCount.textContent = String(completedCount).padStart(2, "0");
+    habitMissedCount.textContent = String(missedCount).padStart(2, "0");
+    habitFutureCount.textContent = String(futureCount).padStart(2, "0");
+  }
+
+  function renderHabitCalendar() {
+    activeViewYear = selectedMonthDate.getFullYear();
+    activeViewMonth = selectedMonthDate.getMonth();
+    activeMonthKey = getHabitMonthKey(activeViewYear, activeViewMonth);
+    const monthLabel = selectedMonthDate.toLocaleDateString(undefined, {
+      month: "long",
+      year: "numeric"
+    });
+    const firstDay = new Date(activeViewYear, activeViewMonth, 1).getDay();
+    activeDaysInMonth = new Date(activeViewYear, activeViewMonth + 1, 0).getDate();
+    const isCurrentMonthView =
+      activeViewYear === today.getFullYear() && activeViewMonth === today.getMonth();
+    activeEditableDayLimit = isCurrentMonthView ? today.getDate() : activeDaysInMonth;
+    const fallbackCompletedDays = getDefaultHabitDaysForMonth(activeMonthKey);
+    completedDays = new Set(
+      getHabitCompletionDays(activeHabitKey, activeMonthKey, fallbackCompletedDays).filter(
+        (day) => day <= activeEditableDayLimit
+      )
+    );
+
+    habitCalendarMonthLabel.textContent = monthLabel;
+    syncHabitMonthControls();
+    updateHabitCalendarQuery();
+    syncHabitSelectorLinks();
+    habitCalendarGrid.innerHTML = "";
+
+    weekdayLabels.forEach((label) => {
+      const weekday = document.createElement("div");
+      weekday.className = "habit-weekday";
+      weekday.textContent = label;
+      habitCalendarGrid.appendChild(weekday);
+    });
+
+    for (let index = 0; index < firstDay; index += 1) {
+      const emptyCell = document.createElement("div");
+      emptyCell.className = "habit-day-cell is-empty";
+      habitCalendarGrid.appendChild(emptyCell);
+    }
+
+    for (let day = 1; day <= activeDaysInMonth; day += 1) {
+      const currentDate = new Date(activeViewYear, activeViewMonth, day);
+      const isFuture = day > activeEditableDayLimit;
+      const isComplete = !isFuture && completedDays.has(day);
+      const cell = document.createElement("button");
+      const cellKey = `${activeViewYear}-${activeViewMonth}-${day}`;
+      const dotTone = isFuture ? "future" : isComplete ? "complete" : "missed";
+      const stateLabel = isFuture ? "Future" : isComplete ? "Completed" : "Missed";
+      const fullDateLabel = currentDate.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+
+      cell.type = "button";
+      cell.className = `habit-day-cell ${isFuture ? "is-future" : ""} ${isComplete ? "is-complete" : ""}`.trim();
+      cell.dataset.habitDay = String(day);
+      cell.disabled = isFuture;
+      cell.setAttribute("aria-pressed", String(isComplete));
+      cell.setAttribute(
+        "aria-label",
+        `${activeHabit.name}, ${fullDateLabel}, ${stateLabel}${isFuture ? "" : ". Tap to toggle completion."}`
+      );
+
+      const todayKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+      if (cellKey === todayKey) {
+        cell.classList.add("is-today");
+      }
+
+      cell.innerHTML = `
+        <strong class="habit-day-number">${day}</strong>
+        <div class="habit-day-meta">
+          <span class="habit-status-dot is-${dotTone}" aria-hidden="true"></span>
+          <span class="habit-day-state">${stateLabel}</span>
+        </div>
+      `;
+
+      habitCalendarGrid.appendChild(cell);
+    }
+
+    const trailingCellCount = (7 - ((firstDay + activeDaysInMonth) % 7)) % 7;
+    for (let index = 0; index < trailingCellCount; index += 1) {
+      const emptyCell = document.createElement("div");
+      emptyCell.className = "habit-day-cell is-empty";
+      habitCalendarGrid.appendChild(emptyCell);
+    }
+
+    updateHabitOverview();
+  }
+
+  renderHabitCalendar();
+
+  habitCalendarMonthInput.addEventListener("change", () => {
+    const nextMonthDate = parseHabitMonthParam(habitCalendarMonthInput.value);
+    if (!nextMonthDate || nextMonthDate > currentMonthDate || nextMonthDate < minMonthDate) {
+      syncHabitMonthControls();
+      return;
+    }
+
+    selectedMonthDate = nextMonthDate;
+    renderHabitCalendar();
+  });
+
+  habitCalendarPrevMonth.addEventListener("click", () => {
+    const previousMonth = new Date(activeViewYear, activeViewMonth - 1, 1);
+    if (previousMonth < minMonthDate) {
+      return;
+    }
+
+    selectedMonthDate = previousMonth;
+    renderHabitCalendar();
+  });
+
+  habitCalendarNextMonth.addEventListener("click", () => {
+    const nextMonth = new Date(activeViewYear, activeViewMonth + 1, 1);
+    if (nextMonth > currentMonthDate) {
+      return;
+    }
+
+    selectedMonthDate = nextMonth;
+    renderHabitCalendar();
+  });
+
+  habitCalendarGrid.addEventListener("click", (event) => {
+    const clickedDay = event.target.closest("[data-habit-day]");
+    if (!clickedDay || clickedDay.disabled) {
+      return;
+    }
+
+    const selectedDay = Number(clickedDay.dataset.habitDay);
+    if (!Number.isInteger(selectedDay) || selectedDay > activeEditableDayLimit) {
+      return;
+    }
+
+    if (completedDays.has(selectedDay)) {
+      completedDays.delete(selectedDay);
+    } else {
+      completedDays.add(selectedDay);
+    }
+
+    saveHabitCompletionDays(activeHabitKey, activeMonthKey, completedDays);
+    renderHabitCalendar();
+  });
 }
 
 const taskBoard = document.querySelector("[data-task-board]");
 const taskBoardEmptyState = document.querySelector("[data-task-empty]");
-const taskFilterButtons = Array.from(document.querySelectorAll("[data-task-filter]"));
+const taskMetricButtons = Array.from(document.querySelectorAll("[data-task-filter]"));
 const taskFilterState = document.querySelector("[data-task-filter-state]");
+const taskViewInputs = Array.from(document.querySelectorAll("[data-task-view-input]"));
+const taskViewDueInputs = taskViewInputs.filter(
+  (input) => input.dataset.taskViewGroup === "due"
+);
+const taskViewStatusInputs = taskViewInputs.filter(
+  (input) => input.dataset.taskViewGroup === "status"
+);
+const taskViewCadenceInputs = taskViewInputs.filter(
+  (input) => input.dataset.taskViewGroup === "cadence"
+);
+const taskViewSummary = document.querySelector("[data-task-view-summary]");
+const taskViewReset = document.querySelector("[data-task-filter-reset]");
 const taskEmptyTitle = document.querySelector("[data-task-empty-title]");
 const taskEmptyCopy = document.querySelector("[data-task-empty-copy]");
 const defaultTaskEmptyTitle = taskEmptyTitle?.textContent || "No tasks left on this screen";
 const defaultTaskEmptyCopy =
   taskEmptyCopy?.textContent || "Use Add Task or Add Subtask to create a new item.";
-let activeTaskFilter = "";
+const defaultTaskCadenceValues = ["daily", "weekly", "monthly", "yearly"];
+let activeTaskMetricFilter = "";
 
 function getTaskItems() {
   if (!taskBoard) {
@@ -1063,44 +1407,142 @@ function getTaskItems() {
   return Array.from(taskBoard.querySelectorAll("[data-task-item]"));
 }
 
-function getTaskFilterLabel(filter) {
-  const matchingButton = taskFilterButtons.find(
+function getTaskMetricLabel(filter) {
+  const matchingButton = taskMetricButtons.find(
     (button) => button.dataset.taskFilter === filter
   );
   return matchingButton?.querySelector(".mini-label")?.textContent?.trim() || "All Tasks";
 }
 
-function taskMatchesFilter(taskItem, filter) {
-  if (!taskItem) {
-    return false;
+function getTaskInputLabel(inputs, value, fallbackLabel) {
+  const matchingInput = inputs.find((input) => input.value === value);
+  return matchingInput?.closest("label")?.querySelector("span")?.textContent?.trim() || fallbackLabel;
+}
+
+function getCheckedTaskInputValue(inputs, fallbackValue) {
+  return inputs.find((input) => input.checked)?.value || fallbackValue;
+}
+
+function getSelectedTaskCadences() {
+  return taskViewCadenceInputs.filter((input) => input.checked).map((input) => input.value);
+}
+
+function getTaskDueBuckets(taskItem) {
+  return (taskItem?.dataset.taskDue || "").split(/\s+/).filter(Boolean);
+}
+
+function getTaskCadence(taskItem) {
+  return taskItem?.dataset.taskCadence || "";
+}
+
+function isTaskComplete(taskItem) {
+  return taskItem?.classList.contains("is-complete");
+}
+
+function setSingleTaskViewValue(inputs, value) {
+  inputs.forEach((input) => {
+    input.checked = input.value === value;
+  });
+}
+
+function setTaskCadenceValues(values) {
+  const valueSet = new Set(values);
+  taskViewCadenceInputs.forEach((input) => {
+    input.checked = valueSet.has(input.value);
+  });
+}
+
+function resetTaskViewInputs() {
+  setSingleTaskViewValue(taskViewDueInputs, "this-week");
+  setSingleTaskViewValue(taskViewStatusInputs, "open");
+  setTaskCadenceValues(defaultTaskCadenceValues);
+}
+
+function sortTaskItemsByDueDate() {
+  if (!taskBoard) {
+    return;
   }
 
-  if (!filter) {
+  const sortedItems = getTaskItems().sort((leftTask, rightTask) => {
+    const leftSortKey = Number(leftTask.dataset.sortKey || Number.MAX_SAFE_INTEGER);
+    const rightSortKey = Number(rightTask.dataset.sortKey || Number.MAX_SAFE_INTEGER);
+    return leftSortKey - rightSortKey;
+  });
+
+  sortedItems.forEach((taskItem) => {
+    taskBoard.appendChild(taskItem);
+  });
+}
+
+function taskMatchesMetricFilter(taskItem, filter) {
+  if (!taskItem || !filter) {
     return true;
   }
 
+  if (filter === "due-today") {
+    return getTaskDueBuckets(taskItem).includes("due-today");
+  }
+
   if (filter === "completed") {
-    return taskItem.classList.contains("is-complete");
+    return isTaskComplete(taskItem);
+  }
+
+  if (filter === "recurring") {
+    return Boolean(getTaskCadence(taskItem));
+  }
+
+  if (filter === "overdue") {
+    return getTaskDueBuckets(taskItem).includes("overdue") && !isTaskComplete(taskItem);
   }
 
   const taskGroups = (taskItem.dataset.taskGroups || "").split(/\s+/).filter(Boolean);
   return taskGroups.includes(filter);
 }
 
+function taskMatchesViewFilters(taskItem) {
+  if (!taskItem) {
+    return false;
+  }
+
+  const dueValue = getCheckedTaskInputValue(taskViewDueInputs, "this-week");
+  const statusValue = getCheckedTaskInputValue(taskViewStatusInputs, "open");
+  const cadenceValues = getSelectedTaskCadences();
+  const taskDueBuckets = getTaskDueBuckets(taskItem);
+  const taskCadence = getTaskCadence(taskItem);
+
+  if (dueValue !== "view-all" && !taskDueBuckets.includes(dueValue)) {
+    return false;
+  }
+
+  if (statusValue === "open" && isTaskComplete(taskItem)) {
+    return false;
+  }
+
+  if (statusValue === "completed" && !isTaskComplete(taskItem)) {
+    return false;
+  }
+
+  if (!cadenceValues.length) {
+    return false;
+  }
+
+  return cadenceValues.includes(taskCadence);
+}
+
 function updateTaskSummaryCounts() {
   const taskItems = getTaskItems();
-  if (!taskFilterButtons.length) {
+  if (!taskMetricButtons.length) {
     return;
   }
 
-  taskFilterButtons.forEach((button) => {
+  taskMetricButtons.forEach((button) => {
     const filter = button.dataset.taskFilter || "";
     const countElement = button.querySelector("[data-task-count]");
     if (!countElement) {
       return;
     }
 
-    const matchingCount = taskItems.filter((taskItem) => taskMatchesFilter(taskItem, filter)).length;
+    const matchingCount = taskItems.filter((taskItem) => taskMatchesMetricFilter(taskItem, filter)).length;
     countElement.textContent = String(matchingCount).padStart(2, "0");
   });
 }
@@ -1118,6 +1560,36 @@ function syncSubtaskEmptyState(taskItem) {
   }
 }
 
+function updateTaskFilterState() {
+  const dueLabel = getTaskInputLabel(taskViewDueInputs, getCheckedTaskInputValue(taskViewDueInputs, "this-week"), "This Week");
+  const statusLabel = getTaskInputLabel(taskViewStatusInputs, getCheckedTaskInputValue(taskViewStatusInputs, "open"), "Open");
+  const cadenceValues = getSelectedTaskCadences();
+  let cadenceLabel = "no cadence selected";
+
+  if (cadenceValues.length === taskViewCadenceInputs.length) {
+    cadenceLabel = "all cadences";
+  } else if (cadenceValues.length === 1) {
+    cadenceLabel = getTaskInputLabel(taskViewCadenceInputs, cadenceValues[0], "selected cadence").toLowerCase();
+  } else if (cadenceValues.length > 1) {
+    cadenceLabel = `${cadenceValues.length} cadences`;
+  }
+
+  if (taskViewSummary) {
+    taskViewSummary.textContent = `${dueLabel}, ${statusLabel.toLowerCase()} tasks, ${cadenceLabel}`;
+  }
+
+  if (!taskFilterState) {
+    return;
+  }
+
+  if (activeTaskMetricFilter) {
+    taskFilterState.textContent = `${getTaskMetricLabel(activeTaskMetricFilter)} preset | ${dueLabel} | ${statusLabel}`;
+    return;
+  }
+
+  taskFilterState.textContent = `${dueLabel} | ${statusLabel} | ${cadenceLabel}`;
+}
+
 function syncTaskBoardEmptyState() {
   if (!taskBoard || !taskBoardEmptyState) {
     return;
@@ -1130,10 +1602,12 @@ function syncTaskBoardEmptyState() {
     return;
   }
 
-  if (!visibleTaskCount && activeTaskFilter) {
-    const filterLabel = getTaskFilterLabel(activeTaskFilter).toLowerCase();
-    taskEmptyTitle.textContent = `No ${filterLabel} tasks`;
-    taskEmptyCopy.textContent = "Try another summary card or add a new task.";
+  if (!visibleTaskCount) {
+    const dueLabel = getTaskInputLabel(taskViewDueInputs, getCheckedTaskInputValue(taskViewDueInputs, "this-week"), "This Week");
+    const statusLabel = getTaskInputLabel(taskViewStatusInputs, getCheckedTaskInputValue(taskViewStatusInputs, "open"), "Open").toLowerCase();
+    const presetLabel = activeTaskMetricFilter ? `${getTaskMetricLabel(activeTaskMetricFilter).toLowerCase()} preset` : "current filters";
+    taskEmptyTitle.textContent = "No tasks match this view";
+    taskEmptyCopy.textContent = `Try a different due window, status, or cadence selection. Current view: ${presetLabel}, ${dueLabel.toLowerCase()}, ${statusLabel}.`;
     return;
   }
 
@@ -1141,28 +1615,18 @@ function syncTaskBoardEmptyState() {
   taskEmptyCopy.textContent = defaultTaskEmptyCopy;
 }
 
-function updateTaskFilterState() {
-  if (!taskFilterState) {
-    return;
-  }
-
-  if (!activeTaskFilter) {
-    taskFilterState.textContent = "Showing all tasks";
-    return;
-  }
-
-  taskFilterState.textContent = `Showing ${getTaskFilterLabel(activeTaskFilter).toLowerCase()} tasks`;
-}
-
-function applyTaskBoardFilter(filter = activeTaskFilter) {
-  activeTaskFilter = filter || "";
+function applyTaskBoardFilter(filter = activeTaskMetricFilter) {
+  activeTaskMetricFilter = filter || "";
+  sortTaskItemsByDueDate();
 
   getTaskItems().forEach((taskItem) => {
-    taskItem.hidden = !taskMatchesFilter(taskItem, activeTaskFilter);
+    const isVisible =
+      taskMatchesViewFilters(taskItem) && taskMatchesMetricFilter(taskItem, activeTaskMetricFilter);
+    taskItem.hidden = !isVisible;
   });
 
-  taskFilterButtons.forEach((button) => {
-    const isActive = button.dataset.taskFilter === activeTaskFilter;
+  taskMetricButtons.forEach((button) => {
+    const isActive = button.dataset.taskFilter === activeTaskMetricFilter;
     button.classList.toggle("is-active", isActive);
     button.setAttribute("aria-pressed", String(isActive));
   });
@@ -1170,6 +1634,66 @@ function applyTaskBoardFilter(filter = activeTaskFilter) {
   updateTaskSummaryCounts();
   updateTaskFilterState();
   syncTaskBoardEmptyState();
+}
+
+function handleTaskViewInputChange() {
+  activeTaskMetricFilter = "";
+  applyTaskBoardFilter();
+}
+
+function bindSingleTaskViewGroup(inputs, fallbackValue) {
+  inputs.forEach((input) => {
+    input.addEventListener("change", () => {
+      if (input.checked) {
+        setSingleTaskViewValue(inputs, input.value);
+      } else if (!inputs.some((candidate) => candidate.checked)) {
+        setSingleTaskViewValue(inputs, fallbackValue);
+      }
+
+      handleTaskViewInputChange();
+    });
+  });
+}
+
+function applyTaskMetricPreset(filter) {
+  if (!filter) {
+    activeTaskMetricFilter = "";
+    applyTaskBoardFilter();
+    return;
+  }
+
+  if (activeTaskMetricFilter === filter) {
+    activeTaskMetricFilter = "";
+    resetTaskViewInputs();
+    applyTaskBoardFilter();
+    return;
+  }
+
+  resetTaskViewInputs();
+
+  if (filter === "due-today") {
+    setSingleTaskViewValue(taskViewDueInputs, "due-today");
+    setSingleTaskViewValue(taskViewStatusInputs, "all");
+  }
+
+  if (filter === "completed") {
+    setSingleTaskViewValue(taskViewDueInputs, "view-all");
+    setSingleTaskViewValue(taskViewStatusInputs, "completed");
+  }
+
+  if (filter === "recurring") {
+    setSingleTaskViewValue(taskViewDueInputs, "view-all");
+    setSingleTaskViewValue(taskViewStatusInputs, "all");
+    setTaskCadenceValues(defaultTaskCadenceValues);
+  }
+
+  if (filter === "overdue") {
+    setSingleTaskViewValue(taskViewDueInputs, "view-all");
+    setSingleTaskViewValue(taskViewStatusInputs, "open");
+  }
+
+  activeTaskMetricFilter = filter;
+  applyTaskBoardFilter(activeTaskMetricFilter);
 }
 
 function setTaskCompletionState(taskItem, isComplete) {
@@ -1191,7 +1715,7 @@ function setTaskCompletionState(taskItem, isComplete) {
   }
 
   if (completeText) {
-    completeText.textContent = isComplete ? completeLabel : "Mark Complete";
+    completeText.textContent = isComplete ? completeLabel : "Done";
   }
 
   if (statusPill) {
@@ -1218,7 +1742,7 @@ function setSubtaskCompletionState(subtaskItem, isComplete) {
   }
 
   if (completeText) {
-    completeText.textContent = isComplete ? completeLabel : "Complete";
+    completeText.textContent = isComplete ? completeLabel : "Done";
   }
 
   if (stateLabel) {
@@ -1236,12 +1760,27 @@ if (taskBoard) {
     });
   });
 
-  taskFilterButtons.forEach((button) => {
+  bindSingleTaskViewGroup(taskViewDueInputs, "this-week");
+  bindSingleTaskViewGroup(taskViewStatusInputs, "open");
+
+  taskViewCadenceInputs.forEach((input) => {
+    input.addEventListener("change", handleTaskViewInputChange);
+  });
+
+  taskMetricButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const selectedFilter = button.dataset.taskFilter || "";
-      applyTaskBoardFilter(activeTaskFilter === selectedFilter ? "" : selectedFilter);
+      applyTaskMetricPreset(selectedFilter);
     });
   });
+
+  if (taskViewReset) {
+    taskViewReset.addEventListener("click", () => {
+      activeTaskMetricFilter = "";
+      resetTaskViewInputs();
+      applyTaskBoardFilter();
+    });
+  }
 
   applyTaskBoardFilter();
 
@@ -1263,7 +1802,7 @@ if (taskBoard) {
         if (subtaskItem) {
           subtaskItem.remove();
           syncSubtaskEmptyState(parentTask);
-          applyTaskBoardFilter(activeTaskFilter);
+          applyTaskBoardFilter(activeTaskMetricFilter);
         }
 
         return;
@@ -1272,7 +1811,7 @@ if (taskBoard) {
       const taskItem = clickedDelete.closest("[data-task-item]");
       if (taskItem) {
         taskItem.remove();
-        applyTaskBoardFilter(activeTaskFilter);
+        applyTaskBoardFilter(activeTaskMetricFilter);
       }
 
       return;
@@ -1289,14 +1828,14 @@ if (taskBoard) {
         subtaskItem,
         clickedComplete.getAttribute("aria-pressed") !== "true"
       );
-      applyTaskBoardFilter(activeTaskFilter);
+      applyTaskBoardFilter(activeTaskMetricFilter);
       return;
     }
 
     const taskItem = clickedComplete.closest("[data-task-item]");
     if (taskItem) {
       setTaskCompletionState(taskItem, clickedComplete.getAttribute("aria-pressed") !== "true");
-      applyTaskBoardFilter(activeTaskFilter);
+      applyTaskBoardFilter(activeTaskMetricFilter);
     }
   });
 }
