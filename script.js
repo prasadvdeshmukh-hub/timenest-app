@@ -546,12 +546,142 @@ const quickAddUrlButtons = document.querySelectorAll("[data-add-url]");
 const pageSearchParams = new URLSearchParams(window.location.search);
 const hideOnQuickAddElements = document.querySelectorAll("[data-hide-on-quick-add]");
 const isQuickAddEntry = pageSearchParams.get("entry") === "quick-add";
+const closeWindowPageFallbacks = {
+  "forgot-password.html": "./login.html",
+  "goal-detail.html": "./goals.html",
+  "goal-editor.html": "./goals.html",
+  "habit-editor.html": "./calendar.html?view=habits",
+  "notifications.html": "./index.html",
+  "profile.html": "./index.html",
+  "settings.html": "./index.html",
+  "signup.html": "./login.html",
+  "subtask-editor.html": "./daily-tasks.html",
+  "task-detail.html": "./daily-tasks.html",
+  "task-editor.html": "./daily-tasks.html"
+};
+const closeWindowStorageKey = "timenest-close-return";
+
+function getPageName(urlLike = window.location.href) {
+  try {
+    return new URL(urlLike, window.location.href).pathname.split("/").pop().toLowerCase();
+  } catch (error) {
+    return "";
+  }
+}
+
+function normalizeAppUrl(urlLike) {
+  if (!urlLike) {
+    return "";
+  }
+
+  try {
+    const nextUrl = new URL(urlLike, window.location.href);
+    if (nextUrl.origin !== window.location.origin) {
+      return "";
+    }
+
+    return `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`;
+  } catch (error) {
+    return "";
+  }
+}
+
+function getCurrentAppUrl() {
+  return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+}
+
+function getStoredCloseReturn(pageName) {
+  const rawValue = sessionStorage.getItem(closeWindowStorageKey);
+  if (!rawValue) {
+    return "";
+  }
+
+  try {
+    const parsedValue = JSON.parse(rawValue);
+    if (parsedValue?.targetPage !== pageName) {
+      return "";
+    }
+
+    return normalizeAppUrl(parsedValue.returnTo);
+  } catch (error) {
+    return "";
+  }
+}
+
+function storeCloseReturn(urlLike) {
+  const targetPage = getPageName(urlLike);
+  if (!closeWindowPageFallbacks[targetPage]) {
+    return;
+  }
+
+  sessionStorage.setItem(
+    closeWindowStorageKey,
+    JSON.stringify({
+      targetPage,
+      returnTo: getCurrentAppUrl()
+    })
+  );
+}
+
+function resolveCloseReturnUrl() {
+  const currentPage = getPageName();
+  const currentUrl = getCurrentAppUrl();
+  const requestedReturn = normalizeAppUrl(pageSearchParams.get("returnTo"));
+  const storedReturn = getStoredCloseReturn(currentPage);
+  const referrerReturn = normalizeAppUrl(document.referrer);
+  const candidates = [requestedReturn, storedReturn, referrerReturn];
+
+  for (const candidate of candidates) {
+    if (candidate && candidate !== currentUrl) {
+      return candidate;
+    }
+  }
+
+  return closeWindowPageFallbacks[currentPage] || "./index.html";
+}
+
+function mountCloseWindowButton() {
+  const currentPage = getPageName();
+  if (!closeWindowPageFallbacks[currentPage] || document.querySelector("[data-window-close-button]")) {
+    return;
+  }
+
+  const closeButton = document.createElement("button");
+  closeButton.type = "button";
+  closeButton.className = "window-close-button";
+  closeButton.setAttribute("aria-label", "Close window and go back");
+  closeButton.setAttribute("title", "Close");
+  closeButton.dataset.windowCloseButton = "true";
+  closeButton.innerHTML = '<span aria-hidden="true">×</span>';
+  closeButton.addEventListener("click", () => {
+    const nextUrl = resolveCloseReturnUrl();
+    sessionStorage.removeItem(closeWindowStorageKey);
+    window.location.href = nextUrl;
+  });
+
+  document.body.append(closeButton);
+}
 
 if (hideOnQuickAddElements.length && isQuickAddEntry) {
   hideOnQuickAddElements.forEach((element) => {
     element.hidden = true;
   });
 }
+
+document.addEventListener(
+  "click",
+  (event) => {
+    const link = event.target.closest("a[href]");
+    if (!link || link.target === "_blank" || link.hasAttribute("download")) {
+      return;
+    }
+
+    storeCloseReturn(link.href);
+  },
+  true
+);
+
+mountCloseWindowButton();
 
 function setQuickAddStep(step) {
   quickAddSteps.forEach((panel) => {
@@ -604,6 +734,7 @@ if (quickAddOpenButton && quickAddSheet && quickAddBackdrop) {
     button.addEventListener("click", () => {
       const targetUrl = button.dataset.addUrl;
       if (targetUrl) {
+        storeCloseReturn(targetUrl);
         window.location.href = targetUrl;
       }
     });
@@ -620,8 +751,9 @@ if (quickAddOpenButton && quickAddSheet && quickAddBackdrop) {
   });
 }
 
-const goalDetailViews = {
-  "completed-goals": {
+const goalDetailDrilldowns = {
+  short: {
+    completed: {
     eyebrow: "Completed Goals",
     title: "Completed goals closed with strong finish quality",
     summary:
@@ -644,7 +776,7 @@ const goalDetailViews = {
       { label: "Week 3", title: "Results shared", copy: "Wins were rolled into the next planning cycle and monthly recap." }
     ]
   },
-  "in-progress": {
+    active: {
     eyebrow: "Goals In Progress",
     title: "Active goals moving through the current sprint",
     summary:
@@ -667,7 +799,7 @@ const goalDetailViews = {
       { label: "Later", title: "Reminder tuning", copy: "After the UI stabilizes, reminders and recurrences get their next pass." }
     ]
   },
-  "completed-on-time": {
+    "on-time": {
     eyebrow: "Completed On Time",
     title: "On-time delivery trend across current goal work",
     summary:
@@ -690,7 +822,7 @@ const goalDetailViews = {
       { label: "20:00", title: "Closeout review", copy: "Evening review locks in what shipped and what needs rescheduling." }
     ]
   },
-  "delayed-goals": {
+    delayed: {
     eyebrow: "Delayed Goals",
     title: "Goals needing intervention before they drift further",
     summary:
@@ -712,7 +844,109 @@ const goalDetailViews = {
       { label: "Step 2", title: "Shrink next milestone", copy: "Convert the recovery target into a smaller, achievable checkpoint." },
       { label: "Step 3", title: "Track daily", copy: "Use the dashboard to review recovery progress until the goal is back on track." }
     ]
+    }
+  },
+  long: {
+    completed: {
+      eyebrow: "Completed Long-Term Goals",
+      title: "Long-term goals that closed key milestones successfully",
+      summary:
+        "These long-term goals hit meaningful yearly checkpoints and moved into maintenance or the next strategic phase.",
+      statusText: "Completed",
+      statusTone: "good",
+      start: "Milestone closed: 28 Mar 2026",
+      target: "Annual review: 30 Jun 2026",
+      progressValue: "100%",
+      timelineLabel: "Milestone Archive",
+      tasks: [
+        { title: "Finalize TimeNest MVP milestone", meta: "Done Â· Core release checkpoint marked complete", badge: "Done", tone: "good" },
+        { title: "Close annual savings milestone", meta: "Done Â· Reserve target for the quarter achieved", badge: "Done", tone: "good" },
+        { title: "Complete Marathi fluency checkpoint", meta: "Done Â· Conversation benchmark reached", badge: "Done", tone: "good" },
+        { title: "Finish strength baseline block", meta: "Done Â· Mobility and performance review closed", badge: "Done", tone: "good" }
+      ],
+      timeline: [
+        { label: "Q1", title: "Roadmap commitment cleared", copy: "Core annual milestones were completed without pushing scope into the next cycle." },
+        { label: "Q2", title: "Review and document", copy: "Each finished goal was recorded with lessons, risks, and carry-forward ideas." },
+        { label: "Q3", title: "Transition to next phase", copy: "Closed yearly goals now feed the next strategic milestone or maintenance rhythm." }
+      ]
+    },
+    active: {
+      eyebrow: "Active Long-Term Goals",
+      title: "Long-term goals progressing through the yearly roadmap",
+      summary:
+        "These goals are still moving through active execution with milestone pacing, task support, and monthly reviews.",
+      statusText: "In Progress",
+      statusTone: "warn",
+      start: "Year plan started: 01 Jan 2026",
+      target: "Next milestone review: 30 Apr 2026",
+      progressValue: "63%",
+      timelineLabel: "Yearly Momentum",
+      tasks: [
+        { title: "Ship auth and dashboard milestone", meta: "Active Â· Product roadmap remains in motion", badge: "Active", tone: "warn" },
+        { title: "Grow savings runway checkpoint", meta: "Planned Â· Monthly review still open", badge: "Planned", tone: "warn" },
+        { title: "Deepen Marathi speaking practice", meta: "Queued Â· Fluency milestone scheduled", badge: "Queued", tone: "warn" },
+        { title: "Advance annual fitness target", meta: "Watch Â· Weekly consistency needs review", badge: "Watch", tone: "alert" }
+      ],
+      timeline: [
+        { label: "Q2", title: "Build current milestone", copy: "The active yearly goals are concentrated on the next meaningful milestone rather than the full annual scope." },
+        { label: "Q3", title: "Validate delivery pace", copy: "Monthly reviews confirm whether current progress is strong enough to hold the annual target." },
+        { label: "Q4", title: "Prepare closeout phase", copy: "The strongest active goals move into completion planning before the year-end review." }
+      ]
+    },
+    delayed: {
+      eyebrow: "Delayed Long-Term Goals",
+      title: "Long-term goals that need recovery before annual drift grows",
+      summary:
+        "These yearly goals slipped behind the expected pace and need smaller milestones, better support tasks, or timeline correction.",
+      statusText: "Needs Follow-Up",
+      statusTone: "alert",
+      start: "Delay noticed: 20 Mar 2026",
+      target: "Recovery checkpoint: 10 Apr 2026",
+      progressValue: "49%",
+      timelineLabel: "Recovery Map",
+      tasks: [
+        { title: "Reset annual savings milestone", meta: "Delayed Â· Contribution pace fell behind target", badge: "Delayed", tone: "alert" },
+        { title: "Stabilize sleep consistency plan", meta: "Delayed Â· Habit execution still uneven", badge: "Delayed", tone: "alert" },
+        { title: "Reduce yearly scope into smaller phases", meta: "Action Â· Break the roadmap into tighter checkpoints", badge: "Action", tone: "warn" },
+        { title: "Rebuild review cadence", meta: "Watch Â· Add stronger monthly follow-up", badge: "Watch", tone: "warn" }
+      ],
+      timeline: [
+        { label: "Step 1", title: "Identify the drag", copy: "Separate missed execution from unrealistic yearly pacing before deciding the recovery plan." },
+        { label: "Step 2", title: "Reset the milestone", copy: "Move the annual goal back onto a smaller checkpoint that can realistically be hit next." },
+        { label: "Step 3", title: "Track recovery weekly", copy: "Use shorter review loops until the yearly goal is back on sustainable pace." }
+      ]
+    },
+    "on-time": {
+      eyebrow: "Long-Term Goals On Time",
+      title: "Yearly goals staying on schedule across milestone reviews",
+      summary:
+        "This view highlights the long-term goals that are still landing milestones on time and protecting yearly momentum.",
+      statusText: "On Time",
+      statusTone: "good",
+      start: "Tracking window: Jan to Apr 2026",
+      target: "Annual schedule health: 78%",
+      progressValue: "78%",
+      timelineLabel: "Schedule Reliability",
+      tasks: [
+        { title: "Quarter roadmap checkpoint", meta: "On Time Â· Product milestone landed within plan", badge: "On Time", tone: "good" },
+        { title: "Savings review cycle", meta: "On Time Â· Monthly audit completed in target window", badge: "On Time", tone: "good" },
+        { title: "Language fluency review", meta: "On Time Â· Practice review logged on schedule", badge: "On Time", tone: "good" },
+        { title: "Fitness baseline reassessment", meta: "On Time Â· Review completed before due week", badge: "On Time", tone: "good" }
+      ],
+      timeline: [
+        { label: "Month 1", title: "Commit early", copy: "Early milestone commitment makes the rest of the yearly schedule easier to protect." },
+        { label: "Month 2", title: "Review consistently", copy: "Regular milestone reviews keep long-term goals from quietly drifting." },
+        { label: "Month 3", title: "Correct quickly", copy: "On-time performance stays high when small slips are fixed before the next review cycle." }
+      ]
+    }
   }
+};
+
+const legacyGoalDetailAliases = {
+  "completed-goals": { view: "short", metric: "completed" },
+  "in-progress": { view: "short", metric: "active" },
+  "completed-on-time": { view: "short", metric: "on-time" },
+  "delayed-goals": { view: "short", metric: "delayed" }
 };
 
 function renderGoalDetailItems(items) {
@@ -769,8 +1003,13 @@ if (
   goalDetailTimeline &&
   goalDetailTimelineLabel
 ) {
-  const metric = new URLSearchParams(window.location.search).get("metric");
-  const detailView = goalDetailViews[metric] || null;
+  const goalDetailParams = new URLSearchParams(window.location.search);
+  const requestedView = goalDetailParams.get("view") === "long" ? "long" : "short";
+  const requestedMetric = goalDetailParams.get("metric") || "";
+  const legacyDetail = legacyGoalDetailAliases[requestedMetric] || null;
+  const detailView = legacyDetail
+    ? goalDetailDrilldowns[legacyDetail.view]?.[legacyDetail.metric] || null
+    : goalDetailDrilldowns[requestedView]?.[requestedMetric] || null;
 
   if (detailView) {
     goalDetailEyebrow.textContent = detailView.eyebrow;
@@ -834,30 +1073,30 @@ const goalAddButton = document.querySelector("[data-goal-add-button]");
 const goalMetricData = {
   short: {
     all: [
-      { label: "Completed", value: "12" },
-      { label: "Active", value: "08" },
-      { label: "Delayed", value: "03" },
-      { label: "On Time", value: "91%" }
+      { key: "completed", label: "Completed", value: "12" },
+      { key: "active", label: "Active", value: "08" },
+      { key: "delayed", label: "Delayed", value: "03" },
+      { key: "on-time", label: "On Time", value: "91%" }
     ],
     month: [
-      { label: "Completed", value: "04" },
-      { label: "Active", value: "05" },
-      { label: "Delayed", value: "01" },
-      { label: "On Time", value: "94%" }
+      { key: "completed", label: "Completed", value: "04" },
+      { key: "active", label: "Active", value: "05" },
+      { key: "delayed", label: "Delayed", value: "01" },
+      { key: "on-time", label: "On Time", value: "94%" }
     ]
   },
   long: {
     all: [
-      { label: "Ahead", value: "03" },
-      { label: "Review", value: "02" },
-      { label: "At Risk", value: "01" },
-      { label: "Health", value: "78%" }
+      { key: "completed", label: "Completed", value: "03" },
+      { key: "active", label: "Active", value: "02" },
+      { key: "delayed", label: "Delayed", value: "01" },
+      { key: "on-time", label: "On Time", value: "78%" }
     ],
     month: [
-      { label: "Ahead", value: "01" },
-      { label: "Review", value: "02" },
-      { label: "At Risk", value: "00" },
-      { label: "Health", value: "84%" }
+      { key: "completed", label: "Completed", value: "01" },
+      { key: "active", label: "Active", value: "02" },
+      { key: "delayed", label: "Delayed", value: "00" },
+      { key: "on-time", label: "On Time", value: "84%" }
     ]
   }
 };
@@ -888,6 +1127,13 @@ function updateGoalMetrics(view, range) {
 
     label.textContent = metric.label;
     value.textContent = metric.value;
+    card.dataset.goalMetricKey = metric.key;
+
+    if (card instanceof HTMLAnchorElement) {
+      card.href = `./goal-detail.html?view=${selectedView}&metric=${metric.key}&range=${selectedRange}`;
+      card.setAttribute("aria-label", `Open ${metric.label} goals drill-down`);
+      card.setAttribute("title", `${metric.label} goals`);
+    }
   });
 }
 
@@ -1378,25 +1624,15 @@ if (
 const taskBoard = document.querySelector("[data-task-board]");
 const taskBoardEmptyState = document.querySelector("[data-task-empty]");
 const taskMetricButtons = Array.from(document.querySelectorAll("[data-task-filter]"));
-const taskFilterState = document.querySelector("[data-task-filter-state]");
-const taskViewInputs = Array.from(document.querySelectorAll("[data-task-view-input]"));
-const taskViewDueInputs = taskViewInputs.filter(
-  (input) => input.dataset.taskViewGroup === "due"
-);
-const taskViewStatusInputs = taskViewInputs.filter(
-  (input) => input.dataset.taskViewGroup === "status"
-);
-const taskViewCadenceInputs = taskViewInputs.filter(
-  (input) => input.dataset.taskViewGroup === "cadence"
-);
-const taskViewSummary = document.querySelector("[data-task-view-summary]");
+const taskViewDueSelect = document.querySelector('[data-task-view-select="due"]');
+const taskViewStatusSelect = document.querySelector('[data-task-view-select="status"]');
+const taskViewCadenceSelect = document.querySelector('[data-task-view-select="cadence"]');
 const taskViewReset = document.querySelector("[data-task-filter-reset]");
 const taskEmptyTitle = document.querySelector("[data-task-empty-title]");
 const taskEmptyCopy = document.querySelector("[data-task-empty-copy]");
 const defaultTaskEmptyTitle = taskEmptyTitle?.textContent || "No tasks left on this screen";
 const defaultTaskEmptyCopy =
   taskEmptyCopy?.textContent || "Use Add Task or Add Subtask to create a new item.";
-const defaultTaskCadenceValues = ["daily", "weekly", "monthly", "yearly"];
 let activeTaskMetricFilter = "";
 
 function getTaskItems() {
@@ -1414,17 +1650,12 @@ function getTaskMetricLabel(filter) {
   return matchingButton?.querySelector(".mini-label")?.textContent?.trim() || "All Tasks";
 }
 
-function getTaskInputLabel(inputs, value, fallbackLabel) {
-  const matchingInput = inputs.find((input) => input.value === value);
-  return matchingInput?.closest("label")?.querySelector("span")?.textContent?.trim() || fallbackLabel;
+function getTaskSelectLabel(select, fallbackLabel) {
+  return select?.selectedOptions?.[0]?.textContent?.trim() || fallbackLabel;
 }
 
-function getCheckedTaskInputValue(inputs, fallbackValue) {
-  return inputs.find((input) => input.checked)?.value || fallbackValue;
-}
-
-function getSelectedTaskCadences() {
-  return taskViewCadenceInputs.filter((input) => input.checked).map((input) => input.value);
+function getTaskSelectValue(select, fallbackValue) {
+  return select?.value || fallbackValue;
 }
 
 function getTaskDueBuckets(taskItem) {
@@ -1439,23 +1670,16 @@ function isTaskComplete(taskItem) {
   return taskItem?.classList.contains("is-complete");
 }
 
-function setSingleTaskViewValue(inputs, value) {
-  inputs.forEach((input) => {
-    input.checked = input.value === value;
-  });
-}
-
-function setTaskCadenceValues(values) {
-  const valueSet = new Set(values);
-  taskViewCadenceInputs.forEach((input) => {
-    input.checked = valueSet.has(input.value);
-  });
+function setTaskSelectValue(select, value) {
+  if (select) {
+    select.value = value;
+  }
 }
 
 function resetTaskViewInputs() {
-  setSingleTaskViewValue(taskViewDueInputs, "this-week");
-  setSingleTaskViewValue(taskViewStatusInputs, "open");
-  setTaskCadenceValues(defaultTaskCadenceValues);
+  setTaskSelectValue(taskViewDueSelect, "this-week");
+  setTaskSelectValue(taskViewStatusSelect, "open");
+  setTaskSelectValue(taskViewCadenceSelect, "all");
 }
 
 function sortTaskItemsByDueDate() {
@@ -1504,9 +1728,9 @@ function taskMatchesViewFilters(taskItem) {
     return false;
   }
 
-  const dueValue = getCheckedTaskInputValue(taskViewDueInputs, "this-week");
-  const statusValue = getCheckedTaskInputValue(taskViewStatusInputs, "open");
-  const cadenceValues = getSelectedTaskCadences();
+  const dueValue = getTaskSelectValue(taskViewDueSelect, "this-week");
+  const statusValue = getTaskSelectValue(taskViewStatusSelect, "open");
+  const cadenceValue = getTaskSelectValue(taskViewCadenceSelect, "all");
   const taskDueBuckets = getTaskDueBuckets(taskItem);
   const taskCadence = getTaskCadence(taskItem);
 
@@ -1522,11 +1746,11 @@ function taskMatchesViewFilters(taskItem) {
     return false;
   }
 
-  if (!cadenceValues.length) {
+  if (cadenceValue !== "all" && taskCadence !== cadenceValue) {
     return false;
   }
 
-  return cadenceValues.includes(taskCadence);
+  return true;
 }
 
 function updateTaskSummaryCounts() {
@@ -1561,33 +1785,11 @@ function syncSubtaskEmptyState(taskItem) {
 }
 
 function updateTaskFilterState() {
-  const dueLabel = getTaskInputLabel(taskViewDueInputs, getCheckedTaskInputValue(taskViewDueInputs, "this-week"), "This Week");
-  const statusLabel = getTaskInputLabel(taskViewStatusInputs, getCheckedTaskInputValue(taskViewStatusInputs, "open"), "Open");
-  const cadenceValues = getSelectedTaskCadences();
-  let cadenceLabel = "no cadence selected";
-
-  if (cadenceValues.length === taskViewCadenceInputs.length) {
-    cadenceLabel = "all cadences";
-  } else if (cadenceValues.length === 1) {
-    cadenceLabel = getTaskInputLabel(taskViewCadenceInputs, cadenceValues[0], "selected cadence").toLowerCase();
-  } else if (cadenceValues.length > 1) {
-    cadenceLabel = `${cadenceValues.length} cadences`;
-  }
-
-  if (taskViewSummary) {
-    taskViewSummary.textContent = `${dueLabel}, ${statusLabel.toLowerCase()} tasks, ${cadenceLabel}`;
-  }
-
-  if (!taskFilterState) {
-    return;
-  }
-
-  if (activeTaskMetricFilter) {
-    taskFilterState.textContent = `${getTaskMetricLabel(activeTaskMetricFilter)} preset | ${dueLabel} | ${statusLabel}`;
-    return;
-  }
-
-  taskFilterState.textContent = `${dueLabel} | ${statusLabel} | ${cadenceLabel}`;
+  const dueLabel = getTaskSelectLabel(taskViewDueSelect, "This Week");
+  const statusLabel = getTaskSelectLabel(taskViewStatusSelect, "Open");
+  const cadenceLabel = getTaskSelectValue(taskViewCadenceSelect, "all") === "all"
+    ? "all cadences"
+    : getTaskSelectLabel(taskViewCadenceSelect, "selected cadence").toLowerCase();
 }
 
 function syncTaskBoardEmptyState() {
@@ -1603,8 +1805,8 @@ function syncTaskBoardEmptyState() {
   }
 
   if (!visibleTaskCount) {
-    const dueLabel = getTaskInputLabel(taskViewDueInputs, getCheckedTaskInputValue(taskViewDueInputs, "this-week"), "This Week");
-    const statusLabel = getTaskInputLabel(taskViewStatusInputs, getCheckedTaskInputValue(taskViewStatusInputs, "open"), "Open").toLowerCase();
+    const dueLabel = getTaskSelectLabel(taskViewDueSelect, "This Week");
+    const statusLabel = getTaskSelectLabel(taskViewStatusSelect, "Open").toLowerCase();
     const presetLabel = activeTaskMetricFilter ? `${getTaskMetricLabel(activeTaskMetricFilter).toLowerCase()} preset` : "current filters";
     taskEmptyTitle.textContent = "No tasks match this view";
     taskEmptyCopy.textContent = `Try a different due window, status, or cadence selection. Current view: ${presetLabel}, ${dueLabel.toLowerCase()}, ${statusLabel}.`;
@@ -1641,20 +1843,6 @@ function handleTaskViewInputChange() {
   applyTaskBoardFilter();
 }
 
-function bindSingleTaskViewGroup(inputs, fallbackValue) {
-  inputs.forEach((input) => {
-    input.addEventListener("change", () => {
-      if (input.checked) {
-        setSingleTaskViewValue(inputs, input.value);
-      } else if (!inputs.some((candidate) => candidate.checked)) {
-        setSingleTaskViewValue(inputs, fallbackValue);
-      }
-
-      handleTaskViewInputChange();
-    });
-  });
-}
-
 function applyTaskMetricPreset(filter) {
   if (!filter) {
     activeTaskMetricFilter = "";
@@ -1672,24 +1860,24 @@ function applyTaskMetricPreset(filter) {
   resetTaskViewInputs();
 
   if (filter === "due-today") {
-    setSingleTaskViewValue(taskViewDueInputs, "due-today");
-    setSingleTaskViewValue(taskViewStatusInputs, "all");
+    setTaskSelectValue(taskViewDueSelect, "due-today");
+    setTaskSelectValue(taskViewStatusSelect, "all");
   }
 
   if (filter === "completed") {
-    setSingleTaskViewValue(taskViewDueInputs, "view-all");
-    setSingleTaskViewValue(taskViewStatusInputs, "completed");
+    setTaskSelectValue(taskViewDueSelect, "view-all");
+    setTaskSelectValue(taskViewStatusSelect, "completed");
   }
 
   if (filter === "recurring") {
-    setSingleTaskViewValue(taskViewDueInputs, "view-all");
-    setSingleTaskViewValue(taskViewStatusInputs, "all");
-    setTaskCadenceValues(defaultTaskCadenceValues);
+    setTaskSelectValue(taskViewDueSelect, "view-all");
+    setTaskSelectValue(taskViewStatusSelect, "all");
+    setTaskSelectValue(taskViewCadenceSelect, "all");
   }
 
   if (filter === "overdue") {
-    setSingleTaskViewValue(taskViewDueInputs, "view-all");
-    setSingleTaskViewValue(taskViewStatusInputs, "open");
+    setTaskSelectValue(taskViewDueSelect, "view-all");
+    setTaskSelectValue(taskViewStatusSelect, "open");
   }
 
   activeTaskMetricFilter = filter;
@@ -1760,11 +1948,8 @@ if (taskBoard) {
     });
   });
 
-  bindSingleTaskViewGroup(taskViewDueInputs, "this-week");
-  bindSingleTaskViewGroup(taskViewStatusInputs, "open");
-
-  taskViewCadenceInputs.forEach((input) => {
-    input.addEventListener("change", handleTaskViewInputChange);
+  [taskViewDueSelect, taskViewStatusSelect, taskViewCadenceSelect].forEach((select) => {
+    select?.addEventListener("change", handleTaskViewInputChange);
   });
 
   taskMetricButtons.forEach((button) => {

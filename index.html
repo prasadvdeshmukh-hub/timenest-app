@@ -124,6 +124,7 @@
                 <span class="focus-text">Execution rhythm this week</span>
                 <span class="focus-value">83%</span>
               </div>
+
               <div class="focus-bars" aria-hidden="true">
                 <span></span>
                 <span></span>
@@ -135,6 +136,100 @@
               <p class="focus-footnote">
                 Daily summary scheduled for 8:00 AM and 8:00 PM.
               </p>
+            </article>
+          </section>
+
+          <section class="stats-grid dashboard-status-board" aria-label="Dashboard status board">
+            <article class="dashboard-status-overview panel">
+              <h3 class="dashboard-status-board-title">Status Board</h3>
+
+              <div class="dashboard-status-overview-tools">
+                <fieldset class="dashboard-range-toggle" aria-label="Dashboard time range">
+                  <legend>View Range</legend>
+                  <div class="task-filter-chip-grid">
+                    <label class="task-filter-option">
+                      <input type="radio" name="dashboard-range" value="all" checked />
+                      <span>All</span>
+                    </label>
+                    <label class="task-filter-option">
+                      <input type="radio" name="dashboard-range" value="this-month" />
+                      <span>This Month</span>
+                    </label>
+                  </div>
+                </fieldset>
+              </div>
+            </article>
+
+            <article class="dashboard-status-group panel">
+              <h3 class="dashboard-status-title">Tasks</h3>
+
+              <div class="task-summary-grid dashboard-summary-grid">
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-open" href="./daily-tasks.html?status=open">
+                  <p class="mini-label">Open</p>
+                  <strong>09</strong>
+                </a>
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" href="./daily-tasks.html?status=completed">
+                  <p class="mini-label">Completed</p>
+                  <strong>12</strong>
+                </a>
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-delayed" href="./daily-tasks.html?status=delayed">
+                  <p class="mini-label">Delayed</p>
+                  <strong>03</strong>
+                </a>
+              </div>
+            </article>
+
+            <article class="dashboard-status-group panel">
+              <h3 class="dashboard-status-title">Short-Term Goals</h3>
+
+              <div class="task-summary-grid dashboard-summary-grid">
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-open" href="./goals.html?view=short&status=open">
+                  <p class="mini-label">Open</p>
+                  <strong>08</strong>
+                </a>
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" href="./goals.html?view=short&status=completed">
+                  <p class="mini-label">Completed</p>
+                  <strong>12</strong>
+                </a>
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-delayed" href="./goals.html?view=short&status=delayed">
+                  <p class="mini-label">Delayed</p>
+                  <strong>03</strong>
+                </a>
+              </div>
+            </article>
+
+            <article class="dashboard-status-group panel">
+              <h3 class="dashboard-status-title">Long-Term Goals</h3>
+
+              <div class="task-summary-grid dashboard-summary-grid">
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-open" href="./goals.html?view=long&status=open">
+                  <p class="mini-label">Open</p>
+                  <strong>03</strong>
+                </a>
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" href="./goals.html?view=long&status=completed">
+                  <p class="mini-label">Completed</p>
+                  <strong>02</strong>
+                </a>
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-delayed" href="./goals.html?view=long&status=delayed">
+                  <p class="mini-label">Delayed</p>
+                  <strong>01</strong>
+                </a>
+              </div>
+            </article>
+
+            <article class="dashboard-status-group panel">
+              <h3 class="dashboard-status-title">Habits</h3>
+
+              <div class="task-summary-grid dashboard-summary-grid is-duo">
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" href="./calendar.html?view=habits&status=completed">
+                  <p class="mini-label">Completed</p>
+                  <strong>14</strong>
+                </a>
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-skipped" href="./calendar.html?view=habits&status=skipped">
+                  <p class="mini-label">Skipped</p>
+                  <strong>02</strong>
+                </a>
+              </div>
             </article>
           </section>
 
@@ -150,29 +245,6 @@
                 <a class="task-tool-tab" href="./calendar.html?view=habits">Habits</a>
               </div>
             </article>
-          </section>
-
-          <section class="stats-grid" aria-label="Goal progress summary">
-            <a class="stat-card stat-link panel accent-cyan" href="./goal-detail.html?metric=completed-goals">
-              <p class="stat-label">Completed Goals</p>
-              <strong>12</strong>
-              <span>Finished this month</span>
-            </a>
-            <a class="stat-card stat-link panel accent-blue" href="./goal-detail.html?metric=in-progress">
-              <p class="stat-label">In Progress</p>
-              <strong>06</strong>
-              <span>Short-term + long-term</span>
-            </a>
-            <a class="stat-card stat-link panel accent-gold" href="./goal-detail.html?metric=completed-on-time">
-              <p class="stat-label">Completed On Time</p>
-              <strong>09</strong>
-              <span>Deadline accuracy</span>
-            </a>
-            <a class="stat-card stat-link panel accent-coral" href="./goal-detail.html?metric=delayed-goals">
-              <p class="stat-label">Delayed Goals</p>
-              <strong>03</strong>
-              <span>Needs follow-up</span>
-            </a>
           </section>
 
           <section class="content-grid">
@@ -274,7 +346,7 @@
     </main>
 
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
-      <a class="tab-link is-active" href="./index.html">Dashboard</a>
+      <a class="tab-link is-active" href="./index.html">Home</a>
       <a class="tab-link" href="./goals.html">Goals</a>
       <a class="tab-link" href="./daily-tasks.html">Tasks</a>
       <a class="tab-link" href="./calendar.html?view=habits">Habits</a>

@@ -69,76 +69,42 @@
             <fieldset class="task-filter-group">
               <legend>Due Window</legend>
               <p class="task-filter-helper">Pick one</p>
-              <div class="task-filter-chip-grid">
-                <label class="task-filter-option">
-                  <input type="checkbox" value="due-today" data-task-view-input data-task-view-group="due" />
-                  <span>Due Today</span>
-                </label>
-                <label class="task-filter-option">
-                  <input type="checkbox" value="this-week" data-task-view-input data-task-view-group="due" checked />
-                  <span>This Week</span>
-                </label>
-                <label class="task-filter-option">
-                  <input type="checkbox" value="this-month" data-task-view-input data-task-view-group="due" />
-                  <span>This Month</span>
-                </label>
-                <label class="task-filter-option">
-                  <input type="checkbox" value="this-year" data-task-view-input data-task-view-group="due" />
-                  <span>This Year</span>
-                </label>
-                <label class="task-filter-option">
-                  <input type="checkbox" value="view-all" data-task-view-input data-task-view-group="due" />
-                  <span>View All</span>
-                </label>
+              <div class="task-filter-select-wrap">
+                <select class="task-filter-select" data-task-view-select="due" aria-label="Due Window">
+                  <option value="due-today">Due Today</option>
+                  <option value="this-week" selected>This Week</option>
+                  <option value="this-month">This Month</option>
+                  <option value="this-year">This Year</option>
+                  <option value="view-all">View All</option>
+                </select>
               </div>
             </fieldset>
 
             <fieldset class="task-filter-group">
               <legend>Status</legend>
               <p class="task-filter-helper">Pick one</p>
-              <div class="task-filter-chip-grid">
-                <label class="task-filter-option">
-                  <input type="checkbox" value="open" data-task-view-input data-task-view-group="status" checked />
-                  <span>Open</span>
-                </label>
-                <label class="task-filter-option">
-                  <input type="checkbox" value="completed" data-task-view-input data-task-view-group="status" />
-                  <span>Completed</span>
-                </label>
-                <label class="task-filter-option">
-                  <input type="checkbox" value="all" data-task-view-input data-task-view-group="status" />
-                  <span>All</span>
-                </label>
+              <div class="task-filter-select-wrap">
+                <select class="task-filter-select" data-task-view-select="status" aria-label="Status">
+                  <option value="open" selected>Open</option>
+                  <option value="completed">Completed</option>
+                  <option value="all">All</option>
+                </select>
               </div>
             </fieldset>
 
-            <fieldset class="task-filter-group task-filter-group-wide">
+            <fieldset class="task-filter-group">
               <legend>Task Cadence</legend>
-              <p class="task-filter-helper">Pick any</p>
-              <div class="task-filter-chip-grid task-filter-chip-grid-wide">
-                <label class="task-filter-option">
-                  <input type="checkbox" value="daily" data-task-view-input data-task-view-group="cadence" checked />
-                  <span>Daily Task</span>
-                </label>
-                <label class="task-filter-option">
-                  <input type="checkbox" value="weekly" data-task-view-input data-task-view-group="cadence" checked />
-                  <span>Weekly Task</span>
-                </label>
-                <label class="task-filter-option">
-                  <input type="checkbox" value="monthly" data-task-view-input data-task-view-group="cadence" checked />
-                  <span>Monthly Task</span>
-                </label>
-                <label class="task-filter-option">
-                  <input type="checkbox" value="yearly" data-task-view-input data-task-view-group="cadence" checked />
-                  <span>Yearly Task</span>
-                </label>
+              <p class="task-filter-helper">Pick one</p>
+              <div class="task-filter-select-wrap">
+                <select class="task-filter-select" data-task-view-select="cadence" aria-label="Task Cadence">
+                  <option value="all" selected>All Cadences</option>
+                  <option value="daily">Daily Task</option>
+                  <option value="weekly">Weekly Task</option>
+                  <option value="monthly">Monthly Task</option>
+                  <option value="yearly">Yearly Task</option>
+                </select>
               </div>
             </fieldset>
-          </div>
-
-          <div class="task-filter-summary">
-            <span class="soft-pill task-filter-summary-pill" data-task-view-summary>This week, open tasks, all cadences</span>
-            <span class="task-filter-note">Sorted by nearest due date</span>
           </div>
         </article>
 
@@ -149,7 +115,6 @@
                 <p class="mini-label">Task Streams</p>
                 <h2 class="section-title">Main tasks and subtasks</h2>
               </div>
-              <span class="soft-pill task-panel-tip" data-task-filter-state>Showing this week open tasks</span>
             </div>
 
             <div class="task-management-list" id="task-stream-list" data-task-board>
@@ -582,7 +547,7 @@
       <span aria-hidden="true">+</span>
     </a>
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
-      <a class="tab-link" href="./index.html">Dashboard</a>
+      <a class="tab-link" href="./index.html">Home</a>
       <a class="tab-link" href="./goals.html">Goals</a>
       <a class="tab-link is-active" href="./daily-tasks.html">Tasks</a>
       <a class="tab-link" href="./calendar.html?view=habits">Habits</a>

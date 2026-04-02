@@ -70,68 +70,55 @@
 
         <section class="goal-dashboard-panel" data-goal-view="short">
           <section class="metric-grid goal-metric-grid" data-goal-metrics="short">
-            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>Completed</p><strong data-goal-metric-value>12</strong></article>
-            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>Active</p><strong data-goal-metric-value>08</strong></article>
-            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>Delayed</p><strong data-goal-metric-value>03</strong></article>
-            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>On Time</p><strong data-goal-metric-value>91%</strong></article>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="completed" href="./goal-detail.html?view=short&metric=completed"><p class="mini-label" data-goal-metric-label>Completed</p><strong data-goal-metric-value>12</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="active" href="./goal-detail.html?view=short&metric=active"><p class="mini-label" data-goal-metric-label>Active</p><strong data-goal-metric-value>08</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="delayed" href="./goal-detail.html?view=short&metric=delayed"><p class="mini-label" data-goal-metric-label>Delayed</p><strong data-goal-metric-value>03</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="on-time" href="./goal-detail.html?view=short&metric=on-time"><p class="mini-label" data-goal-metric-label>On Time</p><strong data-goal-metric-value>91%</strong></a>
           </section>
 
-          <section class="page-hero goal-page-hero">
+          <section class="page-hero goal-page-hero goal-page-hero-long">
             <article class="hero-panel-large panel">
-              <h1 class="section-title goal-hero-title">Short-term goals for the next 30 to 90 days</h1>
-              <div class="chip-row">
+              <h1 class="section-title goal-hero-title goal-hero-title-long">Short-term goals shaping the next quarter</h1>
+              <div class="chip-row goal-hero-actions-single">
                 <a class="soft-pill" href="./goal-editor.html?goalType=short-term">Add Goal</a>
-                <a class="soft-pill" href="./task-editor.html">Add Task</a>
-                <a class="soft-pill" href="./goal-detail.html?metric=in-progress">Goal Detail</a>
-                <span class="status-pill good">8 On Track</span>
               </div>
             </article>
             <article class="hero-panel-side panel">
-              <p class="mini-label">Snapshot</p>
-              <strong class="value-big">12</strong>
-              <p>Short-term goals active with a steady execution pace and clear due-date visibility.</p>
+              <p class="mini-label">Sprint Health</p>
+              <strong class="value-big">91%</strong>
+              <p>Short-term goals are moving with clear weekly momentum and a focused execution board.</p>
             </article>
           </section>
 
-          <section class="goal-grid">
-            <article class="goal-card">
-              <p class="mini-label">Fitness Goal</p>
-              <h2>Finish 30-day strength cycle</h2>
-              <p>4 sessions left and recovery tasks are already scheduled.</p>
-              <div class="progress-bar"><span style="width: 84%"></span></div>
-              <div class="chip-row">
-                <span class="status-pill good">On Track</span>
-                <a class="soft-pill" href="./goal-detail.html">View</a>
+          <section class="content-split">
+            <article class="page-card panel">
+              <p class="mini-label">Portfolio</p>
+              <div class="surface-list goal-portfolio-list">
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Finish 30-day strength cycle</strong><small>30-day fitness sprint with 4 sessions left</small></div>
+                  <span class="status-pill good">84%</span>
+                </a>
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Build emergency buffer</strong><small>60-day savings checkpoint with 2 reviews left</small></div>
+                  <span class="status-pill warn">67%</span>
+                </a>
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Ship Flutter UI prototype</strong><small>45-day product sprint nearing dashboard polish</small></div>
+                  <span class="status-pill good">73%</span>
+                </a>
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Sleep before 11 PM for 21 days</strong><small>Recovery streak improving but still needs consistency</small></div>
+                  <span class="status-pill alert">58%</span>
+                </a>
               </div>
             </article>
-            <article class="goal-card">
-              <p class="mini-label">Finance Goal</p>
-              <h2>Build emergency buffer</h2>
-              <p>Auto-save rules are working and two review tasks remain.</p>
-              <div class="progress-bar"><span style="width: 67%"></span></div>
-              <div class="chip-row">
-                <span class="status-pill warn">Attention</span>
-                <a class="soft-pill" href="./goal-detail.html">View</a>
-              </div>
-            </article>
-            <article class="goal-card">
-              <p class="mini-label">Learning Goal</p>
-              <h2>Ship Flutter UI prototype</h2>
-              <p>Main review screens are in progress and dashboard polish is nearly done.</p>
-              <div class="progress-bar"><span style="width: 73%"></span></div>
-              <div class="chip-row">
-                <span class="status-pill good">In Flow</span>
-                <a class="soft-pill" href="./goal-detail.html">View</a>
-              </div>
-            </article>
-            <article class="goal-card">
-              <p class="mini-label">Health Goal</p>
-              <h2>Sleep before 11 PM for 21 days</h2>
-              <p>Night shutdown routine is improving the streak but still needs consistency.</p>
-              <div class="progress-bar"><span style="width: 58%"></span></div>
-              <div class="chip-row">
-                <span class="status-pill alert">Needs Fix</span>
-                <a class="soft-pill" href="./goal-detail.html">View</a>
+            <article class="page-card panel">
+              <p class="mini-label">Sprint Milestones</p>
+              <div class="timeline-stack">
+                <div class="timeline-item"><span class="timeline-time">Week 1</span><div><strong>Lock scope and owner path</strong><small>Set one clear weekly focus and one fallback action for each goal.</small></div></div>
+                <div class="timeline-item"><span class="timeline-time">Week 4</span><div><strong>Review blockers and rebalance effort</strong><small>Refocus work on delayed goals before they affect the full quarter.</small></div></div>
+                <div class="timeline-item"><span class="timeline-time">Week 8</span><div><strong>Push highest-value deliverables</strong><small>Close the strongest goals first and reduce drag on the remaining work.</small></div></div>
+                <div class="timeline-item"><span class="timeline-time">Week 12</span><div><strong>Close, carry, or reset</strong><small>Archive wins, roll over unfinished items, and prepare the next short-term board.</small></div></div>
               </div>
             </article>
           </section>
@@ -139,20 +126,17 @@
 
         <section class="goal-dashboard-panel" data-goal-view="long" hidden>
           <section class="metric-grid goal-metric-grid" data-goal-metrics="long">
-            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>Ahead</p><strong data-goal-metric-value>03</strong></article>
-            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>Review</p><strong data-goal-metric-value>02</strong></article>
-            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>At Risk</p><strong data-goal-metric-value>01</strong></article>
-            <article class="mini-metric panel" data-goal-metric-card><p class="mini-label" data-goal-metric-label>Health</p><strong data-goal-metric-value>78%</strong></article>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="completed" href="./goal-detail.html?view=long&metric=completed"><p class="mini-label" data-goal-metric-label>Completed</p><strong data-goal-metric-value>03</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="active" href="./goal-detail.html?view=long&metric=active"><p class="mini-label" data-goal-metric-label>Active</p><strong data-goal-metric-value>02</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="delayed" href="./goal-detail.html?view=long&metric=delayed"><p class="mini-label" data-goal-metric-label>Delayed</p><strong data-goal-metric-value>01</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="on-time" href="./goal-detail.html?view=long&metric=on-time"><p class="mini-label" data-goal-metric-label>On Time</p><strong data-goal-metric-value>78%</strong></a>
           </section>
 
-          <section class="page-hero goal-page-hero">
+          <section class="page-hero goal-page-hero goal-page-hero-long">
             <article class="hero-panel-large panel">
-              <h1 class="section-title goal-hero-title">Long-term goals shaping the next year</h1>
-              <div class="chip-row">
+              <h1 class="section-title goal-hero-title goal-hero-title-long">Long-term goals shaping the next year</h1>
+              <div class="chip-row goal-hero-actions-single">
                 <a class="soft-pill" href="./goal-editor.html?goalType=long-term">Add Goal</a>
-                <a class="soft-pill" href="./task-editor.html">Add Task</a>
-                <a class="soft-pill" href="./goal-detail.html?metric=completed-on-time">Goal Detail</a>
-                <span class="status-pill warn">3 Ahead</span>
               </div>
             </article>
             <article class="hero-panel-side panel">
@@ -165,11 +149,23 @@
           <section class="content-split">
             <article class="page-card panel">
               <p class="mini-label">Portfolio</p>
-              <div class="surface-list">
-                <a class="surface-item" href="./goal-detail.html"><div><strong>Launch TimeNest MVP</strong><small>12-month product goal</small></div><span class="status-pill good">81%</span></a>
-                <a class="surface-item" href="./goal-detail.html"><div><strong>Build financial freedom runway</strong><small>18-month savings target</small></div><span class="status-pill warn">63%</span></a>
-                <a class="surface-item" href="./goal-detail.html"><div><strong>Master Marathi communication</strong><small>12-month fluency track</small></div><span class="status-pill good">72%</span></a>
-                <a class="surface-item" href="./goal-detail.html"><div><strong>Reach advanced fitness baseline</strong><small>Annual strength and mobility target</small></div><span class="status-pill alert">49%</span></a>
+              <div class="surface-list goal-portfolio-list">
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Launch TimeNest MVP</strong><small>12-month product goal</small></div>
+                  <span class="status-pill good">81%</span>
+                </a>
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Build financial freedom runway</strong><small>18-month savings target</small></div>
+                  <span class="status-pill warn">63%</span>
+                </a>
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Master Marathi communication</strong><small>12-month fluency track</small></div>
+                  <span class="status-pill good">72%</span>
+                </a>
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Reach advanced fitness baseline</strong><small>Annual strength and mobility target</small></div>
+                  <span class="status-pill alert">49%</span>
+                </a>
               </div>
             </article>
             <article class="page-card panel">
@@ -193,7 +189,7 @@
       <span aria-hidden="true">+</span>
     </a>
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
-      <a class="tab-link" href="./index.html">Dashboard</a>
+      <a class="tab-link" href="./index.html">Home</a>
       <a class="tab-link is-active" href="./goals.html">Goals</a>
       <a class="tab-link" href="./daily-tasks.html">Tasks</a>
       <a class="tab-link" href="./calendar.html?view=habits">Habits</a>
