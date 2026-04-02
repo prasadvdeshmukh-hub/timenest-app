@@ -4103,7 +4103,7 @@ html[data-theme="light"] body.dashboard-home .task-tag {
   width: 100%;
   max-width: 100%;
   justify-self: stretch;
-  font-size: clamp(0.6rem, 1.02vw, 0.74rem);
+  font-size: clamp(0.5rem, 0.88vw, 0.64rem);
   line-height: 1;
   letter-spacing: -0.015em;
   white-space: nowrap;
@@ -6135,7 +6135,7 @@ html[data-theme="light"] body.dashboard-home .quick-add-close {
 
   #goal-toggle-title,
   .goal-hero-title-long {
-    font-size: 0.72rem;
+    font-size: 0.62rem;
   }
 
   .goal-hero-title {
@@ -6571,7 +6571,7 @@ html[data-theme="light"] body.dashboard-home .quick-add-close {
   }
 
   .goal-hero-title-long {
-    font-size: 0.52rem;
+    font-size: 0.42rem;
     line-height: 1.02;
   }
 
@@ -7052,7 +7052,7 @@ html[data-theme="light"] body.dashboard-home .quick-add-close {
   }
 
   .goal-hero-title-long {
-    font-size: 0.44rem;
+    font-size: 0.34rem;
     line-height: 1;
   }
 
