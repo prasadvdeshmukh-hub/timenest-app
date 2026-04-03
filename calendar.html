@@ -63,15 +63,86 @@
         </section>
       </section>
     </main>
-    <a class="floating-add-button floating-add-link" href="./habit-editor.html" aria-label="Add Habit" data-hide-on-quick-add>
+    <button
+      class="floating-add-button"
+      type="button"
+      data-quick-add-open
+      aria-controls="quick-add-sheet"
+      aria-expanded="false"
+      aria-label="Add a goal, task, or habit"
+    >
       <span aria-hidden="true">+</span>
-    </a>
+    </button>
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
       <a class="tab-link" href="./index.html">Home</a>
       <a class="tab-link" href="./goals.html">Goals</a>
       <a class="tab-link" href="./daily-tasks.html">Tasks</a>
       <a class="tab-link is-active" href="./calendar.html?view=habits">Habits</a>
     </nav>
+
+    <div class="quick-add-backdrop" data-quick-add-backdrop hidden></div>
+
+    <section
+      class="quick-add-sheet panel"
+      id="quick-add-sheet"
+      data-quick-add-sheet
+      aria-modal="true"
+      aria-label="Quick add"
+      hidden
+    >
+      <div class="quick-add-head">
+        <div>
+          <p class="mini-label">Quick Add</p>
+          <h3>Create from TimeNest</h3>
+        </div>
+        <button class="quick-add-close" type="button" data-quick-add-close aria-label="Close quick add">
+          &times;
+        </button>
+      </div>
+
+      <div class="quick-add-step is-active" data-quick-add-step="root">
+        <div class="quick-add-grid">
+          <button class="quick-add-option" type="button" data-add-choice="goal">
+            <strong>Goal</strong>
+            <span>Choose short-term or long-term before you continue.</span>
+          </button>
+          <button class="quick-add-option" type="button" data-add-url="./task-editor.html?entry=quick-add">
+            <strong>Task</strong>
+            <span>Open the task editor with reminders, due date, and priority.</span>
+          </button>
+          <button class="quick-add-option" type="button" data-add-url="./habit-editor.html?entry=quick-add">
+            <strong>Habit</strong>
+            <span>Create a recurring habit with streak tracking and reminders.</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="quick-add-step" data-quick-add-step="goal">
+        <div class="quick-add-grid">
+          <button
+            class="quick-add-option"
+            type="button"
+            data-add-url="./goal-editor.html?goalType=short-term&entry=quick-add"
+          >
+            <strong>Short-Term Goal</strong>
+            <span>Create a goal for the next 30 to 90 days.</span>
+          </button>
+          <button
+            class="quick-add-option"
+            type="button"
+            data-add-url="./goal-editor.html?goalType=long-term&entry=quick-add"
+          >
+            <strong>Long-Term Goal</strong>
+            <span>Create a milestone-based goal for the longer roadmap.</span>
+          </button>
+        </div>
+
+        <div class="quick-add-actions">
+          <button class="inline-button" type="button" data-quick-add-back>Back</button>
+        </div>
+      </div>
+    </section>
+
     <script src="./script.js"></script>
   </body>
 </html>

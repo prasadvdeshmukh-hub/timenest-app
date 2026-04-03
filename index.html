@@ -108,9 +108,9 @@
               <div class="hero-copy">
                 <h3>Good evening, Vihaan</h3>
                 <p>
-                  You have 6 active goals, 9 tasks due today, 9 goals completed
-                  on time, and 3 delayed goals needing attention before the
-                  deadline.
+                  Your dashboard is now synced so the status board, goals,
+                  tasks, and habits drill-downs all reflect the same live
+                  counts for the selected range.
                 </p>
               </div>
 
@@ -119,22 +119,102 @@
               </div>
             </article>
 
-            <article class="focus-card panel">
-              <div class="focus-head">
-                <span class="focus-text">Execution rhythm this week</span>
-                <span class="focus-value">83%</span>
+            <article class="focus-card panel dashboard-focus-card">
+              <div class="dashboard-focus-head">
+                <div class="dashboard-focus-copy">
+                  <span class="dashboard-focus-title">Execution score - last 7 days</span>
+                  <p class="dashboard-focus-subtext">
+                    Weekly average from completed tasks, on-time goals, and
+                    habit check-ins.
+                  </p>
+                </div>
+                <span class="dashboard-focus-value">83%</span>
               </div>
 
-              <div class="focus-bars" aria-hidden="true">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
+              <div class="dashboard-focus-body">
+                <div class="focus-chart-shell dashboard-focus-chart">
+                  <div class="focus-chart-meta" aria-hidden="true">
+                    <span>Daily Trend</span>
+                    <span class="focus-target-chip">Target 80%</span>
+                  </div>
+
+                  <svg
+                    class="focus-trend-visual"
+                    viewBox="0 0 320 118"
+                    role="img"
+                    aria-labelledby="focus-trend-title focus-trend-desc"
+                  >
+                    <title id="focus-trend-title">Execution progress across the last seven days</title>
+                    <desc id="focus-trend-desc">
+                      The execution score improved across the last seven days,
+                      rising from 72 percent to 91 percent with a 7-day average
+                      of 83 percent.
+                    </desc>
+                    <defs>
+                      <linearGradient id="focus-trend-fill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#5ce8ff" stop-opacity="0.36" />
+                        <stop offset="100%" stop-color="#7190ff" stop-opacity="0.02" />
+                      </linearGradient>
+                      <linearGradient id="focus-trend-line" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stop-color="#5ce8ff" />
+                        <stop offset="100%" stop-color="#8a8dff" />
+                      </linearGradient>
+                    </defs>
+
+                    <line class="focus-grid-line" x1="14" y1="92" x2="306" y2="92" />
+                    <line class="focus-grid-line is-target" x1="14" y1="57" x2="306" y2="57" />
+
+                    <path
+                      class="focus-trend-area"
+                      d="M 18 92 L 18 73 L 66 61 L 114 55 L 162 45 L 210 39 L 258 49 L 306 35 L 306 92 Z"
+                    />
+                    <path
+                      class="focus-trend-line"
+                      pathLength="100"
+                      d="M 18 73 L 66 61 L 114 55 L 162 45 L 210 39 L 258 49 L 306 35"
+                    />
+
+                    <g class="focus-point-group" aria-hidden="true">
+                      <circle class="focus-point" cx="18" cy="73" r="3.5" />
+                      <circle class="focus-point" cx="66" cy="61" r="3.5" />
+                      <circle class="focus-point" cx="114" cy="55" r="3.5" />
+                      <circle class="focus-point" cx="162" cy="45" r="3.5" />
+                      <circle class="focus-point" cx="210" cy="39" r="3.5" />
+                      <circle class="focus-point" cx="258" cy="49" r="3.5" />
+                      <circle class="focus-point-glow" cx="306" cy="35" r="8" />
+                      <circle class="focus-point is-current" cx="306" cy="35" r="5" />
+                    </g>
+                  </svg>
+
+                  <div class="focus-day-row" aria-hidden="true">
+                    <span>Sat</span>
+                    <span>Sun</span>
+                    <span>Mon</span>
+                    <span>Tue</span>
+                    <span>Wed</span>
+                    <span>Thu</span>
+                    <span>Fri</span>
+                  </div>
+                </div>
+
+                <div class="dashboard-focus-insights" aria-label="Weekly execution highlights">
+                  <span class="focus-chip">
+                    <strong>Best Day</strong>
+                    Fri - 91%
+                  </span>
+                  <span class="focus-chip">
+                    <strong>On Target</strong>
+                    5 of 7 days
+                  </span>
+                  <span class="focus-chip">
+                    <strong>Trend</strong>
+                    +19 pts
+                  </span>
+                </div>
               </div>
-              <p class="focus-footnote">
-                Daily summary scheduled for 8:00 AM and 8:00 PM.
+              <p class="dashboard-focus-footnote">
+                The chart stays compact on mobile while keeping the week-over-week
+                execution trend easy to scan at a glance.
               </p>
             </article>
           </section>
@@ -160,74 +240,74 @@
               </div>
             </article>
 
-            <article class="dashboard-status-group panel">
+            <article class="dashboard-status-group panel" data-dashboard-group="tasks">
               <h3 class="dashboard-status-title">Tasks</h3>
 
               <div class="task-summary-grid dashboard-summary-grid">
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-open" href="./daily-tasks.html?status=open">
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-open" data-dashboard-card data-dashboard-entity="tasks" data-dashboard-status="open" href="./daily-tasks.html?status=open&range=all">
                   <p class="mini-label">Open</p>
-                  <strong>09</strong>
+                  <strong data-dashboard-count>09</strong>
                 </a>
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" href="./daily-tasks.html?status=completed">
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" data-dashboard-card data-dashboard-entity="tasks" data-dashboard-status="completed" href="./daily-tasks.html?status=completed&range=all">
                   <p class="mini-label">Completed</p>
-                  <strong>12</strong>
+                  <strong data-dashboard-count>12</strong>
                 </a>
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-delayed" href="./daily-tasks.html?status=delayed">
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-delayed" data-dashboard-card data-dashboard-entity="tasks" data-dashboard-status="delayed" href="./daily-tasks.html?status=delayed&range=all">
                   <p class="mini-label">Delayed</p>
-                  <strong>03</strong>
+                  <strong data-dashboard-count>03</strong>
                 </a>
               </div>
             </article>
 
-            <article class="dashboard-status-group panel">
+            <article class="dashboard-status-group panel" data-dashboard-group="short-goals">
               <h3 class="dashboard-status-title">Short-Term Goals</h3>
 
               <div class="task-summary-grid dashboard-summary-grid">
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-open" href="./goals.html?view=short&status=open">
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-open" data-dashboard-card data-dashboard-entity="short-goals" data-dashboard-status="open" href="./goals.html?view=short&status=open&range=all">
                   <p class="mini-label">Open</p>
-                  <strong>08</strong>
+                  <strong data-dashboard-count>08</strong>
                 </a>
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" href="./goals.html?view=short&status=completed">
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" data-dashboard-card data-dashboard-entity="short-goals" data-dashboard-status="completed" href="./goals.html?view=short&status=completed&range=all">
                   <p class="mini-label">Completed</p>
-                  <strong>12</strong>
+                  <strong data-dashboard-count>12</strong>
                 </a>
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-delayed" href="./goals.html?view=short&status=delayed">
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-delayed" data-dashboard-card data-dashboard-entity="short-goals" data-dashboard-status="delayed" href="./goals.html?view=short&status=delayed&range=all">
                   <p class="mini-label">Delayed</p>
-                  <strong>03</strong>
+                  <strong data-dashboard-count>03</strong>
                 </a>
               </div>
             </article>
 
-            <article class="dashboard-status-group panel">
+            <article class="dashboard-status-group panel" data-dashboard-group="long-goals">
               <h3 class="dashboard-status-title">Long-Term Goals</h3>
 
               <div class="task-summary-grid dashboard-summary-grid">
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-open" href="./goals.html?view=long&status=open">
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-open" data-dashboard-card data-dashboard-entity="long-goals" data-dashboard-status="open" href="./goals.html?view=long&status=open&range=all">
                   <p class="mini-label">Open</p>
-                  <strong>03</strong>
+                  <strong data-dashboard-count>03</strong>
                 </a>
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" href="./goals.html?view=long&status=completed">
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" data-dashboard-card data-dashboard-entity="long-goals" data-dashboard-status="completed" href="./goals.html?view=long&status=completed&range=all">
                   <p class="mini-label">Completed</p>
-                  <strong>02</strong>
+                  <strong data-dashboard-count>02</strong>
                 </a>
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-delayed" href="./goals.html?view=long&status=delayed">
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-delayed" data-dashboard-card data-dashboard-entity="long-goals" data-dashboard-status="delayed" href="./goals.html?view=long&status=delayed&range=all">
                   <p class="mini-label">Delayed</p>
-                  <strong>01</strong>
+                  <strong data-dashboard-count>01</strong>
                 </a>
               </div>
             </article>
 
-            <article class="dashboard-status-group panel">
+            <article class="dashboard-status-group panel" data-dashboard-group="habits">
               <h3 class="dashboard-status-title">Habits</h3>
 
               <div class="task-summary-grid dashboard-summary-grid is-duo">
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" href="./calendar.html?view=habits&status=completed">
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" data-dashboard-card data-dashboard-entity="habits" data-dashboard-status="completed" href="./habits.html?status=completed&range=all">
                   <p class="mini-label">Completed</p>
-                  <strong>14</strong>
+                  <strong data-dashboard-count>14</strong>
                 </a>
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-skipped" href="./calendar.html?view=habits&status=skipped">
+                <a class="mini-metric panel task-summary-card dashboard-summary-card is-skipped" data-dashboard-card data-dashboard-entity="habits" data-dashboard-status="skipped" href="./habits.html?status=skipped&range=all">
                   <p class="mini-label">Skipped</p>
-                  <strong>02</strong>
+                  <strong data-dashboard-count>02</strong>
                 </a>
               </div>
             </article>

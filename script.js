@@ -949,7 +949,167 @@ const legacyGoalDetailAliases = {
   "delayed-goals": { view: "short", metric: "delayed" }
 };
 
+const goalDetailRangeOverrides = {
+  short: {
+    completed: {
+      month: {
+        summary:
+          "These short-term goals were fully completed in the current month and closed with the final review already logged.",
+        start: "Closed this month: Apr 2026",
+        target: "Monthly wrap-up: 30 Apr 2026",
+        tasks: [
+          { title: "Ship dashboard responsiveness pass", meta: "Done · Mobile view polish signed off", badge: "Done", tone: "good" },
+          { title: "Finish investor roadmap pack", meta: "Done · Shared during April review", badge: "Done", tone: "good" },
+          { title: "Close workout cycle streak", meta: "Done · Sprint habit target completed", badge: "Done", tone: "good" },
+          { title: "Publish Q1 learning wrap-up", meta: "Done · Monthly notes archived", badge: "Done", tone: "good" }
+        ]
+      }
+    },
+    active: {
+      month: {
+        summary:
+          "Five short-term goals are still active this month, each with live delivery work or a review still in flight.",
+        target: "Monthly checkpoint: 30 Apr 2026",
+        progressValue: "74%",
+        tasks: [
+          { title: "Refine dashboard light theme", meta: "Today · UI polish sprint", badge: "Active", tone: "warn" },
+          { title: "Connect recurring habit history", meta: "Tomorrow · Calendar flow", badge: "Planned", tone: "warn" },
+          { title: "Update goal editor shortcuts", meta: "05 Apr · Quick-add path", badge: "Queued", tone: "warn" },
+          { title: "Review delayed goal recovery plan", meta: "08 Apr · Weekly operations check", badge: "At Risk", tone: "alert" },
+          { title: "Finalize savings review checklist", meta: "11 Apr · Monthly budget checkpoint", badge: "Active", tone: "warn" }
+        ]
+      }
+    },
+    delayed: {
+      month: {
+        summary:
+          "Only one short-term goal is delayed this month, so the recovery work is focused and specific.",
+        progressValue: "61%",
+        tasks: [
+          { title: "Reset sleep routine consistency", meta: "Delayed · Habit misses need a tighter evening reset", badge: "Delayed", tone: "alert" }
+        ],
+        timeline: [
+          { label: "Step 1", title: "Reduce the scope", copy: "Shrink the current target into one realistic recovery step for the rest of the month." },
+          { label: "Step 2", title: "Rebuild the streak", copy: "Focus on consistency first instead of trying to recover every missed action at once." }
+        ]
+      }
+    },
+    "on-time": {
+      month: {
+        target: "Accuracy: 94%",
+        progressValue: "94%",
+        tasks: [
+          { title: "Morning summary automation", meta: "Done · Delivered on schedule this month", badge: "On Time", tone: "good" },
+          { title: "Investor roadmap submission", meta: "Done · Shared before the April deadline", badge: "On Time", tone: "good" },
+          { title: "Budget review checkpoint", meta: "Done · Closed inside the target window", badge: "On Time", tone: "good" },
+          { title: "Marathi practice streak review", meta: "Done · Logged before the night cutoff", badge: "On Time", tone: "good" }
+        ]
+      }
+    }
+  },
+  long: {
+    completed: {
+      month: {
+        summary:
+          "One long-term goal reached its monthly milestone this month and moved into the next yearly phase.",
+        start: "Milestone closed this month: Apr 2026",
+        target: "Next annual review: 30 Jun 2026",
+        tasks: [
+          { title: "Finalize TimeNest MVP milestone", meta: "Done · Current monthly milestone approved", badge: "Done", tone: "good" }
+        ]
+      }
+    },
+    active: {
+      month: {
+        summary:
+          "Two long-term goals are actively moving through this month’s milestone plan.",
+        progressValue: "71%",
+        tasks: [
+          { title: "Ship auth and dashboard milestone", meta: "Active · Product roadmap remains in motion", badge: "Active", tone: "warn" },
+          { title: "Deepen Marathi speaking practice", meta: "Queued · Fluency checkpoint is scheduled", badge: "Queued", tone: "warn" }
+        ]
+      }
+    },
+    delayed: {
+      month: {
+        summary:
+          "No long-term goals are marked delayed in the current month view.",
+        progressValue: "0%",
+        tasks: [],
+        timeline: [
+          { label: "This Month", title: "No delayed long-term goals", copy: "The yearly roadmap has no delayed items in the current month snapshot." }
+        ]
+      }
+    },
+    "on-time": {
+      month: {
+        target: "Annual schedule health: 84%",
+        progressValue: "84%",
+        tasks: [
+          { title: "Quarter roadmap checkpoint", meta: "On Time · Product milestone landed within plan", badge: "On Time", tone: "good" },
+          { title: "Language fluency review", meta: "On Time · Practice review logged on schedule", badge: "On Time", tone: "good" },
+          { title: "Fitness baseline reassessment", meta: "On Time · Review completed before the due week", badge: "On Time", tone: "good" }
+        ]
+      }
+    }
+  }
+};
+
+function getGoalDetailView(view, metric, range = "all") {
+  const selectedView = goalDetailDrilldowns[view] ? view : "short";
+  const baseDetail = goalDetailDrilldowns[selectedView]?.[metric] || null;
+  if (!baseDetail) {
+    return null;
+  }
+
+  if (range !== "month") {
+    return baseDetail;
+  }
+
+  const monthOverride = goalDetailRangeOverrides[selectedView]?.[metric]?.month || null;
+  return monthOverride ? { ...baseDetail, ...monthOverride } : baseDetail;
+}
+
+function buildGoalMetricData() {
+  const buildMetricsForRange = (view, range) => {
+    const completedDetail = getGoalDetailView(view, "completed", range);
+    const activeDetail = getGoalDetailView(view, "active", range);
+    const delayedDetail = getGoalDetailView(view, "delayed", range);
+    const onTimeDetail = getGoalDetailView(view, "on-time", range);
+
+    return [
+      { key: "completed", label: "Completed", value: String(completedDetail?.tasks?.length || 0).padStart(2, "0") },
+      { key: "active", label: "Active", value: String(activeDetail?.tasks?.length || 0).padStart(2, "0") },
+      { key: "delayed", label: "Delayed", value: String(delayedDetail?.tasks?.length || 0).padStart(2, "0") },
+      { key: "on-time", label: "On Time", value: onTimeDetail?.progressValue || "0%" }
+    ];
+  };
+
+  return {
+    short: {
+      all: buildMetricsForRange("short", "all"),
+      month: buildMetricsForRange("short", "month")
+    },
+    long: {
+      all: buildMetricsForRange("long", "all"),
+      month: buildMetricsForRange("long", "month")
+    }
+  };
+}
+
 function renderGoalDetailItems(items) {
+  if (!items?.length) {
+    return `
+      <div class="surface-item">
+        <div>
+          <strong>No goals in this drill-down</strong>
+          <small>This view is clear for the selected range.</small>
+        </div>
+        <span class="status-pill good">Clear</span>
+      </div>
+    `;
+  }
+
   return items
     .map(
       (item) => `
@@ -1006,10 +1166,11 @@ if (
   const goalDetailParams = new URLSearchParams(window.location.search);
   const requestedView = goalDetailParams.get("view") === "long" ? "long" : "short";
   const requestedMetric = goalDetailParams.get("metric") || "";
+  const requestedRange = goalDetailParams.get("range") === "month" ? "month" : "all";
   const legacyDetail = legacyGoalDetailAliases[requestedMetric] || null;
   const detailView = legacyDetail
-    ? goalDetailDrilldowns[legacyDetail.view]?.[legacyDetail.metric] || null
-    : goalDetailDrilldowns[requestedView]?.[requestedMetric] || null;
+    ? getGoalDetailView(legacyDetail.view, legacyDetail.metric, requestedRange)
+    : getGoalDetailView(requestedView, requestedMetric, requestedRange);
 
   if (detailView) {
     goalDetailEyebrow.textContent = detailView.eyebrow;
@@ -1072,36 +1233,7 @@ const goalAddButton = document.querySelector("[data-goal-add-button]");
 const goalViewOptions = document.querySelectorAll(".goal-view-option");
 const goalRangeOptions = document.querySelectorAll(".goal-range-option");
 
-const goalMetricData = {
-  short: {
-    all: [
-      { key: "completed", label: "Completed", value: "12" },
-      { key: "active", label: "Active", value: "08" },
-      { key: "delayed", label: "Delayed", value: "03" },
-      { key: "on-time", label: "On Time", value: "91%" }
-    ],
-    month: [
-      { key: "completed", label: "Completed", value: "04" },
-      { key: "active", label: "Active", value: "05" },
-      { key: "delayed", label: "Delayed", value: "01" },
-      { key: "on-time", label: "On Time", value: "94%" }
-    ]
-  },
-  long: {
-    all: [
-      { key: "completed", label: "Completed", value: "03" },
-      { key: "active", label: "Active", value: "02" },
-      { key: "delayed", label: "Delayed", value: "01" },
-      { key: "on-time", label: "On Time", value: "78%" }
-    ],
-    month: [
-      { key: "completed", label: "Completed", value: "01" },
-      { key: "active", label: "Active", value: "02" },
-      { key: "delayed", label: "Delayed", value: "00" },
-      { key: "on-time", label: "On Time", value: "84%" }
-    ]
-  }
-};
+const goalMetricData = buildGoalMetricData();
 
 const goalDashboardContent = {
   short: {
@@ -1538,6 +1670,92 @@ function calculateHabitReliability(completedDays, upToDay) {
   return Math.round((completedDays.size / upToDay) * 100);
 }
 
+function getDaysInMonth(yearValue, monthIndex) {
+  return new Date(yearValue, monthIndex + 1, 0).getDate();
+}
+
+function parseHabitMonthKey(monthKey) {
+  const parsedMonth = parseHabitMonthParam(monthKey);
+  return parsedMonth || null;
+}
+
+function getHabitFallbackDaysForMonth(habitKey, monthKey, referenceDate = new Date()) {
+  const habitRecord = habitCalendarData[habitKey];
+  if (!habitRecord) {
+    return [];
+  }
+
+  if (habitRecord.history?.[monthKey]) {
+    return habitRecord.history[monthKey];
+  }
+
+  const currentMonthKey = getHabitMonthKey(referenceDate.getFullYear(), referenceDate.getMonth());
+  return monthKey === currentMonthKey ? habitRecord.completedDays : [];
+}
+
+function getHabitTrackedMonthKeys(range = "all", referenceDate = new Date()) {
+  const currentMonthKey = getHabitMonthKey(referenceDate.getFullYear(), referenceDate.getMonth());
+  if (range === "this-month") {
+    return [currentMonthKey];
+  }
+
+  const monthKeys = new Set([currentMonthKey]);
+  Object.values(habitCalendarData).forEach((habitRecord) => {
+    Object.keys(habitRecord.history || {}).forEach((monthKey) => {
+      monthKeys.add(monthKey);
+    });
+  });
+
+  return Array.from(monthKeys).sort();
+}
+
+function getHabitCountsForHabit(habitKey, range = "all", referenceDate = new Date()) {
+  const trackedMonthKeys = getHabitTrackedMonthKeys(range, referenceDate);
+  let completedCount = 0;
+  let totalTrackableDays = 0;
+
+  trackedMonthKeys.forEach((monthKey) => {
+    const monthDate = parseHabitMonthKey(monthKey);
+    if (!monthDate) {
+      return;
+    }
+
+    const isCurrentMonth =
+      monthDate.getFullYear() === referenceDate.getFullYear() &&
+      monthDate.getMonth() === referenceDate.getMonth();
+    const dayLimit = isCurrentMonth
+      ? referenceDate.getDate()
+      : getDaysInMonth(monthDate.getFullYear(), monthDate.getMonth());
+    const fallbackDays = getHabitFallbackDaysForMonth(habitKey, monthKey, referenceDate);
+    const completedDays = getHabitCompletionDays(habitKey, monthKey, fallbackDays).filter(
+      (day) => day <= dayLimit
+    );
+
+    completedCount += completedDays.length;
+    totalTrackableDays += dayLimit;
+  });
+
+  return {
+    completed: completedCount,
+    skipped: Math.max(totalTrackableDays - completedCount, 0),
+    total: totalTrackableDays
+  };
+}
+
+function getHabitAggregateCounts(range = "all", referenceDate = new Date()) {
+  return Object.keys(habitCalendarData).reduce(
+    (totals, habitKey) => {
+      const nextCounts = getHabitCountsForHabit(habitKey, range, referenceDate);
+      return {
+        completed: totals.completed + nextCounts.completed,
+        skipped: totals.skipped + nextCounts.skipped,
+        total: totals.total + nextCounts.total
+      };
+    },
+    { completed: 0, skipped: 0, total: 0 }
+  );
+}
+
 const habitCalendarGrid = document.getElementById("habit-calendar-grid");
 const habitCalendarTitle = document.getElementById("habit-calendar-title");
 const habitCalendarSummary = document.getElementById("habit-calendar-summary");
@@ -1802,6 +2020,83 @@ if (
   });
 }
 
+const habitsOverviewTitle = document.getElementById("habits-overview-title");
+const habitsOverviewSummary = document.getElementById("habits-overview-summary");
+const habitsOverviewLabel = document.getElementById("habits-overview-label");
+const habitsOverviewValue = document.getElementById("habits-overview-value");
+const habitsOverviewCopy = document.getElementById("habits-overview-copy");
+const habitOverviewCards = document.querySelectorAll("[data-habit-overview-card]");
+
+function hydrateHabitsOverviewFromParams() {
+  if (
+    !habitsOverviewTitle ||
+    !habitsOverviewSummary ||
+    !habitsOverviewLabel ||
+    !habitsOverviewValue ||
+    !habitsOverviewCopy ||
+    !habitOverviewCards.length
+  ) {
+    return;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const requestedStatus = params.get("status");
+  const requestedRange = params.get("range") === "this-month" ? "this-month" : "all";
+
+  if (!["completed", "skipped"].includes(requestedStatus || "")) {
+    return;
+  }
+
+  const aggregateCounts = getHabitAggregateCounts(requestedRange);
+  const displayCount = aggregateCounts[requestedStatus];
+  const rangeLabel = requestedRange === "this-month" ? "this month" : "all tracked history";
+  const statusLabel = requestedStatus === "completed" ? "Completed" : "Skipped";
+
+  habitsOverviewTitle.textContent =
+    requestedStatus === "completed"
+      ? "Habit check-ins completed across your routines"
+      : "Habit check-ins skipped across your routines";
+  habitsOverviewSummary.textContent =
+    requestedStatus === "completed"
+      ? `These totals come from the same habit history used by the calendar view for ${rangeLabel}.`
+      : `These skipped totals are derived from the same tracked habit history for ${rangeLabel}.`;
+  habitsOverviewLabel.textContent = `${statusLabel} Count`;
+  habitsOverviewValue.textContent = String(displayCount).padStart(2, "0");
+  habitsOverviewCopy.textContent =
+    requestedStatus === "completed"
+      ? `${displayCount} habit check-ins were completed across ${rangeLabel}.`
+      : `${displayCount} habit check-ins were skipped across ${rangeLabel}.`;
+
+  habitOverviewCards.forEach((card) => {
+    const habitKey = card.dataset.habitOverviewCard || "";
+    const countSummary = getHabitCountsForHabit(habitKey, requestedRange);
+    const nextCount = countSummary[requestedStatus];
+    const copyElement = card.querySelector("[data-habit-overview-copy]");
+    const progressElement = card.querySelector("[data-habit-overview-progress]");
+    const percent = countSummary.total
+      ? Math.round((nextCount / countSummary.total) * 100)
+      : 0;
+
+    if (copyElement) {
+      copyElement.textContent =
+        requestedStatus === "completed"
+          ? `${nextCount} completed days in ${rangeLabel}.`
+          : `${nextCount} skipped days in ${rangeLabel}.`;
+    }
+
+    if (progressElement) {
+      progressElement.style.width = `${Math.max(0, Math.min(percent, 100))}%`;
+    }
+
+    const nextUrl = new URL(card.getAttribute("href") || "./calendar.html", window.location.href);
+    nextUrl.searchParams.set("habit", habitCalendarData[habitKey]?.name || "");
+    nextUrl.searchParams.set("range", requestedRange);
+    card.setAttribute("href", nextUrl.toString());
+  });
+}
+
+hydrateHabitsOverviewFromParams();
+
 const taskBoard = document.querySelector("[data-task-board]");
 const taskBoardEmptyState = document.querySelector("[data-task-empty]");
 const taskMetricButtons = Array.from(document.querySelectorAll("[data-task-filter]"));
@@ -1811,10 +2106,46 @@ const taskViewCadenceSelect = document.querySelector('[data-task-view-select="ca
 const taskViewReset = document.querySelector("[data-task-filter-reset]");
 const taskEmptyTitle = document.querySelector("[data-task-empty-title]");
 const taskEmptyCopy = document.querySelector("[data-task-empty-copy]");
+const taskDrilldownSummary = document.querySelector("[data-task-drilldown-summary]");
 const defaultTaskEmptyTitle = taskEmptyTitle?.textContent || "No tasks left on this screen";
 const defaultTaskEmptyCopy =
   taskEmptyCopy?.textContent || "Use Add Task or Add Subtask to create a new item.";
 let activeTaskMetricFilter = "";
+let activeTaskDashboardStatus = "";
+let activeTaskDashboardRange = "all";
+
+const taskDashboardRecords = [
+  {
+    id: "roadmap",
+    due: ["due-today", "this-week", "this-month", "this-year"],
+    cadence: "weekly",
+    isComplete: false
+  },
+  {
+    id: "marathi-lesson",
+    due: ["due-today", "this-week", "this-month", "this-year"],
+    cadence: "daily",
+    isComplete: false
+  },
+  {
+    id: "monthly-budget",
+    due: ["this-year"],
+    cadence: "monthly",
+    isComplete: false
+  },
+  {
+    id: "workout",
+    due: ["this-year"],
+    cadence: "daily",
+    isComplete: true
+  },
+  {
+    id: "hosting-renewal",
+    due: ["overdue", "this-week", "this-month", "this-year"],
+    cadence: "yearly",
+    isComplete: false
+  }
+];
 
 function getTaskItems() {
   if (!taskBoard) {
@@ -1849,6 +2180,18 @@ function getTaskCadence(taskItem) {
 
 function isTaskComplete(taskItem) {
   return taskItem?.classList.contains("is-complete");
+}
+
+function getTaskNormalizedStatus(taskItem) {
+  if (isTaskComplete(taskItem)) {
+    return "completed";
+  }
+
+  if (getTaskDueBuckets(taskItem).includes("overdue")) {
+    return "delayed";
+  }
+
+  return "open";
 }
 
 function setTaskSelectValue(select, value) {
@@ -1934,6 +2277,22 @@ function taskMatchesViewFilters(taskItem) {
   return true;
 }
 
+function taskMatchesDashboardDrilldown(taskItem) {
+  if (!taskItem || !activeTaskDashboardStatus) {
+    return true;
+  }
+
+  if (getTaskNormalizedStatus(taskItem) !== activeTaskDashboardStatus) {
+    return false;
+  }
+
+  if (activeTaskDashboardRange === "this-month") {
+    return getTaskDueBuckets(taskItem).includes("this-month");
+  }
+
+  return true;
+}
+
 function updateTaskSummaryCounts() {
   const taskItems = getTaskItems();
   if (!taskMetricButtons.length) {
@@ -1998,13 +2357,39 @@ function syncTaskBoardEmptyState() {
   taskEmptyCopy.textContent = defaultTaskEmptyCopy;
 }
 
+function updateTaskDrilldownSummary() {
+  if (!taskDrilldownSummary) {
+    return;
+  }
+
+  if (!activeTaskDashboardStatus) {
+    taskDrilldownSummary.hidden = true;
+    taskDrilldownSummary.textContent = "";
+    return;
+  }
+
+  const visibleCount = getTaskItems().filter((taskItem) => !taskItem.hidden).length;
+  const statusLabelMap = {
+    open: "open",
+    completed: "completed",
+    delayed: "delayed"
+  };
+  const rangeLabel =
+    activeTaskDashboardRange === "this-month" ? "this month" : "across all tracked tasks";
+
+  taskDrilldownSummary.hidden = false;
+  taskDrilldownSummary.textContent = `${visibleCount} ${statusLabelMap[activeTaskDashboardStatus]} task${visibleCount === 1 ? "" : "s"} ${rangeLabel}`;
+}
+
 function applyTaskBoardFilter(filter = activeTaskMetricFilter) {
   activeTaskMetricFilter = filter || "";
   sortTaskItemsByDueDate();
 
   getTaskItems().forEach((taskItem) => {
     const isVisible =
-      taskMatchesViewFilters(taskItem) && taskMatchesMetricFilter(taskItem, activeTaskMetricFilter);
+      taskMatchesViewFilters(taskItem) &&
+      taskMatchesMetricFilter(taskItem, activeTaskMetricFilter) &&
+      taskMatchesDashboardDrilldown(taskItem);
     taskItem.hidden = !isVisible;
   });
 
@@ -2017,14 +2402,20 @@ function applyTaskBoardFilter(filter = activeTaskMetricFilter) {
   updateTaskSummaryCounts();
   updateTaskFilterState();
   syncTaskBoardEmptyState();
+  updateTaskDrilldownSummary();
 }
 
 function handleTaskViewInputChange() {
+  activeTaskDashboardStatus = "";
+  activeTaskDashboardRange = "all";
   activeTaskMetricFilter = "";
   applyTaskBoardFilter();
 }
 
 function applyTaskMetricPreset(filter) {
+  activeTaskDashboardStatus = "";
+  activeTaskDashboardRange = "all";
+
   if (!filter) {
     activeTaskMetricFilter = "";
     applyTaskBoardFilter();
@@ -2063,6 +2454,38 @@ function applyTaskMetricPreset(filter) {
 
   activeTaskMetricFilter = filter;
   applyTaskBoardFilter(activeTaskMetricFilter);
+}
+
+function applyTaskDashboardQueryParams() {
+  if (!taskBoard) {
+    return;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const requestedStatus = params.get("status");
+  const requestedRange = params.get("range") === "this-month" ? "this-month" : "all";
+
+  if (!["open", "completed", "delayed"].includes(requestedStatus || "")) {
+    return;
+  }
+
+  activeTaskDashboardStatus = requestedStatus;
+  activeTaskDashboardRange = requestedRange;
+  activeTaskMetricFilter = requestedStatus === "delayed" ? "overdue" : "";
+
+  if (requestedRange === "this-month") {
+    setTaskSelectValue(taskViewDueSelect, "this-month");
+  } else {
+    setTaskSelectValue(taskViewDueSelect, "view-all");
+  }
+
+  if (requestedStatus === "completed") {
+    setTaskSelectValue(taskViewStatusSelect, "completed");
+  } else {
+    setTaskSelectValue(taskViewStatusSelect, "all");
+  }
+
+  setTaskSelectValue(taskViewCadenceSelect, "all");
 }
 
 function setTaskCompletionState(taskItem, isComplete) {
@@ -2142,12 +2565,15 @@ if (taskBoard) {
 
   if (taskViewReset) {
     taskViewReset.addEventListener("click", () => {
+      activeTaskDashboardStatus = "";
+      activeTaskDashboardRange = "all";
       activeTaskMetricFilter = "";
       resetTaskViewInputs();
       applyTaskBoardFilter();
     });
   }
 
+  applyTaskDashboardQueryParams();
   applyTaskBoardFilter();
 
   taskBoard.addEventListener("click", (event) => {
@@ -2203,5 +2629,126 @@ if (taskBoard) {
       setTaskCompletionState(taskItem, clickedComplete.getAttribute("aria-pressed") !== "true");
       applyTaskBoardFilter(activeTaskMetricFilter);
     }
+  });
+}
+
+const dashboardRangeRadios = document.querySelectorAll('input[name="dashboard-range"]');
+const dashboardStatusCards = document.querySelectorAll("[data-dashboard-card]");
+
+function getTaskDashboardStatus(record) {
+  if (record.isComplete) {
+    return "completed";
+  }
+
+  if (record.due.includes("overdue")) {
+    return "delayed";
+  }
+
+  return "open";
+}
+
+function getTaskDashboardStatusCount(status, range) {
+  return taskDashboardRecords.filter((record) => {
+    if (range === "this-month" && !record.due.includes("this-month")) {
+      return false;
+    }
+
+    return getTaskDashboardStatus(record) === status;
+  }).length;
+}
+
+function getGoalDashboardStatusCount(view, status, range) {
+  const metricKey = status === "open" ? "active" : status;
+  return getGoalDetailView(view, metricKey, range)?.tasks?.length || 0;
+}
+
+function formatDashboardCount(value) {
+  return String(value).padStart(2, "0");
+}
+
+function getDashboardStatusCount(entity, status, range) {
+  if (entity === "tasks") {
+    return getTaskDashboardStatusCount(status, range);
+  }
+
+  if (entity === "short-goals") {
+    return getGoalDashboardStatusCount("short", status, range === "this-month" ? "month" : "all");
+  }
+
+  if (entity === "long-goals") {
+    return getGoalDashboardStatusCount("long", status, range === "this-month" ? "month" : "all");
+  }
+
+  if (entity === "habits") {
+    return getHabitAggregateCounts(range)[status] || 0;
+  }
+
+  return 0;
+}
+
+function buildDashboardDrilldownHref(entity, status, range) {
+  if (entity === "tasks") {
+    return `./daily-tasks.html?status=${status}&range=${range}`;
+  }
+
+  if (entity === "short-goals") {
+    const goalRange = range === "this-month" ? "month" : "all";
+    return `./goals.html?view=short&status=${status}&range=${goalRange}`;
+  }
+
+  if (entity === "long-goals") {
+    const goalRange = range === "this-month" ? "month" : "all";
+    return `./goals.html?view=long&status=${status}&range=${goalRange}`;
+  }
+
+  if (entity === "habits") {
+    return `./habits.html?status=${status}&range=${range}`;
+  }
+
+  return "./index.html";
+}
+
+function updateDashboardStatusBoard(range = "all") {
+  if (!dashboardStatusCards.length) {
+    return;
+  }
+
+  dashboardStatusCards.forEach((card) => {
+    const entity = card.dataset.dashboardEntity || "";
+    const status = card.dataset.dashboardStatus || "";
+    const countElement = card.querySelector("[data-dashboard-count]");
+
+    if (countElement) {
+      countElement.textContent = formatDashboardCount(
+        getDashboardStatusCount(entity, status, range)
+      );
+    }
+
+    if (card instanceof HTMLAnchorElement) {
+      card.href = buildDashboardDrilldownHref(entity, status, range);
+    }
+  });
+}
+
+if (dashboardRangeRadios.length && dashboardStatusCards.length) {
+  const dashboardRangeStorageKey = "timenest-dashboard-range";
+  const storedRange = localStorage.getItem(dashboardRangeStorageKey);
+  const initialRange = storedRange === "this-month" ? "this-month" : "all";
+
+  dashboardRangeRadios.forEach((radio) => {
+    radio.checked = radio.value === initialRange;
+  });
+
+  updateDashboardStatusBoard(initialRange);
+
+  dashboardRangeRadios.forEach((radio) => {
+    radio.addEventListener("change", () => {
+      if (!radio.checked) {
+        return;
+      }
+
+      localStorage.setItem(dashboardRangeStorageKey, radio.value);
+      updateDashboardStatusBoard(radio.value);
+    });
   });
 }

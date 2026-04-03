@@ -115,6 +115,7 @@
                 <p class="mini-label">Task Streams</p>
                 <h2 class="section-title">Main tasks and subtasks</h2>
               </div>
+              <span class="soft-pill" data-task-drilldown-summary hidden></span>
             </div>
 
             <div class="task-management-list" id="task-stream-list" data-task-board>
@@ -280,7 +281,7 @@
                 </div>
               </article>
 
-              <article class="task-management-card" data-task-item data-task-groups="recurring" data-task-due="this-month this-year" data-task-cadence="monthly" data-sort-key="202604181000" data-pending-label="Scheduled" data-complete-label="Completed" data-pending-tone="warn">
+              <article class="task-management-card" data-task-item data-task-groups="recurring" data-task-due="this-year" data-task-cadence="monthly" data-sort-key="202606181000" data-pending-label="Scheduled" data-complete-label="Completed" data-pending-tone="warn">
                 <div class="task-card-top">
                   <div class="task-card-copy">
                     <div class="task-card-title-row">
@@ -288,7 +289,7 @@
                       <span class="status-pill warn" data-status-pill>Scheduled</span>
                     </div>
                     <h3>Review monthly budget targets</h3>
-                    <p class="task-card-meta">Apr 18, 10:00 AM | Monthly finance checkpoint</p>
+                    <p class="task-card-meta">Jun 18, 10:00 AM | Monthly finance checkpoint</p>
                   </div>
                 </div>
 
@@ -361,7 +362,7 @@
                 </div>
               </article>
 
-              <article class="task-management-card is-complete" data-task-item data-task-groups="due-today recurring" data-task-due="due-today this-week this-month this-year" data-task-cadence="daily" data-sort-key="202604020630" data-pending-label="Scheduled" data-complete-label="Completed" data-pending-tone="good">
+              <article class="task-management-card is-complete" data-task-item data-task-groups="recurring" data-task-due="this-year" data-task-cadence="daily" data-sort-key="202603290630" data-pending-label="Scheduled" data-complete-label="Completed" data-pending-tone="good">
                 <div class="task-card-top">
                   <div class="task-card-copy">
                     <div class="task-card-title-row">
@@ -369,7 +370,7 @@
                       <span class="status-pill good" data-status-pill>Completed</span>
                     </div>
                     <h3>Complete 45 min workout</h3>
-                    <p class="task-card-meta">Daily at 06:30 AM | Recurring wellness block</p>
+                    <p class="task-card-meta">Completed Mar 29 | Recurring wellness block</p>
                   </div>
                 </div>
 
@@ -543,15 +544,86 @@
         </section>
       </section>
     </main>
-    <a class="floating-add-button floating-add-link" href="./task-editor.html" aria-label="Add Task">
+    <button
+      class="floating-add-button"
+      type="button"
+      data-quick-add-open
+      aria-controls="quick-add-sheet"
+      aria-expanded="false"
+      aria-label="Add a goal, task, or habit"
+    >
       <span aria-hidden="true">+</span>
-    </a>
+    </button>
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
       <a class="tab-link" href="./index.html">Home</a>
       <a class="tab-link" href="./goals.html">Goals</a>
       <a class="tab-link is-active" href="./daily-tasks.html">Tasks</a>
       <a class="tab-link" href="./calendar.html?view=habits">Habits</a>
     </nav>
+
+    <div class="quick-add-backdrop" data-quick-add-backdrop hidden></div>
+
+    <section
+      class="quick-add-sheet panel"
+      id="quick-add-sheet"
+      data-quick-add-sheet
+      aria-modal="true"
+      aria-label="Quick add"
+      hidden
+    >
+      <div class="quick-add-head">
+        <div>
+          <p class="mini-label">Quick Add</p>
+          <h3>Create from TimeNest</h3>
+        </div>
+        <button class="quick-add-close" type="button" data-quick-add-close aria-label="Close quick add">
+          &times;
+        </button>
+      </div>
+
+      <div class="quick-add-step is-active" data-quick-add-step="root">
+        <div class="quick-add-grid">
+          <button class="quick-add-option" type="button" data-add-choice="goal">
+            <strong>Goal</strong>
+            <span>Choose short-term or long-term before you continue.</span>
+          </button>
+          <button class="quick-add-option" type="button" data-add-url="./task-editor.html?entry=quick-add">
+            <strong>Task</strong>
+            <span>Open the task editor with reminders, due date, and priority.</span>
+          </button>
+          <button class="quick-add-option" type="button" data-add-url="./habit-editor.html?entry=quick-add">
+            <strong>Habit</strong>
+            <span>Create a recurring habit with streak tracking and reminders.</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="quick-add-step" data-quick-add-step="goal">
+        <div class="quick-add-grid">
+          <button
+            class="quick-add-option"
+            type="button"
+            data-add-url="./goal-editor.html?goalType=short-term&entry=quick-add"
+          >
+            <strong>Short-Term Goal</strong>
+            <span>Create a goal for the next 30 to 90 days.</span>
+          </button>
+          <button
+            class="quick-add-option"
+            type="button"
+            data-add-url="./goal-editor.html?goalType=long-term&entry=quick-add"
+          >
+            <strong>Long-Term Goal</strong>
+            <span>Create a milestone-based goal for the longer roadmap.</span>
+          </button>
+        </div>
+
+        <div class="quick-add-actions">
+          <button class="inline-button" type="button" data-quick-add-back>Back</button>
+        </div>
+      </div>
+    </section>
+
     <script src="./script.js"></script>
   </body>
 </html>
