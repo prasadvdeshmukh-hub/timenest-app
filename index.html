@@ -144,45 +144,50 @@
                     role="img"
                     aria-labelledby="focus-trend-title focus-trend-desc"
                   >
-                    <title id="focus-trend-title">Execution progress across the last seven days</title>
+                    <title id="focus-trend-title">Execution bar graph across the last seven days</title>
                     <desc id="focus-trend-desc">
-                      The execution score improved across the last seven days,
-                      rising from 72 percent to 91 percent with a 7-day average
-                      of 83 percent.
+                      The execution score is shown as a bar graph for the last
+                      seven days with values of 72, 76, 80, 85, 88, 82, and 91
+                      percent, with Friday as the strongest day.
                     </desc>
                     <defs>
-                      <linearGradient id="focus-trend-fill" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#5ce8ff" stop-opacity="0.36" />
-                        <stop offset="100%" stop-color="#7190ff" stop-opacity="0.02" />
+                      <linearGradient id="focus-bar-fill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#9ae9ff" />
+                        <stop offset="100%" stop-color="#4b7eff" />
                       </linearGradient>
-                      <linearGradient id="focus-trend-line" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stop-color="#5ce8ff" />
-                        <stop offset="100%" stop-color="#8a8dff" />
+                      <linearGradient id="focus-bar-fill-current" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#d5fbff" />
+                        <stop offset="100%" stop-color="#5ce8ff" />
                       </linearGradient>
                     </defs>
 
                     <line class="focus-grid-line" x1="14" y1="92" x2="306" y2="92" />
                     <line class="focus-grid-line is-target" x1="14" y1="57" x2="306" y2="57" />
 
-                    <path
-                      class="focus-trend-area"
-                      d="M 18 92 L 18 73 L 66 61 L 114 55 L 162 45 L 210 39 L 258 49 L 306 35 L 306 92 Z"
-                    />
-                    <path
-                      class="focus-trend-line"
-                      pathLength="100"
-                      d="M 18 73 L 66 61 L 114 55 L 162 45 L 210 39 L 258 49 L 306 35"
-                    />
+                    <g class="focus-bar-group" aria-hidden="true">
+                      <rect class="focus-bar-track" x="24" y="28" width="24" height="64" rx="10" />
+                      <rect class="focus-bar-track" x="64" y="28" width="24" height="64" rx="10" />
+                      <rect class="focus-bar-track" x="104" y="28" width="24" height="64" rx="10" />
+                      <rect class="focus-bar-track" x="144" y="28" width="24" height="64" rx="10" />
+                      <rect class="focus-bar-track" x="184" y="28" width="24" height="64" rx="10" />
+                      <rect class="focus-bar-track" x="224" y="28" width="24" height="64" rx="10" />
+                      <rect class="focus-bar-track" x="264" y="28" width="24" height="64" rx="10" />
 
-                    <g class="focus-point-group" aria-hidden="true">
-                      <circle class="focus-point" cx="18" cy="73" r="3.5" />
-                      <circle class="focus-point" cx="66" cy="61" r="3.5" />
-                      <circle class="focus-point" cx="114" cy="55" r="3.5" />
-                      <circle class="focus-point" cx="162" cy="45" r="3.5" />
-                      <circle class="focus-point" cx="210" cy="39" r="3.5" />
-                      <circle class="focus-point" cx="258" cy="49" r="3.5" />
-                      <circle class="focus-point-glow" cx="306" cy="35" r="8" />
-                      <circle class="focus-point is-current" cx="306" cy="35" r="5" />
+                      <rect class="focus-bar" x="24" y="46" width="24" height="46" rx="10" />
+                      <rect class="focus-bar" x="64" y="41" width="24" height="51" rx="10" />
+                      <rect class="focus-bar" x="104" y="36" width="24" height="56" rx="10" />
+                      <rect class="focus-bar" x="144" y="31" width="24" height="61" rx="10" />
+                      <rect class="focus-bar" x="184" y="28" width="24" height="64" rx="10" />
+                      <rect class="focus-bar" x="224" y="34" width="24" height="58" rx="10" />
+                      <rect class="focus-bar is-current" x="264" y="24" width="24" height="68" rx="10" />
+
+                      <text class="focus-bar-value" x="36" y="41">72%</text>
+                      <text class="focus-bar-value" x="76" y="36">76%</text>
+                      <text class="focus-bar-value" x="116" y="31">80%</text>
+                      <text class="focus-bar-value" x="156" y="26">85%</text>
+                      <text class="focus-bar-value" x="196" y="23">88%</text>
+                      <text class="focus-bar-value" x="236" y="29">82%</text>
+                      <text class="focus-bar-value is-current" x="276" y="19">91%</text>
                     </g>
                   </svg>
 
