@@ -4032,6 +4032,22 @@ body.login-page .bottom-tabbar {
   font: inherit;
 }
 
+.field textarea,
+.field select {
+  width: 100%;
+  padding: 0.82rem 0.95rem;
+  border: 1px solid rgba(164, 203, 255, 0.16);
+  border-radius: 16px;
+  background: rgba(8, 18, 35, 0.76);
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.field textarea {
+  min-height: 132px;
+  resize: vertical;
+}
+
 .field input[type="date"],
 .field input[type="time"] {
   color-scheme: dark;
@@ -5083,6 +5099,75 @@ body.login-page .bottom-tabbar {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+}
+
+.monetization-preview-grid,
+.admin-form-shell,
+.admin-preview-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.monetization-card,
+.admin-preview-card {
+  display: grid;
+  gap: 0.88rem;
+}
+
+.monetization-feature-list {
+  gap: 0.72rem;
+}
+
+.admin-inline-actions,
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.admin-radio-grid {
+  gap: 0.5rem;
+}
+
+.admin-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.admin-switch-item {
+  cursor: pointer;
+}
+
+.admin-switch-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #5ce8ff;
+  flex: 0 0 auto;
+}
+
+.admin-status-message {
+  margin: 0;
+  min-height: 1.5rem;
+}
+
+.admin-status-message.is-success {
+  color: #b7ffd4;
+}
+
+.admin-status-message.is-muted {
+  color: var(--text-secondary);
+}
+
+.status-pill.is-live,
+.status-pill.is-included {
+  background: rgba(110, 255, 190, 0.12);
+}
+
+.status-pill.is-planned,
+.status-pill.is-premium {
+  background: rgba(255, 201, 139, 0.14);
 }
 
 .goal-card {
@@ -7946,5 +8031,11 @@ body.dashboard-home .dashboard-summary-card strong {
     --app-button-support-font: 0.62rem;
     --app-button-stat-font: 0.8rem;
     --app-button-badge-font: 0.6rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-feature-grid {
+    grid-template-columns: 1fr;
   }
 }

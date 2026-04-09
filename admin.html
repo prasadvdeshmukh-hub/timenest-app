@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>TimeNest Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="admin-page">
+    <div class="aurora aurora-left" aria-hidden="true"></div>
+    <div class="aurora aurora-right" aria-hidden="true"></div>
+    <main class="app-page-shell">
+      <aside class="app-sidebar">
+        <div class="sidebar-card panel">
+          <a class="brand-link" href="./index.html">
+            <div class="brand-cluster">
+              <div class="brand-mark"><span class="brand-core"></span></div>
+              <div>
+                <p class="mini-label">Business Controls</p>
+                <h2>TimeNest</h2>
+                <p class="brand-subline">Master Your Time. Achieve Your Goals.</p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <nav class="sidebar-nav">
+          <a class="sidebar-link" href="./index.html">Dashboard <span>01</span></a>
+          <a class="sidebar-link" href="./settings.html">Settings <span>06</span></a>
+          <a class="sidebar-link is-active" href="./admin.html">Admin Panel <span>08</span></a>
+          <a class="sidebar-link" href="./notifications.html">Notifications <span>05</span></a>
+          <a class="sidebar-link" href="./profile.html">Profile <span>03</span></a>
+        </nav>
+      </aside>
+
+      <section class="app-main">
+        <section class="page-hero">
+          <article class="hero-panel-large panel">
+            <p class="mini-label">Admin Panel</p>
+            <h1 class="section-title">Control pricing, premium features, and launch timing from one place</h1>
+            <p>
+              This prototype admin panel stores settings in local browser storage so you can preview how
+              monetization and feature access would behave before the real mobile app is built.
+            </p>
+          </article>
+          <article class="hero-panel-side panel">
+            <p class="mini-label">Launch State</p>
+            <strong class="value-big" data-admin-hero-state>Grow</strong>
+            <p data-free-window-label>
+              Charging starts after three months unless premium is switched on sooner.
+            </p>
+          </article>
+        </section>
+
+        <form class="admin-form-shell" data-admin-form>
+          <section class="content-split">
+            <article class="page-card panel monetization-card">
+              <p class="mini-label">Billing Setup</p>
+              <h2>Set when charging starts</h2>
+              <div class="form-grid">
+                <div class="field full">
+                  <span>Launch mode</span>
+                  <div class="task-filter-chip-grid task-filter-chip-grid-wide admin-radio-grid">
+                    <label class="task-filter-option">
+                      <input type="radio" name="launchMode" value="grow" />
+                      <span>Free Now</span>
+                    </label>
+                    <label class="task-filter-option">
+                      <input type="radio" name="launchMode" value="live" />
+                      <span>Charge Now</span>
+                    </label>
+                  </div>
+                </div>
+
+                <label class="field">
+                  <span>Free access window (months)</span>
+                  <input type="number" min="0" step="1" name="freeAccessMonths" />
+                </label>
+
+                <label class="field">
+                  <span>Trial days after launch</span>
+                  <input type="number" min="0" step="1" name="trialDays" />
+                </label>
+
+                <label class="field">
+                  <span>Monthly price</span>
+                  <input type="number" min="0" step="1" name="monthlyPrice" />
+                </label>
+
+                <label class="field">
+                  <span>Yearly price</span>
+                  <input type="number" min="0" step="1" name="yearlyPrice" />
+                </label>
+
+                <label class="field">
+                  <span>Currency code</span>
+                  <input type="text" maxlength="3" name="currency" />
+                </label>
+
+                <label class="field">
+                  <span>Support email</span>
+                  <input type="email" name="supportEmail" />
+                </label>
+
+                <label class="field full">
+                  <span>Offer headline</span>
+                  <input type="text" name="offerHeadline" />
+                </label>
+
+                <label class="field full">
+                  <span>Offer message</span>
+                  <textarea name="offerMessage"></textarea>
+                </label>
+              </div>
+            </article>
+
+            <article class="page-card panel monetization-card">
+              <p class="mini-label">Premium Features</p>
+              <h2>Choose what becomes paid</h2>
+              <div class="admin-feature-grid">
+                <label class="surface-item admin-switch-item">
+                  <div>
+                    <strong>Cloud backup</strong>
+                    <small>Cross-device restore and backup safety.</small>
+                  </div>
+                  <input type="checkbox" name="featureCloudBackup" />
+                </label>
+                <label class="surface-item admin-switch-item">
+                  <div>
+                    <strong>Advanced analytics</strong>
+                    <small>Deeper dashboards and performance insights.</small>
+                  </div>
+                  <input type="checkbox" name="featureAdvancedAnalytics" />
+                </label>
+                <label class="surface-item admin-switch-item">
+                  <div>
+                    <strong>Advanced exports</strong>
+                    <small>PDF, Excel, and investor-style summary exports.</small>
+                  </div>
+                  <input type="checkbox" name="featureAdvancedExports" />
+                </label>
+                <label class="surface-item admin-switch-item">
+                  <div>
+                    <strong>WhatsApp reminders</strong>
+                    <small>High-cost reminder channel for premium users.</small>
+                  </div>
+                  <input type="checkbox" name="featureWhatsappReminders" />
+                </label>
+              </div>
+
+              <div class="admin-actions">
+                <button class="inline-button" type="submit">Apply Changes</button>
+                <button class="ghost-chip" type="button" data-admin-reset>Reset Demo</button>
+              </div>
+              <p class="helper-text admin-status-message" data-admin-status role="status" aria-live="polite">
+                Changes save in this browser and immediately update the prototype surfaces.
+              </p>
+            </article>
+          </section>
+
+          <section class="goal-grid admin-preview-grid">
+            <article class="page-card panel admin-preview-card">
+              <p class="mini-label">Live App Preview</p>
+              <h2 data-offer-headline>Founding member pricing</h2>
+              <p data-offer-message>
+                Keep TimeNest free while you grow. Turn on paid plans when retention is strong enough.
+              </p>
+              <div class="chip-row">
+                <span class="soft-pill" data-monetization-mode-label>Free growth mode</span>
+                <span class="soft-pill" data-monthly-price-label>INR 149 / month</span>
+                <span class="soft-pill" data-yearly-price-label>INR 1499 / year</span>
+              </div>
+            </article>
+
+            <article class="page-card panel admin-preview-card">
+              <p class="mini-label">Customer View</p>
+              <div class="surface-list">
+                <div class="surface-item">
+                  <div>
+                    <strong>Plan label</strong>
+                    <small data-user-plan-description>
+                      Users will see whether the app is still free or on a paid launch with trial.
+                    </small>
+                  </div>
+                  <span class="status-pill warn" data-user-plan-pill>Free Member</span>
+                </div>
+                <div class="surface-item">
+                  <div>
+                    <strong>Cloud backup</strong>
+                    <small data-feature-copy="cloudBackup">
+                      Feature access updates from the same admin configuration.
+                    </small>
+                  </div>
+                  <span class="status-pill warn" data-feature-pill="cloudBackup">Premium</span>
+                </div>
+                <div class="surface-item">
+                  <div>
+                    <strong>WhatsApp reminders</strong>
+                    <small data-feature-copy="whatsappReminders">
+                      Premium reminder channels can be switched live later.
+                    </small>
+                  </div>
+                  <span class="status-pill warn" data-feature-pill="whatsappReminders">Premium</span>
+                </div>
+              </div>
+            </article>
+          </section>
+        </form>
+      </section>
+    </main>
+
+    <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
+      <a class="tab-link" href="./index.html">Home</a>
+      <a class="tab-link" href="./settings.html">Settings</a>
+      <a class="tab-link" href="./admin.html">Admin</a>
+      <a class="tab-link" href="./profile.html">Profile</a>
+    </nav>
+    <script src="./script.js"></script>
+  </body>
+</html>
