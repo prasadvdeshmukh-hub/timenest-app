@@ -26,15 +26,15 @@
           <p class="mini-label">Subtask Editor</p>
           <h2 class="section-title">Add or edit subtasks under a task</h2>
           <div class="form-grid">
-            <label class="field"><span>Subtask Name</span><input type="text" placeholder="Update milestone slide" /></label>
-            <label class="field"><span>Status</span><input type="text" placeholder="Pending / Completed" /></label>
-            <label class="field"><span>Deadline</span><input type="date" value="2026-04-02" /></label>
-            <label class="field"><span>Priority</span><input type="text" placeholder="Low / Medium / High" /></label>
-            <label class="field full"><span>Notes</span><input type="text" placeholder="Context for the subtask and expected output" /></label>
+            <label class="field"><span>Subtask Name</span><input type="text" id="subtask-field-name" placeholder="Update milestone slide" /></label>
+            <label class="field"><span>Status</span><input type="text" id="subtask-field-status" placeholder="Pending / Completed" /></label>
+            <label class="field"><span>Deadline</span><input type="date" id="subtask-field-date" value="2026-04-02" /></label>
+            <label class="field"><span>Priority</span><input type="text" id="subtask-field-priority" placeholder="Low / Medium / High" /></label>
+            <label class="field full"><span>Notes</span><input type="text" id="subtask-field-notes" placeholder="Context for the subtask and expected output" /></label>
           </div>
           <div class="form-actions">
-            <span class="soft-pill">Save Subtask</span>
-            <span class="soft-pill">Mark Complete</span>
+            <span class="soft-pill" data-action="save-subtask">Save Subtask</span>
+            <span class="soft-pill" data-action="mark-subtask-complete">Mark Complete</span>
             <a class="soft-pill" href="./task-detail.html">Back to Task</a>
           </div>
         </article>

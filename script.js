@@ -2752,3 +2752,628 @@ if (dashboardRangeRadios.length && dashboardStatusCards.length) {
     });
   });
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   WIRING MODULE — Toast, CRUD, Forms, Channels, Settings
+   All editor buttons, auth flows, notification toggles,
+   settings cards, and profile preferences.
+   ═══════════════════════════════════════════════════════════════ */
+
+// ──────────── Toast Notification System ────────────
+(function initToastSystem() {
+  let toastContainer = document.getElementById("timenest-toast-container");
+  if (!toastContainer) {
+    toastContainer = document.createElement("div");
+    toastContainer.id = "timenest-toast-container";
+    toastContainer.className = "timenest-toast-container";
+    document.body.appendChild(toastContainer);
+  }
+
+  window.showToast = function showToast(message, type = "success", duration = 3000) {
+    const toast = document.createElement("div");
+    toast.className = "timenest-toast timenest-toast-" + type;
+    toast.textContent = message;
+    toastContainer.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add("is-visible"));
+    setTimeout(() => {
+      toast.classList.remove("is-visible");
+      toast.addEventListener("transitionend", () => toast.remove(), { once: true });
+      setTimeout(() => toast.remove(), 400);
+    }, duration);
+  };
+})();
+
+// ──────────── localStorage Data Store ────────────
+const STORE_KEYS = {
+  goals: "timenest-goals-v1",
+  tasks: "timenest-tasks-v1",
+  habits: "timenest-habits-v1",
+  subtasks: "timenest-subtasks-v1",
+  channels: "timenest-channels-v1",
+  preferences: "timenest-preferences-v1",
+  settings: "timenest-settings-v1",
+};
+
+function readStore(key) {
+  try {
+    return JSON.parse(localStorage.getItem(key)) || [];
+  } catch (_) {
+    return [];
+  }
+}
+
+function writeStore(key, data) {
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+function readStoreObject(key, fallback) {
+  try {
+    return JSON.parse(localStorage.getItem(key)) || fallback;
+  } catch (_) {
+    return fallback;
+  }
+}
+
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+// ──────────── Goal Editor Wiring ────────────
+(function initGoalEditor() {
+  const nameField = document.getElementById("goal-field-name");
+  const typeField = document.getElementById("goal-editor-type-input");
+  const startField = document.getElementById("goal-field-start");
+  const targetField = document.getElementById("goal-field-target");
+  const descField = document.getElementById("goal-field-desc");
+  if (!nameField) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const editId = params.get("id");
+
+  // Load existing goal for editing
+  if (editId) {
+    const goals = readStore(STORE_KEYS.goals);
+    const goal = goals.find((g) => g.id === editId);
+    if (goal) {
+      nameField.value = goal.name || "";
+      typeField.value = goal.type || "";
+      startField.value = goal.start || "";
+      targetField.value = goal.target || "";
+      descField.value = goal.description || "";
+      const titleEl = document.getElementById("goal-editor-title");
+      if (titleEl) titleEl.textContent = "Editing: " + goal.name;
+      const eyebrowEl = document.getElementById("goal-editor-eyebrow");
+      if (eyebrowEl) eyebrowEl.textContent = "Edit Goal";
+    }
+  }
+
+  function collectGoalData() {
+    return {
+      name: nameField.value.trim(),
+      type: typeField.value.trim(),
+      start: startField.value,
+      target: targetField.value,
+      description: descField.value.trim(),
+    };
+  }
+
+  function validateGoal(data) {
+    if (!data.name) { showToast("Goal name is required", "error"); return false; }
+    if (!data.type) { showToast("Goal type is required", "error"); return false; }
+    return true;
+  }
+
+  document.addEventListener("click", (e) => {
+    const action = e.target.closest("[data-action]");
+    if (!action) return;
+    const act = action.dataset.action;
+
+    if (act === "save-goal") {
+      const data = collectGoalData();
+      if (!validateGoal(data)) return;
+      const goals = readStore(STORE_KEYS.goals);
+
+      if (editId) {
+        const idx = goals.findIndex((g) => g.id === editId);
+        if (idx !== -1) {
+          goals[idx] = { ...goals[idx], ...data, updatedAt: new Date().toISOString() };
+          writeStore(STORE_KEYS.goals, goals);
+          showToast("Goal updated successfully");
+        }
+      } else {
+        const newGoal = { id: generateId(), ...data, status: "active", createdAt: new Date().toISOString() };
+        goals.push(newGoal);
+        writeStore(STORE_KEYS.goals, goals);
+        showToast("Goal saved successfully");
+      }
+      setTimeout(() => { window.location.href = "./goals.html"; }, 800);
+    }
+
+    if (act === "duplicate-goal") {
+      const data = collectGoalData();
+      if (!data.name) { showToast("Enter a goal name to duplicate", "error"); return; }
+      data.name = data.name + " (Copy)";
+      const goals = readStore(STORE_KEYS.goals);
+      goals.push({ id: generateId(), ...data, status: "active", createdAt: new Date().toISOString() });
+      writeStore(STORE_KEYS.goals, goals);
+      showToast("Goal duplicated");
+      setTimeout(() => { window.location.href = "./goals.html"; }, 800);
+    }
+
+    if (act === "delete-goal") {
+      if (!editId) { showToast("No saved goal to delete", "warn"); return; }
+      if (!confirm("Delete this goal permanently?")) return;
+      const goals = readStore(STORE_KEYS.goals).filter((g) => g.id !== editId);
+      writeStore(STORE_KEYS.goals, goals);
+      showToast("Goal deleted");
+      setTimeout(() => { window.location.href = "./goals.html"; }, 800);
+    }
+  });
+})();
+
+// ──────────── Task Editor Wiring ────────────
+(function initTaskEditor() {
+  const nameField = document.getElementById("task-field-name");
+  const priorityField = document.getElementById("task-field-priority");
+  const dateField = document.getElementById("task-field-date");
+  const timeField = document.getElementById("task-field-time");
+  const notesField = document.getElementById("task-field-notes");
+  if (!nameField) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const editId = params.get("id");
+
+  // Load existing task for editing
+  if (editId) {
+    const tasks = readStore(STORE_KEYS.tasks);
+    const task = tasks.find((t) => t.id === editId);
+    if (task) {
+      nameField.value = task.name || "";
+      priorityField.value = task.priority || "";
+      dateField.value = task.date || "";
+      timeField.value = task.time || "";
+      notesField.value = task.notes || "";
+      // Restore frequency checkboxes
+      if (task.frequency) {
+        const freqChecks = document.querySelectorAll('.compact-check-group:first-of-type .compact-check-chip input');
+        freqChecks.forEach((cb) => {
+          const label = cb.parentElement.querySelector("span").textContent.trim().toLowerCase();
+          cb.checked = task.frequency.includes(label);
+        });
+      }
+      // Restore notification checkboxes
+      if (task.notifications) {
+        const notifChecks = document.querySelectorAll('.compact-check-group:last-of-type .compact-check-chip input');
+        notifChecks.forEach((cb) => {
+          const label = cb.parentElement.querySelector("span").textContent.trim().toLowerCase();
+          cb.checked = task.notifications.includes(label);
+        });
+      }
+    }
+  }
+
+  function getCheckedValues(fieldsetIndex) {
+    const groups = document.querySelectorAll(".compact-check-group");
+    if (!groups[fieldsetIndex]) return [];
+    const checked = [];
+    groups[fieldsetIndex].querySelectorAll('.compact-check-chip input:checked').forEach((cb) => {
+      checked.push(cb.parentElement.querySelector("span").textContent.trim().toLowerCase());
+    });
+    return checked;
+  }
+
+  function collectTaskData() {
+    return {
+      name: nameField.value.trim(),
+      priority: priorityField.value.trim(),
+      date: dateField.value,
+      time: timeField.value,
+      notes: notesField.value.trim(),
+      frequency: getCheckedValues(0),
+      notifications: getCheckedValues(1),
+    };
+  }
+
+  document.addEventListener("click", (e) => {
+    const action = e.target.closest("[data-action]");
+    if (!action) return;
+    const act = action.dataset.action;
+
+    if (act === "save-task") {
+      const data = collectTaskData();
+      if (!data.name) { showToast("Task name is required", "error"); return; }
+      const tasks = readStore(STORE_KEYS.tasks);
+
+      if (editId) {
+        const idx = tasks.findIndex((t) => t.id === editId);
+        if (idx !== -1) {
+          tasks[idx] = { ...tasks[idx], ...data, updatedAt: new Date().toISOString() };
+          writeStore(STORE_KEYS.tasks, tasks);
+          showToast("Task updated successfully");
+        }
+      } else {
+        tasks.push({ id: generateId(), ...data, status: "pending", isComplete: false, createdAt: new Date().toISOString() });
+        writeStore(STORE_KEYS.tasks, tasks);
+        showToast("Task saved successfully");
+      }
+      setTimeout(() => { window.location.href = "./daily-tasks.html"; }, 800);
+    }
+
+    if (act === "preview-reminder") {
+      const data = collectTaskData();
+      if (!data.name) { showToast("Enter a task name first", "error"); return; }
+      const channels = data.notifications.length ? data.notifications.join(", ") : "none selected";
+      const freq = data.frequency.length ? data.frequency.join(", ") : "one-time";
+      const deadline = data.date ? new Date(data.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }) : "no date set";
+      const timeStr = data.time || "no time set";
+      showToast("Reminder: \"" + data.name + "\" — " + deadline + " at " + timeStr + " via " + channels + " (" + freq + ")", "info", 6000);
+    }
+
+    if (act === "reset-task") {
+      nameField.value = "";
+      priorityField.value = "";
+      dateField.value = "2026-04-01";
+      timeField.value = "19:30";
+      notesField.value = "";
+      document.querySelectorAll('.compact-check-chip input').forEach((cb) => cb.checked = false);
+      const noneCheck = document.querySelector('.compact-check-group:first-of-type .compact-check-chip input');
+      if (noneCheck) noneCheck.checked = true;
+      showToast("Form reset", "info");
+    }
+  });
+})();
+
+// ──────────── Habit Editor Wiring ────────────
+(function initHabitEditor() {
+  const nameField = document.getElementById("habit-field-name");
+  const categoryField = document.getElementById("habit-field-category");
+  const scheduleField = document.getElementById("habit-field-schedule");
+  const timeField = document.getElementById("habit-field-time");
+  const channelField = document.getElementById("habit-field-channel");
+  const goalField = document.getElementById("habit-field-goal");
+  const ruleField = document.getElementById("habit-field-rule");
+  const notesField = document.getElementById("habit-field-notes");
+  if (!nameField) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const editId = params.get("id");
+
+  if (editId) {
+    const habits = readStore(STORE_KEYS.habits);
+    const habit = habits.find((h) => h.id === editId);
+    if (habit) {
+      nameField.value = habit.name || "";
+      categoryField.value = habit.category || "";
+      scheduleField.value = habit.schedule || "";
+      timeField.value = habit.time || "";
+      channelField.value = habit.channel || "";
+      goalField.value = habit.linkedGoal || "";
+      ruleField.value = habit.successRule || "";
+      notesField.value = habit.notes || "";
+    }
+  }
+
+  document.addEventListener("click", (e) => {
+    const action = e.target.closest("[data-action]");
+    if (!action) return;
+
+    if (action.dataset.action === "save-habit") {
+      const data = {
+        name: nameField.value.trim(),
+        category: categoryField.value.trim(),
+        schedule: scheduleField.value.trim(),
+        time: timeField.value,
+        channel: channelField.value.trim(),
+        linkedGoal: goalField.value.trim(),
+        successRule: ruleField.value.trim(),
+        notes: notesField.value.trim(),
+      };
+      if (!data.name) { showToast("Habit name is required", "error"); return; }
+      const habits = readStore(STORE_KEYS.habits);
+
+      if (editId) {
+        const idx = habits.findIndex((h) => h.id === editId);
+        if (idx !== -1) {
+          habits[idx] = { ...habits[idx], ...data, updatedAt: new Date().toISOString() };
+          writeStore(STORE_KEYS.habits, habits);
+          showToast("Habit updated successfully");
+        }
+      } else {
+        habits.push({ id: generateId(), ...data, createdAt: new Date().toISOString() });
+        writeStore(STORE_KEYS.habits, habits);
+        showToast("Habit saved successfully");
+      }
+      setTimeout(() => { window.location.href = "./habits.html"; }, 800);
+    }
+  });
+})();
+
+// ──────────── Subtask Editor Wiring ────────────
+(function initSubtaskEditor() {
+  const nameField = document.getElementById("subtask-field-name");
+  const statusField = document.getElementById("subtask-field-status");
+  const dateField = document.getElementById("subtask-field-date");
+  const priorityField = document.getElementById("subtask-field-priority");
+  const notesField = document.getElementById("subtask-field-notes");
+  if (!nameField) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const editId = params.get("id");
+  const parentTaskId = params.get("taskId");
+
+  if (editId) {
+    const subtasks = readStore(STORE_KEYS.subtasks);
+    const subtask = subtasks.find((s) => s.id === editId);
+    if (subtask) {
+      nameField.value = subtask.name || "";
+      statusField.value = subtask.status || "";
+      dateField.value = subtask.date || "";
+      priorityField.value = subtask.priority || "";
+      notesField.value = subtask.notes || "";
+    }
+  }
+
+  document.addEventListener("click", (e) => {
+    const action = e.target.closest("[data-action]");
+    if (!action) return;
+    const act = action.dataset.action;
+
+    if (act === "save-subtask") {
+      const data = {
+        name: nameField.value.trim(),
+        status: statusField.value.trim() || "Pending",
+        date: dateField.value,
+        priority: priorityField.value.trim(),
+        notes: notesField.value.trim(),
+        parentTaskId: parentTaskId || null,
+      };
+      if (!data.name) { showToast("Subtask name is required", "error"); return; }
+      const subtasks = readStore(STORE_KEYS.subtasks);
+
+      if (editId) {
+        const idx = subtasks.findIndex((s) => s.id === editId);
+        if (idx !== -1) {
+          subtasks[idx] = { ...subtasks[idx], ...data, updatedAt: new Date().toISOString() };
+          writeStore(STORE_KEYS.subtasks, subtasks);
+          showToast("Subtask updated");
+        }
+      } else {
+        subtasks.push({ id: generateId(), ...data, createdAt: new Date().toISOString() });
+        writeStore(STORE_KEYS.subtasks, subtasks);
+        showToast("Subtask saved");
+      }
+      setTimeout(() => { window.location.href = "./task-detail.html"; }, 800);
+    }
+
+    if (act === "mark-subtask-complete") {
+      if (!nameField.value.trim()) { showToast("Enter a subtask name first", "error"); return; }
+      statusField.value = "Completed";
+
+      if (editId) {
+        const subtasks = readStore(STORE_KEYS.subtasks);
+        const idx = subtasks.findIndex((s) => s.id === editId);
+        if (idx !== -1) {
+          subtasks[idx].status = "Completed";
+          subtasks[idx].updatedAt = new Date().toISOString();
+          writeStore(STORE_KEYS.subtasks, subtasks);
+        }
+      }
+      showToast("Subtask marked complete");
+    }
+  });
+})();
+
+// ──────────── Signup Flow Wiring ────────────
+(function initSignupFlow() {
+  const signupButtons = document.querySelectorAll("[data-action^='signup-']");
+  if (!signupButtons.length) return;
+
+  signupButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const method = btn.dataset.action.replace("signup-", "");
+      const methodLabel = method === "google" ? "Google" : method === "email" ? "Email" : "Mobile";
+      showToast("Starting " + methodLabel + " sign-up flow...", "info");
+      localStorage.setItem("timenest-signup-method", method);
+      localStorage.setItem("timenest-auth-state", "signed-up");
+      setTimeout(() => { window.location.href = "./index.html"; }, 1200);
+    });
+  });
+})();
+
+// ──────────── Forgot Password / Recovery Wiring ────────────
+(function initRecoveryFlow() {
+  const recoveryButtons = document.querySelectorAll("[data-action^='recovery-']");
+  if (!recoveryButtons.length) return;
+
+  recoveryButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const method = btn.dataset.action.replace("recovery-", "");
+      const labels = { email: "Reset link sent to your email", mobile: "Verification SMS sent", google: "Redirecting to Google account recovery..." };
+      showToast(labels[method] || "Recovery initiated", "success");
+      btn.textContent = method === "google" ? "Redirecting..." : "Sent";
+      btn.style.opacity = "0.6";
+      btn.style.pointerEvents = "none";
+      if (method === "google") {
+        setTimeout(() => { window.location.href = "./login.html"; }, 2000);
+      }
+    });
+  });
+})();
+
+// ──────────── Notification Channel Toggles ────────────
+(function initChannelToggles() {
+  const channelCards = document.querySelectorAll("[data-channel]");
+  if (!channelCards.length) return;
+
+  const defaultChannels = {
+    push: "enabled", email: "enabled", sms: "disabled",
+    whatsapp: "disabled", "in-app": "enabled", snooze: "enabled",
+  };
+  const savedChannels = readStoreObject(STORE_KEYS.channels, defaultChannels);
+
+  function syncChannelCard(card) {
+    const channel = card.dataset.channel;
+    const state = savedChannels[channel] || "disabled";
+    card.dataset.channelState = state;
+    const statusEl = card.querySelector(".channel-status");
+    if (statusEl) {
+      statusEl.textContent = state === "enabled" ? "Enabled" : "Disabled";
+    }
+    const toggleEl = card.querySelector(".channel-toggle");
+    if (toggleEl) {
+      toggleEl.textContent = state === "enabled" ? "Disable" : "Enable";
+    }
+  }
+
+  channelCards.forEach(syncChannelCard);
+
+  document.addEventListener("click", (e) => {
+    const toggle = e.target.closest("[data-action='toggle-channel']");
+    if (!toggle) return;
+    const card = toggle.closest("[data-channel]");
+    if (!card) return;
+    const channel = card.dataset.channel;
+    savedChannels[channel] = savedChannels[channel] === "enabled" ? "disabled" : "enabled";
+    writeStore(STORE_KEYS.channels, savedChannels);
+    syncChannelCard(card);
+    showToast(channel.charAt(0).toUpperCase() + channel.slice(1) + " " + savedChannels[channel]);
+  });
+})();
+
+// ──────────── Settings Cards Wiring ────────────
+(function initSettingsCards() {
+  const settingsCards = document.querySelectorAll("[data-action='open-setting']");
+  if (!settingsCards.length) return;
+
+  const settingActions = {
+    appearance: function (card) {
+      const currentTheme = localStorage.getItem("timenest-theme") || "dark";
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      localStorage.setItem("timenest-theme", newTheme);
+      document.documentElement.dataset.theme = newTheme;
+      document.body.dataset.theme = newTheme;
+      showToast("Theme switched to " + newTheme + " mode");
+      const desc = card.querySelector("p:last-child");
+      if (desc) desc.textContent = newTheme === "dark" ? "Dark mode active with futuristic motion presets." : "Light mode active with futuristic motion presets.";
+    },
+    language: function (card) {
+      const saved = readStoreObject(STORE_KEYS.settings, {});
+      const current = saved.language || "english";
+      saved.language = current === "english" ? "marathi" : "english";
+      writeStore(STORE_KEYS.settings, saved);
+      const title = card.querySelector(".section-title");
+      if (title) title.textContent = saved.language === "english" ? "English + Marathi" : "Marathi + English";
+      showToast("Primary language: " + (saved.language === "english" ? "English" : "Marathi"));
+    },
+    backup: function () {
+      showToast("Backup initiated — exporting data to cloud sync...", "info");
+      const allData = {};
+      Object.entries(STORE_KEYS).forEach(([key, storeKey]) => {
+        const val = localStorage.getItem(storeKey);
+        if (val) allData[key] = val;
+      });
+      localStorage.setItem("timenest-backup-snapshot", JSON.stringify({ timestamp: new Date().toISOString(), data: allData }));
+      setTimeout(() => showToast("Backup complete — restore point saved"), 1500);
+    },
+    security: function () {
+      showToast("Session verified — all tokens active", "success");
+    },
+  };
+
+  settingsCards.forEach((card) => {
+    card.style.cursor = "pointer";
+    card.addEventListener("click", () => {
+      const setting = card.dataset.setting;
+      if (settingActions[setting]) settingActions[setting](card);
+    });
+  });
+})();
+
+// ──────────── Profile: Connected Access Wiring ────────────
+(function initProfileAccess() {
+  const accessItems = document.querySelectorAll("[data-action='toggle-access']");
+  if (!accessItems.length) return;
+
+  accessItems.forEach((pill) => {
+    pill.style.cursor = "pointer";
+    pill.addEventListener("click", () => {
+      const item = pill.closest("[data-access]");
+      if (!item) return;
+      const method = item.dataset.access;
+      if (method === "google") {
+        showToast("Google is the primary sign-in — cannot disable", "warn");
+        return;
+      }
+      const isActive = pill.classList.contains("good");
+      if (isActive) {
+        pill.classList.remove("good");
+        pill.classList.add("warn");
+        pill.textContent = "Disabled";
+        item.classList.remove("surface-item-status-good");
+        showToast(method.charAt(0).toUpperCase() + method.slice(1) + " access disabled", "warn");
+      } else {
+        pill.classList.remove("warn");
+        pill.classList.add("good");
+        pill.textContent = "Active";
+        item.classList.add("surface-item-status-good");
+        showToast(method.charAt(0).toUpperCase() + method.slice(1) + " access enabled");
+      }
+    });
+  });
+})();
+
+// ──────────── Profile: Quick Preferences Cycling ────────────
+(function initProfilePreferences() {
+  const prefPills = document.querySelectorAll("[data-action='cycle-pref']");
+  if (!prefPills.length) return;
+
+  const prefOptions = {
+    language: ["English", "Marathi", "Hindi"],
+    backup: ["Cloud Sync", "Local Only", "Off"],
+    export: ["PDF + Excel", "PDF Only", "Excel Only", "JSON"],
+    mode: ["Futuristic", "Minimal", "Classic"],
+  };
+
+  const savedPrefs = readStoreObject(STORE_KEYS.preferences, {});
+
+  prefPills.forEach((pill) => {
+    const key = pill.dataset.pref;
+    if (savedPrefs[key]) {
+      pill.textContent = key.charAt(0).toUpperCase() + key.slice(1) + ": " + savedPrefs[key];
+    }
+
+    pill.style.cursor = "pointer";
+    pill.addEventListener("click", () => {
+      const options = prefOptions[key];
+      if (!options) return;
+      const currentText = pill.textContent.split(": ")[1] || options[0];
+      const currentIdx = options.indexOf(currentText);
+      const nextIdx = (currentIdx + 1) % options.length;
+      const newValue = options[nextIdx];
+      pill.textContent = key.charAt(0).toUpperCase() + key.slice(1) + ": " + newValue;
+      savedPrefs[key] = newValue;
+      writeStore(STORE_KEYS.preferences, savedPrefs);
+      showToast(key.charAt(0).toUpperCase() + key.slice(1) + " set to " + newValue);
+    });
+  });
+})();
+
+// ──────────── Login Page: Wire preview actions ────────────
+(function initLoginActions() {
+  const loginSubmit = document.querySelector(".login-submit");
+  if (loginSubmit) {
+    loginSubmit.addEventListener("click", (e) => {
+      e.preventDefault();
+      showToast("This is a prototype — use the preview buttons above", "info");
+    });
+  }
+
+  // Wire the form to prevent actual submission
+  const loginForm = document.querySelector(".login-form");
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      showToast("Prototype mode — no real authentication", "info");
+    });
+  }
+})();

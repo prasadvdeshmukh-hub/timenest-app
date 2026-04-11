@@ -26,13 +26,13 @@
           <p class="mini-label" id="goal-editor-eyebrow">Goal Editor</p>
           <h2 class="section-title" id="goal-editor-title">Create or update a goal</h2>
           <div class="form-grid">
-            <label class="field"><span>Goal Name</span><input type="text" placeholder="Launch TimeNest MVP" /></label>
+            <label class="field"><span>Goal Name</span><input type="text" id="goal-field-name" placeholder="Launch TimeNest MVP" /></label>
             <label class="field"><span id="goal-editor-type-label">Goal Type</span><input id="goal-editor-type-input" type="text" placeholder="Short-Term / Long-Term / Tasks" /></label>
-            <label class="field"><span>Start Date</span><input type="date" value="2026-04-01" /></label>
-            <label class="field"><span>Target Date</span><input type="date" value="2026-06-30" /></label>
-            <label class="field full"><span>Description</span><input type="text" placeholder="Describe the goal outcome and focus area" /></label>
+            <label class="field"><span>Start Date</span><input type="date" id="goal-field-start" value="2026-04-01" /></label>
+            <label class="field"><span>Target Date</span><input type="date" id="goal-field-target" value="2026-06-30" /></label>
+            <label class="field full"><span>Description</span><input type="text" id="goal-field-desc" placeholder="Describe the goal outcome and focus area" /></label>
           </div>
-          <div class="form-actions"><span class="soft-pill">Save Goal</span><span class="soft-pill">Duplicate</span><span class="soft-pill">Delete</span></div>
+          <div class="form-actions"><span class="soft-pill" data-action="save-goal">Save Goal</span><span class="soft-pill" data-action="duplicate-goal">Duplicate</span><span class="soft-pill" data-action="delete-goal">Delete</span></div>
         </article>
       </section>
     </main>

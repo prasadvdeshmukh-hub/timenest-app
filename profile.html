@@ -39,18 +39,18 @@
           <article class="page-card panel">
             <p class="mini-label">Connected Access</p>
             <div class="surface-list">
-              <div class="surface-item surface-item-status-good"><div><strong>Google Sign-In</strong><small>Primary login method</small></div><span class="status-pill good">Active</span></div>
-              <div class="surface-item surface-item-status-good"><div><strong>Email + Password</strong><small>Recovery and secondary access</small></div><span class="status-pill good">Configured</span></div>
-              <div class="surface-item"><div><strong>Mobile Access</strong><small>SMS-linked fallback flow</small></div><span class="status-pill warn">Optional</span></div>
+              <div class="surface-item surface-item-status-good" data-access="google"><div><strong>Google Sign-In</strong><small>Primary login method</small></div><span class="status-pill good" data-action="toggle-access">Active</span></div>
+              <div class="surface-item surface-item-status-good" data-access="email"><div><strong>Email + Password</strong><small>Recovery and secondary access</small></div><span class="status-pill good" data-action="toggle-access">Configured</span></div>
+              <div class="surface-item" data-access="mobile"><div><strong>Mobile Access</strong><small>SMS-linked fallback flow</small></div><span class="status-pill warn" data-action="toggle-access">Optional</span></div>
             </div>
           </article>
           <article class="page-card panel">
             <p class="mini-label">Quick Preferences</p>
             <div class="chip-row">
-              <span class="soft-pill">Language: English</span>
-              <span class="soft-pill">Backup: Cloud Sync</span>
-              <span class="soft-pill">Export: PDF + Excel</span>
-              <span class="soft-pill">Mode: Futuristic</span>
+              <span class="soft-pill" data-pref="language" data-action="cycle-pref">Language: English</span>
+              <span class="soft-pill" data-pref="backup" data-action="cycle-pref">Backup: Cloud Sync</span>
+              <span class="soft-pill" data-pref="export" data-action="cycle-pref">Export: PDF + Excel</span>
+              <span class="soft-pill" data-pref="mode" data-action="cycle-pref">Mode: Futuristic</span>
             </div>
           </article>
         </section>

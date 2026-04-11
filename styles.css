@@ -7948,3 +7948,142 @@ body.dashboard-home .dashboard-summary-card strong {
     --app-button-badge-font: 0.6rem;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   WIRING STYLES — Toast, Interactive Elements, Toggles
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Toast Notification Container */
+.timenest-toast-container {
+  position: fixed;
+  bottom: 5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.timenest-toast {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #fff;
+  background: rgba(30, 30, 50, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  opacity: 0;
+  transform: translateY(1rem) scale(0.96);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: auto;
+  max-width: 90vw;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.timenest-toast.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.timenest-toast-success {
+  border-color: rgba(74, 222, 128, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 16px rgba(74, 222, 128, 0.08);
+}
+
+.timenest-toast-error {
+  border-color: rgba(248, 113, 113, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 16px rgba(248, 113, 113, 0.1);
+}
+
+.timenest-toast-warn {
+  border-color: rgba(251, 191, 36, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 16px rgba(251, 191, 36, 0.08);
+}
+
+.timenest-toast-info {
+  border-color: rgba(96, 165, 250, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 16px rgba(96, 165, 250, 0.08);
+}
+
+/* Interactive soft-pill buttons */
+.soft-pill[data-action] {
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.soft-pill[data-action]:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.soft-pill[data-action]:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* Settings cards interactive state */
+.settings-card[data-action] {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.settings-card[data-action]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.settings-card[data-action]:active {
+  transform: translateY(0);
+}
+
+/* Channel card toggle button */
+.channel-toggle {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+/* Channel card enabled/disabled states */
+[data-channel-state="enabled"] .channel-status {
+  color: rgba(74, 222, 128, 0.9);
+}
+
+[data-channel-state="disabled"] .channel-status {
+  color: rgba(248, 113, 113, 0.8);
+}
+
+[data-channel-state="enabled"] .channel-toggle {
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+[data-channel-state="disabled"] .channel-toggle {
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+/* Profile status pills interactive */
+.status-pill[data-action] {
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.status-pill[data-action]:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+/* Light theme toast override */
+[data-theme="light"] .timenest-toast {
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e1e32;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}

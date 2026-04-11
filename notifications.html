@@ -37,12 +37,12 @@
           </article>
         </section>
         <section class="channel-grid">
-          <article class="channel-card"><p class="mini-label">Push</p><strong>Enabled</strong><p>Fastest primary channel for task due alerts.</p></article>
-          <article class="channel-card"><p class="mini-label">Email</p><strong>Enabled</strong><p>Morning and evening summaries plus backups.</p></article>
-          <article class="channel-card"><p class="mini-label">SMS</p><strong>Optional</strong><p>Critical fallback for missed high-priority tasks.</p></article>
-          <article class="channel-card"><p class="mini-label">WhatsApp</p><strong>Optional</strong><p>Escalation route for ignored deadlines.</p></article>
-          <article class="channel-card"><p class="mini-label">In-App</p><strong>Enabled</strong><p>Popup and feed notifications inside TimeNest.</p></article>
-          <article class="channel-card"><p class="mini-label">Snooze</p><strong>Enabled</strong><p>User can snooze and auto-reschedule reminders.</p></article>
+          <article class="channel-card" data-channel="push" data-channel-state="enabled"><p class="mini-label">Push</p><strong class="channel-status">Enabled</strong><p>Fastest primary channel for task due alerts.</p><span class="soft-pill channel-toggle" data-action="toggle-channel">Toggle</span></article>
+          <article class="channel-card" data-channel="email" data-channel-state="enabled"><p class="mini-label">Email</p><strong class="channel-status">Enabled</strong><p>Morning and evening summaries plus backups.</p><span class="soft-pill channel-toggle" data-action="toggle-channel">Toggle</span></article>
+          <article class="channel-card" data-channel="sms" data-channel-state="disabled"><p class="mini-label">SMS</p><strong class="channel-status">Optional</strong><p>Critical fallback for missed high-priority tasks.</p><span class="soft-pill channel-toggle" data-action="toggle-channel">Toggle</span></article>
+          <article class="channel-card" data-channel="whatsapp" data-channel-state="disabled"><p class="mini-label">WhatsApp</p><strong class="channel-status">Optional</strong><p>Escalation route for ignored deadlines.</p><span class="soft-pill channel-toggle" data-action="toggle-channel">Toggle</span></article>
+          <article class="channel-card" data-channel="in-app" data-channel-state="enabled"><p class="mini-label">In-App</p><strong class="channel-status">Enabled</strong><p>Popup and feed notifications inside TimeNest.</p><span class="soft-pill channel-toggle" data-action="toggle-channel">Toggle</span></article>
+          <article class="channel-card" data-channel="snooze" data-channel-state="enabled"><p class="mini-label">Snooze</p><strong class="channel-status">Enabled</strong><p>User can snooze and auto-reschedule reminders.</p><span class="soft-pill channel-toggle" data-action="toggle-channel">Toggle</span></article>
         </section>
       </section>
     </main>

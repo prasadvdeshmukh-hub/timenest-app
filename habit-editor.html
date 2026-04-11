@@ -40,17 +40,17 @@
           <p class="mini-label">Habit Editor</p>
           <h2 class="section-title">Create a habit with reminders, streak rules, and calendar tracking</h2>
           <div class="form-grid">
-            <label class="field"><span>Habit Name</span><input type="text" placeholder="Morning Workout" /></label>
-            <label class="field"><span>Category</span><input type="text" placeholder="Health / Learning / Focus" /></label>
-            <label class="field"><span>Schedule</span><input type="text" placeholder="Daily / Weekdays / Custom Days" /></label>
-            <label class="field"><span>Preferred Time</span><input type="time" value="06:30" /></label>
-            <label class="field"><span>Reminder Channel</span><input type="text" placeholder="Push / In-App / Email" /></label>
-            <label class="field"><span>Linked Goal</span><input type="text" placeholder="Fitness Goal" /></label>
-            <label class="field full"><span>Success Rule</span><input type="text" placeholder="Mark complete once the workout is finished." /></label>
-            <label class="field full"><span>Notes</span><input type="text" placeholder="Add cues, rewards, or tracking notes." /></label>
+            <label class="field"><span>Habit Name</span><input type="text" id="habit-field-name" placeholder="Morning Workout" /></label>
+            <label class="field"><span>Category</span><input type="text" id="habit-field-category" placeholder="Health / Learning / Focus" /></label>
+            <label class="field"><span>Schedule</span><input type="text" id="habit-field-schedule" placeholder="Daily / Weekdays / Custom Days" /></label>
+            <label class="field"><span>Preferred Time</span><input type="time" id="habit-field-time" value="06:30" /></label>
+            <label class="field"><span>Reminder Channel</span><input type="text" id="habit-field-channel" placeholder="Push / In-App / Email" /></label>
+            <label class="field"><span>Linked Goal</span><input type="text" id="habit-field-goal" placeholder="Fitness Goal" /></label>
+            <label class="field full"><span>Success Rule</span><input type="text" id="habit-field-rule" placeholder="Mark complete once the workout is finished." /></label>
+            <label class="field full"><span>Notes</span><input type="text" id="habit-field-notes" placeholder="Add cues, rewards, or tracking notes." /></label>
           </div>
           <div class="form-actions">
-            <span class="soft-pill">Save Habit</span>
+            <span class="soft-pill" data-action="save-habit">Save Habit</span>
             <a class="soft-pill" href="./calendar.html?view=habits">Preview Calendar</a>
             <a class="soft-pill" href="./habits.html">Back to Habits</a>
           </div>
