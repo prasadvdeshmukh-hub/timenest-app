@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>TimeNest Goals</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="goals-page">
+    <div class="aurora aurora-left" aria-hidden="true"></div>
+    <div class="aurora aurora-right" aria-hidden="true"></div>
+    <main class="app-page-shell">
+      <aside class="app-sidebar">
+        <div class="sidebar-card panel">
+          <a class="brand-link" href="./index.html">
+            <div class="brand-cluster">
+              <div class="brand-mark"><span class="brand-core"></span></div>
+              <div>
+                <p class="mini-label">Goal Cluster</p>
+                <h2>TimeNest</h2>
+                <p class="brand-subline">Master Your Time. Achieve Your Goals.</p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <nav class="sidebar-nav">
+          <a class="sidebar-link" href="./index.html">Dashboard <span>01</span></a>
+          <a class="sidebar-link is-active" data-goal-nav="short" href="./goals.html?view=short">Short-Term <span>12</span></a>
+          <a class="sidebar-link" data-goal-nav="long" href="./goals.html?view=long">Long-Term <span>06</span></a>
+          <a class="sidebar-link" href="./daily-tasks.html">Daily Tasks <span>09</span></a>
+          <a class="sidebar-link" href="./habits.html">Habits <span>14</span></a>
+          <a class="sidebar-link" href="./calendar.html">Calendar <span>07</span></a>
+        </nav>
+      </aside>
+      <section class="app-main">
+        <article class="page-card panel goal-toggle-panel">
+          <div class="goal-toggle-head">
+            <div class="goal-toggle-copy">
+              <p class="mini-label">Goal View</p>
+              <h2 class="section-title" id="goal-toggle-title">Select the dashboard you want to view</h2>
+            </div>
+          </div>
+          <div class="goal-view-toggle" role="radiogroup" aria-label="Goal dashboard view">
+            <label class="goal-view-option">
+              <input type="radio" name="goal-view" value="short" checked />
+              <span>Short-Term Goals</span>
+            </label>
+            <label class="goal-view-option">
+              <input type="radio" name="goal-view" value="long" />
+              <span>Long-Term Goals</span>
+            </label>
+          </div>
+        </article>
+
+        <article class="page-card panel goal-range-panel">
+          <div class="goal-range-toggle" role="radiogroup" aria-label="Goal metric date range">
+            <label class="goal-range-option">
+              <input type="radio" name="goal-range" value="all" checked />
+              <span>All</span>
+            </label>
+            <label class="goal-range-option">
+              <input type="radio" name="goal-range" value="month" />
+              <span>This Month</span>
+            </label>
+          </div>
+        </article>
+
+        <section class="goal-dashboard-panel" data-goal-view="short">
+          <section class="metric-grid goal-metric-grid" data-goal-metrics="short">
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="completed" href="./goal-detail.html?view=short&metric=completed"><p class="mini-label" data-goal-metric-label>Completed</p><strong data-goal-metric-value>12</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="active" href="./goal-detail.html?view=short&metric=active"><p class="mini-label" data-goal-metric-label>Active</p><strong data-goal-metric-value>08</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="delayed" href="./goal-detail.html?view=short&metric=delayed"><p class="mini-label" data-goal-metric-label>Delayed</p><strong data-goal-metric-value>03</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="on-time" href="./goal-detail.html?view=short&metric=on-time"><p class="mini-label" data-goal-metric-label>On Time</p><strong data-goal-metric-value>91%</strong></a>
+          </section>
+
+          <section class="page-hero goal-page-hero goal-page-hero-long">
+            <article class="hero-panel-large panel">
+              <h1 class="section-title goal-hero-title goal-hero-title-long" data-goal-hero-title>Short-term goals shaping the next quarter</h1>
+              <div class="chip-row goal-hero-actions-single">
+                <a class="soft-pill" href="./goal-editor.html?goalType=short-term">Add Goal</a>
+              </div>
+            </article>
+            <article class="hero-panel-side panel">
+              <p class="mini-label" data-goal-health-label>Sprint Health</p>
+              <strong class="value-big" data-goal-health-value>91%</strong>
+              <p data-goal-health-copy>Short-term goals are moving with clear weekly momentum and a focused execution board.</p>
+            </article>
+          </section>
+
+          <section class="content-split">
+            <article class="page-card panel">
+              <p class="mini-label">Portfolio</p>
+              <div class="surface-list goal-portfolio-list" data-goal-portfolio-list>
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Finish 30-day strength cycle</strong><small>30-day fitness sprint with 4 sessions left</small></div>
+                  <span class="status-pill good">84%</span>
+                </a>
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Build emergency buffer</strong><small>60-day savings checkpoint with 2 reviews left</small></div>
+                  <span class="status-pill warn">67%</span>
+                </a>
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Ship Flutter UI prototype</strong><small>45-day product sprint nearing dashboard polish</small></div>
+                  <span class="status-pill good">73%</span>
+                </a>
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Sleep before 11 PM for 21 days</strong><small>Recovery streak improving but still needs consistency</small></div>
+                  <span class="status-pill alert">58%</span>
+                </a>
+              </div>
+            </article>
+            <article class="page-card panel">
+              <p class="mini-label" data-goal-timeline-label>Sprint Milestones</p>
+              <div class="timeline-stack" data-goal-timeline-list>
+                <div class="timeline-item"><span class="timeline-time">Week 1</span><div><strong>Lock scope and owner path</strong><small>Set one clear weekly focus and one fallback action for each goal.</small></div></div>
+                <div class="timeline-item"><span class="timeline-time">Week 4</span><div><strong>Review blockers and rebalance effort</strong><small>Refocus work on delayed goals before they affect the full quarter.</small></div></div>
+                <div class="timeline-item"><span class="timeline-time">Week 8</span><div><strong>Push highest-value deliverables</strong><small>Close the strongest goals first and reduce drag on the remaining work.</small></div></div>
+                <div class="timeline-item"><span class="timeline-time">Week 12</span><div><strong>Close, carry, or reset</strong><small>Archive wins, roll over unfinished items, and prepare the next short-term board.</small></div></div>
+              </div>
+            </article>
+          </section>
+        </section>
+
+        <section class="goal-dashboard-panel" data-goal-view="long" hidden>
+          <section class="metric-grid goal-metric-grid" data-goal-metrics="long">
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="completed" href="./goal-detail.html?view=long&metric=completed"><p class="mini-label" data-goal-metric-label>Completed</p><strong data-goal-metric-value>03</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="active" href="./goal-detail.html?view=long&metric=active"><p class="mini-label" data-goal-metric-label>Active</p><strong data-goal-metric-value>02</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="delayed" href="./goal-detail.html?view=long&metric=delayed"><p class="mini-label" data-goal-metric-label>Delayed</p><strong data-goal-metric-value>01</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="on-time" href="./goal-detail.html?view=long&metric=on-time"><p class="mini-label" data-goal-metric-label>On Time</p><strong data-goal-metric-value>78%</strong></a>
+          </section>
+
+          <section class="page-hero goal-page-hero goal-page-hero-long">
+            <article class="hero-panel-large panel">
+              <h1 class="section-title goal-hero-title goal-hero-title-long" data-goal-hero-title>Long-term goals shaping the next year</h1>
+              <div class="chip-row goal-hero-actions-single">
+                <a class="soft-pill" href="./goal-editor.html?goalType=long-term">Add Goal</a>
+              </div>
+            </article>
+            <article class="hero-panel-side panel">
+              <p class="mini-label" data-goal-health-label>Annual Health</p>
+              <strong class="value-big" data-goal-health-value>78%</strong>
+              <p data-goal-health-copy>Three long-term goals are moving ahead of plan and one needs a milestone reset.</p>
+            </article>
+          </section>
+
+          <section class="content-split">
+            <article class="page-card panel">
+              <p class="mini-label">Portfolio</p>
+              <div class="surface-list goal-portfolio-list" data-goal-portfolio-list>
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Launch TimeNest MVP</strong><small>12-month product goal</small></div>
+                  <span class="status-pill good">81%</span>
+                </a>
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Build financial freedom runway</strong><small>18-month savings target</small></div>
+                  <span class="status-pill warn">63%</span>
+                </a>
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Master Marathi communication</strong><small>12-month fluency track</small></div>
+                  <span class="status-pill good">72%</span>
+                </a>
+                <a class="surface-item" href="./goal-detail.html">
+                  <div><strong>Reach advanced fitness baseline</strong><small>Annual strength and mobility target</small></div>
+                  <span class="status-pill alert">49%</span>
+                </a>
+              </div>
+            </article>
+            <article class="page-card panel">
+              <p class="mini-label" data-goal-timeline-label>Quarter Milestones</p>
+              <div class="timeline-stack" data-goal-timeline-list>
+                <div class="timeline-item"><span class="timeline-time">Q2</span><div><strong>Finalize design system and auth</strong><small>UI sign-off plus first Firebase connection.</small></div></div>
+                <div class="timeline-item"><span class="timeline-time">Q3</span><div><strong>Ship goals, tasks, and reminders</strong><small>Recurring tasks and notification channels ready.</small></div></div>
+                <div class="timeline-item"><span class="timeline-time">Q4</span><div><strong>Launch habits, export, and analytics</strong><small>Retention and premium feature layer.</small></div></div>
+              </div>
+            </article>
+          </section>
+        </section>
+      </section>
+    </main>
+    <button
+      class="floating-add-button"
+      type="button"
+      data-quick-add-open
+      aria-controls="quick-add-sheet"
+      aria-expanded="false"
+      aria-label="Add a goal, task, or habit"
+    >
+      <span aria-hidden="true">+</span>
+    </button>
+    <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
+      <a class="tab-link" href="./index.html">Home</a>
+      <a class="tab-link is-active" href="./goals.html">Goals</a>
+      <a class="tab-link" href="./daily-tasks.html">Tasks</a>
+      <a class="tab-link" href="./calendar.html?view=habits">Habits</a>
+    </nav>
+
+    <div class="quick-add-backdrop" data-quick-add-backdrop hidden></div>
+
+    <section
+      class="quick-add-sheet panel"
+      id="quick-add-sheet"
+      data-quick-add-sheet
+      aria-modal="true"
+      aria-label="Quick add"
+      hidden
+    >
+      <div class="quick-add-head">
+        <div>
+          <p class="mini-label">Quick Add</p>
+          <h3>Create from TimeNest</h3>
+        </div>
+        <button class="quick-add-close" type="button" data-quick-add-close aria-label="Close quick add">
+          &times;
+        </button>
+      </div>
+
+      <div class="quick-add-step is-active" data-quick-add-step="root">
+        <div class="quick-add-grid">
+          <button class="quick-add-option" type="button" data-add-choice="goal">
+            <strong>Goal</strong>
+            <span>Choose short-term or long-term before you continue.</span>
+          </button>
+          <button class="quick-add-option" type="button" data-add-url="./task-editor.html?entry=quick-add">
+            <strong>Task</strong>
+            <span>Open the task editor with reminders, due date, and priority.</span>
+          </button>
+          <button class="quick-add-option" type="button" data-add-url="./habit-editor.html?entry=quick-add">
+            <strong>Habit</strong>
+            <span>Create a recurring habit with streak tracking and reminders.</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="quick-add-step" data-quick-add-step="goal">
+        <div class="quick-add-grid">
+          <button
+            class="quick-add-option"
+            type="button"
+            data-add-url="./goal-editor.html?goalType=short-term&entry=quick-add"
+          >
+            <strong>Short-Term Goal</strong>
+            <span>Create a goal for the next 30 to 90 days.</span>
+          </button>
+          <button
+            class="quick-add-option"
+            type="button"
+            data-add-url="./goal-editor.html?goalType=long-term&entry=quick-add"
+          >
+            <strong>Long-Term Goal</strong>
+            <span>Create a milestone-based goal for the longer roadmap.</span>
+          </button>
+        </div>
+
+        <div class="quick-add-actions">
+          <button class="inline-button" type="button" data-quick-add-back>Back</button>
+        </div>
+      </div>
+    </section>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

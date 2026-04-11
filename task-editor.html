@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
-    <link rel="stylesheet" href="./mobile-fix.css" />
   </head>
   <body>
     <div class="aurora aurora-left" aria-hidden="true"></div>
@@ -23,44 +22,82 @@
         </nav>
       </aside>
       <section class="app-main">
-        <article class="page-card panel">
+        <article class="page-card panel task-editor-panel">
           <p class="mini-label">Task Editor</p>
           <h2 class="section-title">Create a task with date, time, recurrence, and reminders</h2>
           <div class="form-grid">
             <label class="field"><span>Task Name</span><input type="text" placeholder="Submit investor-ready roadmap" /></label>
             <label class="field"><span>Priority</span><input type="text" placeholder="Low / Medium / High" /></label>
-            <label class="field"><span>Deadline Date</span><input type="text" placeholder="29 Mar 2026" /></label>
-            <label class="field"><span>Time</span><input type="text" placeholder="HH : MM : SS" /></label>
+            <label class="field"><span>Deadline Date</span><input type="date" value="2026-04-01" /></label>
+            <label class="field"><span>Time</span><input type="time" value="19:30" /></label>
             <label class="field full"><span>Notes</span><input type="text" placeholder="Add notes, task context, or checklist" /></label>
           </div>
-          <div class="segmented-row">
-            <span class="soft-pill">None</span>
-            <span class="soft-pill">Daily</span>
-            <span class="soft-pill">Weekly</span>
-            <span class="soft-pill">Monthly</span>
-            <span class="soft-pill">Yearly</span>
-            <span class="soft-pill">Custom Days</span>
+          <div class="task-editor-compact-stack">
+            <fieldset class="compact-check-group">
+              <legend>Frequency</legend>
+              <div class="compact-check-row" aria-label="Frequency options">
+                <label class="compact-check-chip">
+                  <input type="checkbox" checked />
+                  <span>None</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>Daily</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>Weekly</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>Monthly</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>Yearly</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>Custom Days</span>
+                </label>
+              </div>
+            </fieldset>
+            <fieldset class="compact-check-group">
+              <legend>Preferred Notification</legend>
+              <div class="compact-check-row" aria-label="Preferred notification options">
+                <label class="compact-check-chip">
+                  <input type="checkbox" checked />
+                  <span>Push</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" checked />
+                  <span>In-App</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>Email</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>SMS</span>
+                </label>
+                <label class="compact-check-chip">
+                  <input type="checkbox" />
+                  <span>WhatsApp</span>
+                </label>
+              </div>
+            </fieldset>
           </div>
-          <div class="segmented-row">
-            <span class="soft-pill">Push</span>
-            <span class="soft-pill">In-App</span>
-            <span class="soft-pill">Email</span>
-            <span class="soft-pill">SMS</span>
-            <span class="soft-pill">WhatsApp</span>
-          </div>
-          <div class="form-actions"><span class="soft-pill">Save Task</span><span class="soft-pill">Preview Reminder</span><a class="soft-pill" href="./subtask-editor.html">Add Subtask</a><span class="soft-pill">Reset</span></div>
+          <div class="form-actions task-editor-actions"><span class="soft-pill">Save Task</span><span class="soft-pill">Preview Reminder</span><a class="soft-pill" href="./subtask-editor.html">Add Subtask</a><span class="soft-pill">Reset</span></div>
         </article>
       </section>
     </main>
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
-      <a class="tab-link" href="./index.html">Dashboard</a>
-      <a class="tab-link" href="./short-term-goals.html">Short-Term Goal</a>
-      <a class="tab-link" href="./long-term-goals.html">Long-Term Goal</a>
-      <a class="tab-link is-active" href="./daily-tasks.html">Daily Task</a>
-      <a class="tab-link" href="./habits.html">Habits</a>
+      <a class="tab-link" href="./index.html">Home</a>
+      <a class="tab-link" href="./goals.html">Goals</a>
+      <a class="tab-link is-active" href="./daily-tasks.html">Tasks</a>
+      <a class="tab-link" href="./calendar.html?view=habits">Habits</a>
     </nav>
-      <div id="recaptcha-container"></div>
-    <script type="module" src="./auth.js"></script>
-    <script type="module" src="./page-wiring.js"></script>
+    <script src="./script.js"></script>
   </body>
 </html>

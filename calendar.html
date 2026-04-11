@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
-    <link rel="stylesheet" href="./mobile-fix.css" />
   </head>
   <body>
     <div class="aurora aurora-left" aria-hidden="true"></div>
@@ -27,37 +26,123 @@
       <section class="app-main">
         <section class="page-hero">
           <article class="hero-panel-large panel">
-            <p class="mini-label">Task Calendar</p>
-            <h1 class="section-title">One view for deadlines, recurrences, and reviews</h1>
-            <p>Recurring tasks, milestone dates, and daily summaries surface in the same calendar layer.</p>
+            <p class="mini-label" id="habit-calendar-eyebrow">Habit Calendar</p>
+            <h1 class="section-title" id="habit-calendar-title">Consistency tracker for every recurring habit</h1>
+            <p id="habit-calendar-summary">Open a habit to review every day this month, see completion status, and spot missed days quickly.</p>
+            <div class="chip-row habit-selector-row" id="habit-selector-row">
+              <a class="soft-pill habit-selector" href="./calendar.html?habit=Workout%20Habit">Workout Habit</a>
+              <a class="soft-pill habit-selector" href="./calendar.html?habit=Marathi%20Practice">Marathi Practice</a>
+              <a class="soft-pill habit-selector" href="./calendar.html?habit=Sleep%20Routine">Sleep Routine</a>
+            </div>
           </article>
           <article class="hero-panel-side panel">
-            <p class="mini-label">Month</p>
-            <strong class="value-big">APR</strong>
-            <p>27 scheduled task occurrences and 4 goal milestone checkpoints.</p>
+            <p class="mini-label" id="habit-calendar-side-label">Current Streak</p>
+            <strong class="value-big" id="habit-calendar-streak">14 Days</strong>
+            <p id="habit-calendar-side-copy">This habit is staying above the monthly target with a strong completion pattern.</p>
           </article>
         </section>
-        <section class="calendar-grid">
-          <div class="calendar-head">Sun</div><div class="calendar-head">Mon</div><div class="calendar-head">Tue</div><div class="calendar-head">Wed</div><div class="calendar-head">Thu</div><div class="calendar-head">Fri</div><div class="calendar-head">Sat</div>
-          <div class="calendar-cell"><strong>1</strong><span class="calendar-event">Dashboard QA</span></div>
-          <div class="calendar-cell"><strong>2</strong><span class="calendar-event">Recurring workout</span></div>
-          <div class="calendar-cell"><strong>3</strong><span class="calendar-event">Goal review</span></div>
-          <div class="calendar-cell"><strong>4</strong><span class="calendar-event">Budget sync</span></div>
-          <div class="calendar-cell"><strong>5</strong><span class="calendar-event">Marathi streak</span></div>
-          <div class="calendar-cell"><strong>6</strong><span class="calendar-event">API reminder setup</span></div>
-          <div class="calendar-cell"><strong>7</strong><span class="calendar-event">Weekly summary</span></div>
+        <section class="page-card panel habit-tracker-panel">
+          <div class="section-head">
+            <h3 id="habit-calendar-month-label">This Month</h3>
+            <div class="habit-calendar-controls" aria-label="Habit month controls">
+              <button class="inline-button habit-month-nav" id="habit-month-prev" type="button" aria-label="View previous month">Prev</button>
+              <label class="habit-month-picker" for="habit-calendar-month-input">
+                <span>Month</span>
+                <input type="month" id="habit-calendar-month-input" />
+              </label>
+              <button class="inline-button habit-month-nav" id="habit-month-next" type="button" aria-label="View next month">Next</button>
+            </div>
+          </div>
+          <div class="habit-legend" aria-label="Habit completion legend">
+            <span class="habit-legend-item"><i class="habit-status-dot is-complete" aria-hidden="true"></i>Completed <strong class="habit-legend-count" id="habit-completed-count">00</strong></span>
+            <span class="habit-legend-item"><i class="habit-status-dot is-missed" aria-hidden="true"></i>Missed <strong class="habit-legend-count" id="habit-missed-count">00</strong></span>
+            <span class="habit-legend-item"><i class="habit-status-dot is-future" aria-hidden="true"></i>Future <strong class="habit-legend-count" id="habit-future-count">00</strong></span>
+          </div>
+          <p class="habit-calendar-tip">Tap today or any earlier day in this month to mark the habit completed or missed.</p>
+          <div class="habit-calendar-grid" id="habit-calendar-grid" aria-live="polite"></div>
         </section>
       </section>
     </main>
+    <button
+      class="floating-add-button"
+      type="button"
+      data-quick-add-open
+      aria-controls="quick-add-sheet"
+      aria-expanded="false"
+      aria-label="Add a goal, task, or habit"
+    >
+      <span aria-hidden="true">+</span>
+    </button>
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
-      <a class="tab-link" href="./index.html">Dashboard</a>
-      <a class="tab-link" href="./short-term-goals.html">Short-Term Goal</a>
-      <a class="tab-link" href="./long-term-goals.html">Long-Term Goal</a>
-      <a class="tab-link" href="./daily-tasks.html">Daily Task</a>
-      <a class="tab-link" href="./habits.html">Habits</a>
+      <a class="tab-link" href="./index.html">Home</a>
+      <a class="tab-link" href="./goals.html">Goals</a>
+      <a class="tab-link" href="./daily-tasks.html">Tasks</a>
+      <a class="tab-link is-active" href="./calendar.html?view=habits">Habits</a>
     </nav>
-      <div id="recaptcha-container"></div>
-    <script type="module" src="./auth.js"></script>
-    <script type="module" src="./page-wiring.js"></script>
+
+    <div class="quick-add-backdrop" data-quick-add-backdrop hidden></div>
+
+    <section
+      class="quick-add-sheet panel"
+      id="quick-add-sheet"
+      data-quick-add-sheet
+      aria-modal="true"
+      aria-label="Quick add"
+      hidden
+    >
+      <div class="quick-add-head">
+        <div>
+          <p class="mini-label">Quick Add</p>
+          <h3>Create from TimeNest</h3>
+        </div>
+        <button class="quick-add-close" type="button" data-quick-add-close aria-label="Close quick add">
+          &times;
+        </button>
+      </div>
+
+      <div class="quick-add-step is-active" data-quick-add-step="root">
+        <div class="quick-add-grid">
+          <button class="quick-add-option" type="button" data-add-choice="goal">
+            <strong>Goal</strong>
+            <span>Choose short-term or long-term before you continue.</span>
+          </button>
+          <button class="quick-add-option" type="button" data-add-url="./task-editor.html?entry=quick-add">
+            <strong>Task</strong>
+            <span>Open the task editor with reminders, due date, and priority.</span>
+          </button>
+          <button class="quick-add-option" type="button" data-add-url="./habit-editor.html?entry=quick-add">
+            <strong>Habit</strong>
+            <span>Create a recurring habit with streak tracking and reminders.</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="quick-add-step" data-quick-add-step="goal">
+        <div class="quick-add-grid">
+          <button
+            class="quick-add-option"
+            type="button"
+            data-add-url="./goal-editor.html?goalType=short-term&entry=quick-add"
+          >
+            <strong>Short-Term Goal</strong>
+            <span>Create a goal for the next 30 to 90 days.</span>
+          </button>
+          <button
+            class="quick-add-option"
+            type="button"
+            data-add-url="./goal-editor.html?goalType=long-term&entry=quick-add"
+          >
+            <strong>Long-Term Goal</strong>
+            <span>Create a milestone-based goal for the longer roadmap.</span>
+          </button>
+        </div>
+
+        <div class="quick-add-actions">
+          <button class="inline-button" type="button" data-quick-add-back>Back</button>
+        </div>
+      </div>
+    </section>
+
+    <script src="./script.js"></script>
   </body>
 </html>

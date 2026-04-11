@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
-    <link rel="stylesheet" href="./mobile-fix.css" />
   </head>
   <body>
     <div class="aurora aurora-left" aria-hidden="true"></div>
@@ -20,6 +19,7 @@
           <a class="sidebar-link" href="./index.html">Dashboard <span>01</span></a>
           <a class="sidebar-link is-active" href="./profile.html">Profile <span>03</span></a>
           <a class="sidebar-link" href="./settings.html">Settings <span>06</span></a>
+          <a class="sidebar-link" href="./admin.html">Admin Panel <span>08</span></a>
           <a class="sidebar-link" href="./login.html">Logout Preview <span>00</span></a>
         </nav>
       </aside>
@@ -31,41 +31,43 @@
             <p>Primary owner of the TimeNest workspace with Google, email, and mobile access options configured for account continuity.</p>
           </article>
           <article class="hero-panel-side panel">
-            <p class="mini-label">Theme</p>
-            <strong class="value-big">Dual</strong>
-            <p>Dark and light modes available with English and Marathi language support.</p>
+            <p class="mini-label">Plan</p>
+            <strong class="value-big" data-user-plan-pill>Free Member</strong>
+            <p data-user-plan-description>
+              The current workspace is in free growth mode while premium controls are prepared in the
+              admin panel.
+            </p>
           </article>
         </section>
         <section class="content-split">
           <article class="page-card panel">
             <p class="mini-label">Connected Access</p>
             <div class="surface-list">
-              <div class="surface-item"><div><strong>Google Sign-In</strong><small>Primary login method</small></div><span class="status-pill good">Active</span></div>
-              <div class="surface-item"><div><strong>Email + Password</strong><small>Recovery and secondary access</small></div><span class="status-pill good">Configured</span></div>
+              <div class="surface-item surface-item-status-good"><div><strong>Google Sign-In</strong><small>Primary login method</small></div><span class="status-pill good">Active</span></div>
+              <div class="surface-item surface-item-status-good"><div><strong>Email + Password</strong><small>Recovery and secondary access</small></div><span class="status-pill good">Configured</span></div>
               <div class="surface-item"><div><strong>Mobile Access</strong><small>SMS-linked fallback flow</small></div><span class="status-pill warn">Optional</span></div>
+              <div class="surface-item"><div><strong>Subscription Plan</strong><small data-free-window-label>Premium billing can start later from the admin panel.</small></div><span class="status-pill warn" data-launch-state-pill>Planned</span></div>
             </div>
           </article>
           <article class="page-card panel">
             <p class="mini-label">Quick Preferences</p>
             <div class="chip-row">
               <span class="soft-pill">Language: English</span>
-              <span class="soft-pill">Backup: Cloud Sync</span>
-              <span class="soft-pill">Export: PDF + Excel</span>
+              <span class="soft-pill" data-monetization-mode-label>Free growth mode</span>
+              <span class="soft-pill" data-monthly-price-label>INR 149 / month</span>
               <span class="soft-pill">Mode: Futuristic</span>
+              <a class="inline-button" href="./admin.html">Open Admin Panel</a>
             </div>
           </article>
         </section>
       </section>
     </main>
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
-      <a class="tab-link" href="./index.html">Dashboard</a>
-      <a class="tab-link" href="./short-term-goals.html">Short-Term Goal</a>
-      <a class="tab-link" href="./long-term-goals.html">Long-Term Goal</a>
-      <a class="tab-link" href="./daily-tasks.html">Daily Task</a>
-      <a class="tab-link" href="./habits.html">Habits</a>
+      <a class="tab-link" href="./index.html">Home</a>
+      <a class="tab-link" href="./goals.html">Goals</a>
+      <a class="tab-link" href="./daily-tasks.html">Tasks</a>
+      <a class="tab-link" href="./calendar.html?view=habits">Habits</a>
     </nav>
-      <div id="recaptcha-container"></div>
-    <script type="module" src="./auth.js"></script>
-    <script type="module" src="./page-wiring.js"></script>
+    <script src="./script.js"></script>
   </body>
 </html>

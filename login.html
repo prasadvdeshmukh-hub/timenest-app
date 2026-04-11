@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow" />
     <title>TimeNest Login Preview</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,26 +12,26 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
-    <link rel="stylesheet" href="./mobile-fix.css" />
   </head>
-  <body>
+  <body class="login-page">
     <div class="aurora aurora-left" aria-hidden="true"></div>
     <div class="aurora aurora-right" aria-hidden="true"></div>
 
     <main class="login-shell">
       <section class="login-copy">
-        <p class="eyebrow">TimeNest Access</p>
-        <h1>Sign in to your futuristic productivity space</h1>
+        <p class="eyebrow">TimeNest Prototype Access</p>
+        <h1>Preview the futuristic TimeNest login experience</h1>
         <p class="lede">
-          Log in with Google, email, or mobile access to continue tracking goals,
-          recurring tasks, habits, and reminders across desktop, Android, and iOS.
+          This is a UI prototype for the TimeNest product concept. It previews the
+          login experience for goals, tasks, habits, and reminders across desktop,
+          Android, and iOS without collecting real credentials.
         </p>
 
         <div class="insight-pills">
-          <span>Google Sign-In</span>
-          <span>Email login</span>
-          <span>Mobile access</span>
-          <span>Secure session</span>
+          <span>Prototype only</span>
+          <span>Google flow preview</span>
+          <span>Email flow preview</span>
+          <span>No real sign-in</span>
         </div>
 
         <div class="login-highlights panel">
@@ -53,11 +54,8 @@
         <article class="login-card panel">
           <div class="login-card-top">
             <div class="brand-cluster">
-              <div class="brand-mark" aria-hidden="true">
-                <span class="brand-core"></span>
-              </div>
               <div>
-                <p class="mini-label">Secure Entry</p>
+                <p class="mini-label">Prototype Preview</p>
                 <h2 class="brand-wordmark">TimeNest</h2>
               </div>
             </div>
@@ -68,7 +66,13 @@
           <div class="login-main-grid">
             <div class="login-clock-wrap">
               <canvas id="hud-clock" class="hud-clock hud-clock-login"></canvas>
-              <div class="login-tagline" data-text="Master Your Time. Achieve Your Goals.">Master Your Time. Achieve Your Goals.</div>
+              <div
+                class="login-tagline"
+                data-text="Master Your Time. Achieve Your Goals."
+                data-animate-chars="true"
+              >
+                Master Your Time. Achieve Your Goals.
+              </div>
               <div class="clock-orbit-dots" aria-hidden="true">
                 <span></span>
                 <span></span>
@@ -77,29 +81,35 @@
             </div>
 
             <div class="login-form-shell">
+              <div class="prototype-notice" role="note">
+                <strong>UI prototype only</strong>
+                <span>Do not enter real email addresses, phone numbers, or passwords on this preview page.</span>
+              </div>
+
               <div class="login-form-header">
-                <p class="mini-label">Welcome Back</p>
-                <h3>Choose a sign-in method</h3>
+                <p class="mini-label">Preview Access</p>
+                <h3>Explore the sign-in layout</h3>
                 <p>
-                  Start with Google for the fastest setup, or continue with email
-                  or mobile login for account recovery and device access.
+                  These controls are for UX review only. They demonstrate the
+                  future Google, email, and mobile entry points without submitting
+                  real account data.
                 </p>
               </div>
 
               <div class="login-actions">
                 <a class="login-action primary-login" href="./index.html">
                   <span class="login-action-icon">G</span>
-                  <span>Continue with Google</span>
+                  <span>Preview Google Flow</span>
                 </a>
 
                 <a class="login-action secondary-login" href="./signup.html">
                   <span class="login-action-icon">@</span>
-                  <span>Login with Email</span>
+                  <span>Preview Email Flow</span>
                 </a>
 
                 <a class="login-action secondary-login" href="./signup.html">
                   <span class="login-action-icon">#</span>
-                  <span>Login with Mobile</span>
+                  <span>Preview Mobile Flow</span>
                 </a>
               </div>
 
@@ -115,19 +125,19 @@
 
               <form class="login-form">
                 <label class="field">
-                  <span>Email or mobile number</span>
-                  <input type="text" placeholder="Enter email or mobile number" />
+                  <span>Demo email or mobile field</span>
+                  <input type="text" placeholder="Prototype only - no real login" readonly />
                 </label>
 
                 <label class="field">
-                  <span>Password</span>
-                  <input type="password" placeholder="Enter secure password" />
+                  <span>Demo password field</span>
+                  <input type="text" placeholder="Disabled for public preview" readonly />
                 </label>
 
                 <div class="login-options">
                   <label class="remember-choice">
-                    <input type="checkbox" checked />
-                    <span>Keep me signed in</span>
+                    <input type="checkbox" checked disabled />
+                    <span>Remember me preview</span>
                   </label>
                 </div>
               </form>
@@ -136,104 +146,6 @@
         </article>
       </section>
     </main>
-
-    <div id="recaptcha-container"></div>
     <script src="./script.js"></script>
-    <script type="module" src="./auth.js"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // ── Google Sign-In button ──
-        const googleBtn = document.querySelector(".primary-login");
-        if (googleBtn) {
-          googleBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            if (window.timenestAuth) window.timenestAuth.signInWithGoogle();
-          });
-        }
-
-        // ── Email login button ──
-        const emailBtn = document.querySelector('.secondary-login [class*="icon"]')
-          ?.closest(".login-action");
-        const emailBtns = document.querySelectorAll(".secondary-login");
-        const emailLoginBtn = emailBtns[0];
-        const mobileLoginBtn = emailBtns[1];
-
-        // Track which mode is active
-        let loginMode = "none"; // "none", "email", "phone"
-        const form = document.querySelector(".login-form");
-        const emailInput = form?.querySelector('input[type="text"]');
-        const passwordInput = form?.querySelector('input[type="password"]');
-
-        if (emailLoginBtn) {
-          emailLoginBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            loginMode = "email";
-            if (form) form.style.display = "flex";
-            if (emailInput) {
-              emailInput.placeholder = "Enter your email address";
-              emailInput.type = "email";
-            }
-            if (passwordInput) passwordInput.style.display = "";
-          });
-        }
-
-        if (mobileLoginBtn) {
-          mobileLoginBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            loginMode = "phone";
-            if (form) form.style.display = "flex";
-            if (emailInput) {
-              emailInput.placeholder = "Enter phone number (e.g. +91 9876543210)";
-              emailInput.type = "tel";
-            }
-            if (passwordInput) {
-              passwordInput.placeholder = "Enter 6-digit OTP";
-              passwordInput.type = "text";
-              passwordInput.maxLength = 6;
-              passwordInput.style.display = "none";
-            }
-          });
-        }
-
-        // ── Form submission ──
-        if (form) {
-          form.addEventListener("submit", (e) => e.preventDefault());
-
-          // Add a sign-in button to the form
-          const submitBtn = document.createElement("button");
-          submitBtn.type = "button";
-          submitBtn.className = "login-action primary-login";
-          submitBtn.style.cssText = "margin-top:0.5rem;justify-content:center;";
-          submitBtn.innerHTML = "<span>Sign In</span>";
-          form.appendChild(submitBtn);
-
-          let otpSent = false;
-
-          submitBtn.addEventListener("click", async () => {
-            const val1 = emailInput?.value?.trim();
-            const val2 = passwordInput?.value?.trim();
-
-            if (!val1) return;
-
-            if (loginMode === "email") {
-              if (!val2) return;
-              window.timenestAuth?.signInWithEmail(val1, val2);
-            } else if (loginMode === "phone") {
-              if (!otpSent) {
-                const sent = await window.timenestAuth?.sendPhoneOtp(val1);
-                if (sent) {
-                  otpSent = true;
-                  passwordInput.style.display = "";
-                  passwordInput.placeholder = "Enter 6-digit OTP";
-                  submitBtn.innerHTML = "<span>Verify OTP</span>";
-                }
-              } else {
-                window.timenestAuth?.verifyPhoneOtp(val2);
-              }
-            }
-          });
-        }
-      });
-    </script>
   </body>
 </html>

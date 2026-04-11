@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
-    <link rel="stylesheet" href="./mobile-fix.css" />
   </head>
   <body>
     <div class="aurora aurora-left" aria-hidden="true"></div>
@@ -17,20 +16,20 @@
       <aside class="app-sidebar">
         <div class="sidebar-card panel"><a class="brand-link" href="./index.html"><div class="brand-cluster"><div class="brand-mark"><span class="brand-core"></span></div><div><p class="mini-label">Create Goal</p><h2>TimeNest</h2><p class="brand-subline">Master Your Time. Achieve Your Goals.</p></div></div></a></div>
         <nav class="sidebar-nav">
-          <a class="sidebar-link" href="./short-term-goals.html">Short-Term <span>12</span></a>
-          <a class="sidebar-link" href="./long-term-goals.html">Long-Term <span>06</span></a>
+          <a class="sidebar-link" href="./goals.html?view=short">Short-Term <span>12</span></a>
+          <a class="sidebar-link" href="./goals.html?view=long">Long-Term <span>06</span></a>
           <a class="sidebar-link is-active" href="./goal-editor.html">Goal Editor <span>01</span></a>
         </nav>
       </aside>
       <section class="app-main">
         <article class="page-card panel">
-          <p class="mini-label">Goal Editor</p>
-          <h2 class="section-title">Create or update a goal</h2>
+          <p class="mini-label" id="goal-editor-eyebrow">Goal Editor</p>
+          <h2 class="section-title" id="goal-editor-title">Create or update a goal</h2>
           <div class="form-grid">
             <label class="field"><span>Goal Name</span><input type="text" placeholder="Launch TimeNest MVP" /></label>
-            <label class="field"><span>Goal Type</span><input type="text" placeholder="Short-Term / Long-Term / Tasks" /></label>
-            <label class="field"><span>Start Date</span><input type="text" placeholder="01 Apr 2026" /></label>
-            <label class="field"><span>Target Date</span><input type="text" placeholder="30 Jun 2026" /></label>
+            <label class="field"><span id="goal-editor-type-label">Goal Type</span><input id="goal-editor-type-input" type="text" placeholder="Short-Term / Long-Term / Tasks" /></label>
+            <label class="field"><span>Start Date</span><input type="date" value="2026-04-01" /></label>
+            <label class="field"><span>Target Date</span><input type="date" value="2026-06-30" /></label>
             <label class="field full"><span>Description</span><input type="text" placeholder="Describe the goal outcome and focus area" /></label>
           </div>
           <div class="form-actions"><span class="soft-pill">Save Goal</span><span class="soft-pill">Duplicate</span><span class="soft-pill">Delete</span></div>
@@ -38,14 +37,11 @@
       </section>
     </main>
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
-      <a class="tab-link" href="./index.html">Dashboard</a>
-      <a class="tab-link" href="./short-term-goals.html">Short-Term Goal</a>
-      <a class="tab-link" href="./long-term-goals.html">Long-Term Goal</a>
-      <a class="tab-link" href="./daily-tasks.html">Daily Task</a>
-      <a class="tab-link" href="./habits.html">Habits</a>
+      <a class="tab-link" href="./index.html">Home</a>
+      <a class="tab-link is-active" href="./goals.html">Goals</a>
+      <a class="tab-link" href="./daily-tasks.html">Tasks</a>
+      <a class="tab-link" href="./calendar.html?view=habits">Habits</a>
     </nav>
-      <div id="recaptcha-container"></div>
-    <script type="module" src="./auth.js"></script>
-    <script type="module" src="./page-wiring.js"></script>
+    <script src="./script.js"></script>
   </body>
 </html>

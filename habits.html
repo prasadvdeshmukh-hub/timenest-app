@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
-    <link rel="stylesheet" href="./mobile-fix.css" />
   </head>
   <body>
     <div class="aurora aurora-left" aria-hidden="true"></div>
@@ -28,31 +27,120 @@
         <section class="page-hero">
           <article class="hero-panel-large panel">
             <p class="mini-label">Habit Tracking</p>
-            <h1 class="section-title">Recurring systems that build long-term consistency</h1>
-            <p>Habits are modeled as recurring tasks with streak logic, progress rings, and reminder presets.</p>
+            <h1 class="section-title" id="habits-overview-title">Recurring systems that build long-term consistency</h1>
+            <p id="habits-overview-summary">Habits are modeled as recurring tasks with streak logic, progress rings, and reminder presets.</p>
+            <div class="page-tools">
+              <a class="soft-pill" href="./calendar.html?view=habits">Open Habit Calendar</a>
+            </div>
           </article>
           <article class="hero-panel-side panel">
-            <p class="mini-label">Current Streak</p>
-            <strong class="value-big">14</strong>
-            <p>Best streak this month with 86% completion reliability.</p>
+            <p class="mini-label" id="habits-overview-label">Current Streak</p>
+            <strong class="value-big" id="habits-overview-value">14</strong>
+            <p id="habits-overview-copy">Best streak this month with 86% completion reliability.</p>
           </article>
         </section>
         <section class="habit-grid">
-          <article class="habit-card"><p class="mini-label">Morning</p><h2 class="section-title">Workout Habit</h2><p>Daily at 06:30 AM with push reminder.</p><div class="progress-bar"><span style="width:88%"></span></div></article>
-          <article class="habit-card"><p class="mini-label">Learning</p><h2 class="section-title">Marathi Practice</h2><p>Daily at 08:00 PM with email fallback.</p><div class="progress-bar"><span style="width:76%"></span></div></article>
-          <article class="habit-card"><p class="mini-label">Night</p><h2 class="section-title">Sleep Routine</h2><p>Daily at 10:30 PM with in-app nudge.</p><div class="progress-bar"><span style="width:61%"></span></div></article>
+          <a class="habit-card habit-link" data-habit-overview-card="workout-habit" href="./calendar.html?habit=Workout%20Habit">
+            <p class="mini-label">Morning</p>
+            <h2 class="section-title">Workout Habit</h2>
+            <p data-habit-overview-copy>Daily at 06:30 AM with push reminder.</p>
+            <div class="progress-bar"><span data-habit-overview-progress style="width:88%"></span></div>
+          </a>
+          <a class="habit-card habit-link" data-habit-overview-card="marathi-practice" href="./calendar.html?habit=Marathi%20Practice">
+            <p class="mini-label">Learning</p>
+            <h2 class="section-title">Marathi Practice</h2>
+            <p data-habit-overview-copy>Daily at 08:00 PM with email fallback.</p>
+            <div class="progress-bar"><span data-habit-overview-progress style="width:76%"></span></div>
+          </a>
+          <a class="habit-card habit-link" data-habit-overview-card="sleep-routine" href="./calendar.html?habit=Sleep%20Routine">
+            <p class="mini-label">Night</p>
+            <h2 class="section-title">Sleep Routine</h2>
+            <p data-habit-overview-copy>Daily at 10:30 PM with in-app nudge.</p>
+            <div class="progress-bar"><span data-habit-overview-progress style="width:61%"></span></div>
+          </a>
         </section>
       </section>
     </main>
+    <button
+      class="floating-add-button"
+      type="button"
+      data-quick-add-open
+      aria-controls="quick-add-sheet"
+      aria-expanded="false"
+      aria-label="Add a goal, task, or habit"
+    >
+      <span aria-hidden="true">+</span>
+    </button>
     <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
-      <a class="tab-link" href="./index.html">Dashboard</a>
-      <a class="tab-link" href="./short-term-goals.html">Short-Term Goal</a>
-      <a class="tab-link" href="./long-term-goals.html">Long-Term Goal</a>
-      <a class="tab-link" href="./daily-tasks.html">Daily Task</a>
-      <a class="tab-link is-active" href="./habits.html">Habits</a>
+      <a class="tab-link" href="./index.html">Home</a>
+      <a class="tab-link" href="./goals.html">Goals</a>
+      <a class="tab-link" href="./daily-tasks.html">Tasks</a>
+      <a class="tab-link is-active" href="./calendar.html?view=habits">Habits</a>
     </nav>
-      <div id="recaptcha-container"></div>
-    <script type="module" src="./auth.js"></script>
-    <script type="module" src="./page-wiring.js"></script>
+
+    <div class="quick-add-backdrop" data-quick-add-backdrop hidden></div>
+
+    <section
+      class="quick-add-sheet panel"
+      id="quick-add-sheet"
+      data-quick-add-sheet
+      aria-modal="true"
+      aria-label="Quick add"
+      hidden
+    >
+      <div class="quick-add-head">
+        <div>
+          <p class="mini-label">Quick Add</p>
+          <h3>Create from TimeNest</h3>
+        </div>
+        <button class="quick-add-close" type="button" data-quick-add-close aria-label="Close quick add">
+          &times;
+        </button>
+      </div>
+
+      <div class="quick-add-step is-active" data-quick-add-step="root">
+        <div class="quick-add-grid">
+          <button class="quick-add-option" type="button" data-add-choice="goal">
+            <strong>Goal</strong>
+            <span>Choose short-term or long-term before you continue.</span>
+          </button>
+          <button class="quick-add-option" type="button" data-add-url="./task-editor.html?entry=quick-add">
+            <strong>Task</strong>
+            <span>Open the task editor with reminders, due date, and priority.</span>
+          </button>
+          <button class="quick-add-option" type="button" data-add-url="./habit-editor.html?entry=quick-add">
+            <strong>Habit</strong>
+            <span>Create a recurring habit with streak tracking and reminders.</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="quick-add-step" data-quick-add-step="goal">
+        <div class="quick-add-grid">
+          <button
+            class="quick-add-option"
+            type="button"
+            data-add-url="./goal-editor.html?goalType=short-term&entry=quick-add"
+          >
+            <strong>Short-Term Goal</strong>
+            <span>Create a goal for the next 30 to 90 days.</span>
+          </button>
+          <button
+            class="quick-add-option"
+            type="button"
+            data-add-url="./goal-editor.html?goalType=long-term&entry=quick-add"
+          >
+            <strong>Long-Term Goal</strong>
+            <span>Create a milestone-based goal for the longer roadmap.</span>
+          </button>
+        </div>
+
+        <div class="quick-add-actions">
+          <button class="inline-button" type="button" data-quick-add-back>Back</button>
+        </div>
+      </div>
+    </section>
+
+    <script src="./script.js"></script>
   </body>
 </html>
