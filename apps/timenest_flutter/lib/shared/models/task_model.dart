@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 enum TaskPriority { low, medium, high }
 
 /// Task status.
-enum TaskStatus { pending, completed }
+enum TaskStatus { pending, completed, skipped }
 
 /// Recurrence type for tasks.
 enum RecurrenceType { none, daily, weekly, monthly, yearly, custom }

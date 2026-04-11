@@ -7,6 +7,7 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/gradient_button.dart';
 import '../../../../shared/models/task_model.dart';
+import '../../../../shared/providers/repository_providers.dart';
 
 class TaskEditorScreen extends ConsumerStatefulWidget {
   final String? goalId;
@@ -339,10 +340,69 @@ class _TaskEditorScreenState extends ConsumerState<TaskEditorScreen> {
     );
   }
 
-  void _handleSave() {
+  bool _saving = false;
+
+  Future<void> _handleSave() async {
     if (!_formKey.currentState!.validate()) return;
-    // TODO: Wire to TaskRepository.createTask / updateTask
-    context.pop();
+    if (widget.goalId == null || widget.goalId!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a goal for this task')),
+      );
+      return;
+    }
+    setState(() => _saving = true);
+    try {
+      final repo = ref.read(taskRepositoryProvider);
+      final now = DateTime.now();
+      final deadlineWithTime = DateTime(
+        _deadlineDate.year,
+        _deadlineDate.month,
+        _deadlineDate.day,
+        _deadlineTime.hour,
+        _deadlineTime.minute,
+      );
+      if (isEditing) {
+        final existing = await repo.getTask(widget.goalId!, widget.taskId!);
+        if (existing != null) {
+          await repo.updateTask(existing.copyWith(
+            name: _nameController.text.trim(),
+            notes: _notesController.text.trim(),
+            priority: _priority,
+            deadlineDate: deadlineWithTime,
+            deadlineTimeEnabled: _timeEnabled,
+            deadlineHour: _deadlineTime.hour,
+            deadlineMinute: _deadlineTime.minute,
+            recurrenceType: _recurrence,
+            reminderChannels: _channels,
+          ));
+        }
+      } else {
+        await repo.createTask(TaskModel(
+          id: '',
+          goalId: widget.goalId!,
+          name: _nameController.text.trim(),
+          notes: _notesController.text.trim(),
+          priority: _priority,
+          deadlineDate: deadlineWithTime,
+          deadlineTimeEnabled: _timeEnabled,
+          deadlineHour: _deadlineTime.hour,
+          deadlineMinute: _deadlineTime.minute,
+          recurrenceType: _recurrence,
+          reminderChannels: _channels,
+          createdAt: now,
+          updatedAt: now,
+        ));
+      }
+      if (mounted) context.pop();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
   }
 
   void _resetForm() {

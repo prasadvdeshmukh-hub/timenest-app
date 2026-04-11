@@ -6,6 +6,7 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../shared/models/task_model.dart';
 import '../../../../shared/providers/mock_data.dart';
+import '../../../../shared/providers/repository_providers.dart';
 import '../../../dashboard/presentation/widgets/task_row.dart';
 
 class DailyTasksScreen extends ConsumerWidget {

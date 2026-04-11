@@ -7,6 +7,7 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/gradient_button.dart';
 import '../../../../shared/models/goal_model.dart';
+import '../../../../shared/providers/repository_providers.dart';
 
 class GoalEditorScreen extends ConsumerStatefulWidget {
   final String? goalId; // null = create, non-null = edit
@@ -213,9 +214,52 @@ class _GoalEditorScreenState extends ConsumerState<GoalEditorScreen> {
     );
   }
 
-  void _handleSave() {
+  bool _saving = false;
+
+  Future<void> _handleSave() async {
     if (!_formKey.currentState!.validate()) return;
-    // TODO: Wire to GoalRepository.createGoal / updateGoal
-    context.pop();
+    if (_targetDate.isBefore(_startDate)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Target date must be after start date')),
+      );
+      return;
+    }
+    setState(() => _saving = true);
+    try {
+      final repo = ref.read(goalRepositoryProvider);
+      final now = DateTime.now();
+      if (isEditing) {
+        final existing = await repo.getGoal(widget.goalId!);
+        if (existing != null) {
+          await repo.updateGoal(existing.copyWith(
+            name: _nameController.text.trim(),
+            description: _descController.text.trim(),
+            type: _type,
+            startDate: _startDate,
+            targetDate: _targetDate,
+          ));
+        }
+      } else {
+        await repo.createGoal(GoalModel(
+          id: '',
+          name: _nameController.text.trim(),
+          description: _descController.text.trim(),
+          type: _type,
+          startDate: _startDate,
+          targetDate: _targetDate,
+          createdAt: now,
+          updatedAt: now,
+        ));
+      }
+      if (mounted) context.pop();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
   }
 }

@@ -7,6 +7,7 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/gradient_button.dart';
 import '../../../../shared/models/task_model.dart';
+import '../../../../shared/providers/repository_providers.dart';
 
 class SubtaskEditorScreen extends ConsumerStatefulWidget {
   final String goalId;
@@ -30,21 +31,28 @@ class _SubtaskEditorScreenState extends ConsumerState<SubtaskEditorScreen> {
   // Start with mock subtasks if editing an existing task.
   late List<Subtask> _subtasks;
 
+  bool _loading = true;
+
   @override
   void initState() {
     super.initState();
-    // Load existing subtasks from mock data if available.
-    final allTasks = [..._mockTodaysTasks()];
-    final task = allTasks.where((t) => t.id == widget.taskId).firstOrNull;
-    _subtasks = List.from(task?.subtasks ?? []);
+    _loadSubtasks();
   }
 
-  List<TaskModel> _mockTodaysTasks() {
-    // Import dynamically to avoid circular — in production use provider.
+  Future<void> _loadSubtasks() async {
     try {
-      return []; // Will be replaced with real data from provider.
+      final repo = ref.read(taskRepositoryProvider);
+      final task = await repo.getTask(widget.goalId, widget.taskId);
+      if (task != null && mounted) {
+        setState(() {
+          _subtasks = List.from(task.subtasks);
+          _loading = false;
+        });
+      } else {
+        if (mounted) setState(() => _loading = false);
+      }
     } catch (_) {
-      return [];
+      if (mounted) setState(() => _loading = false);
     }
   }
 
@@ -206,8 +214,17 @@ class _SubtaskEditorScreenState extends ConsumerState<SubtaskEditorScreen> {
     });
   }
 
-  void _handleSave() {
-    // TODO: Wire to TaskRepository.updateSubtasks
-    context.pop();
+  Future<void> _handleSave() async {
+    try {
+      final repo = ref.read(taskRepositoryProvider);
+      await repo.updateSubtasks(widget.goalId, widget.taskId, _subtasks);
+      if (mounted) context.pop();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving subtasks: $e')),
+        );
+      }
+    }
   }
 }

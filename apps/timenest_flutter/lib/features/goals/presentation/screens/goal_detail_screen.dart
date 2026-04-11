@@ -7,6 +7,7 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../shared/models/goal_model.dart';
 import '../../../../shared/models/task_model.dart';
+import '../../../../shared/providers/repository_providers.dart';
 import '../../../../shared/providers/mock_data.dart';
 
 class GoalDetailScreen extends ConsumerWidget {
@@ -16,14 +17,24 @@ class GoalDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Mock lookup.
-    final goal = MockData.goals.firstWhere(
+    // Try Firestore first, fall back to mock data.
+    final goalsAsync = ref.watch(goalsStreamProvider);
+    final tasksAsync = ref.watch(tasksForGoalProvider(goalId));
+
+    final goal = goalsAsync.when(
+      data: (goals) => goals.where((g) => g.id == goalId).firstOrNull,
+      loading: () => null,
+      error: (_, __) => null,
+    ) ?? MockData.goals.firstWhere(
       (g) => g.id == goalId,
       orElse: () => MockData.goals.first,
     );
-    final tasks = [...MockData.todaysTasks, ...MockData.upcomingTasks]
-        .where((t) => t.goalId == goalId)
-        .toList();
+
+    final tasks = tasksAsync.when(
+      data: (t) => t,
+      loading: () => <TaskModel>[],
+      error: (_, __) => <TaskModel>[],
+    );
 
     return Scaffold(
       body: Container(
@@ -179,8 +190,28 @@ class GoalDetailScreen extends ConsumerWidget {
                       const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: OutlinedButton(
-                          onPressed: () {
-                            // TODO: delete goal
+                          onPressed: () async {
+                            final confirmed = await showDialog<bool>(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                title: const Text('Delete Goal'),
+                                content: const Text(
+                                    'This will also delete all tasks under this goal. Continue?'),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () => Navigator.pop(ctx, false),
+                                      child: const Text('Cancel')),
+                                  TextButton(
+                                      onPressed: () => Navigator.pop(ctx, true),
+                                      child: const Text('Delete',
+                                          style: TextStyle(color: Colors.red))),
+                                ],
+                              ),
+                            );
+                            if (confirmed == true) {
+                              await ref.read(goalRepositoryProvider).deleteGoal(goalId);
+                              if (context.mounted) context.pop();
+                            }
                           },
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.error,

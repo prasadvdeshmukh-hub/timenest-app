@@ -6,6 +6,7 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../shared/models/goal_model.dart';
 import '../../../../shared/providers/mock_data.dart';
+import '../../../../shared/providers/repository_providers.dart';
 import '../widgets/goal_card.dart';
 
 /// Reusable screen for both short-term and long-term goals.
@@ -16,10 +17,16 @@ class GoalsListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Using mock data. Switch to Firestore stream later.
-    final goals =
-        MockData.goals.where((g) => g.type == goalType).toList();
     final isShortTerm = goalType == GoalType.shortTerm;
+    final goalsAsync = isShortTerm
+        ? ref.watch(shortTermGoalsProvider)
+        : ref.watch(longTermGoalsProvider);
+
+    final goals = goalsAsync.when(
+      data: (g) => g,
+      loading: () => MockData.goals.where((g) => g.type == goalType).toList(),
+      error: (_, __) => MockData.goals.where((g) => g.type == goalType).toList(),
+    );
 
     final completed = goals.where((g) => g.status == GoalStatus.completed).length;
     final inProgress = goals.where((g) => g.status == GoalStatus.inProgress).length;

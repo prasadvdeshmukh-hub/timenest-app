@@ -8,6 +8,7 @@ import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/gradient_button.dart';
 import '../../../../shared/models/task_model.dart';
 import '../../../../shared/providers/mock_data.dart';
+import '../../../../shared/providers/repository_providers.dart';
 
 class TaskDetailScreen extends ConsumerWidget {
   final String goalId;
@@ -21,13 +22,24 @@ class TaskDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Mock lookup.
-    final allTasks = [...MockData.todaysTasks, ...MockData.upcomingTasks];
-    final task = allTasks.firstWhere(
+    // Try Firestore first, fall back to mock.
+    final tasksAsync = ref.watch(tasksForGoalProvider(goalId));
+    final goalsAsync = ref.watch(goalsStreamProvider);
+
+    final allMockTasks = [...MockData.todaysTasks, ...MockData.upcomingTasks];
+    final task = tasksAsync.when(
+      data: (tasks) => tasks.where((t) => t.id == taskId).firstOrNull,
+      loading: () => null,
+      error: (_, __) => null,
+    ) ?? allMockTasks.firstWhere(
       (t) => t.id == taskId,
-      orElse: () => allTasks.first,
+      orElse: () => allMockTasks.first,
     );
-    final goal = MockData.goals.firstWhere(
+    final goal = goalsAsync.when(
+      data: (goals) => goals.where((g) => g.id == goalId).firstOrNull,
+      loading: () => null,
+      error: (_, __) => null,
+    ) ?? MockData.goals.firstWhere(
       (g) => g.id == goalId,
       orElse: () => MockData.goals.first,
     );
@@ -222,10 +234,62 @@ class TaskDetailScreen extends ConsumerWidget {
                           spacing: AppSpacing.sm,
                           runSpacing: AppSpacing.sm,
                           children: [
-                            _actionChip('Mark Complete', AppColors.success),
-                            _actionChip('Skip', AppColors.textSecondaryDark),
-                            _actionChip('Reschedule', AppColors.textSecondaryDark),
-                            _actionChip('Snooze', AppColors.textSecondaryDark),
+                            GestureDetector(
+                              onTap: () async {
+                                final repo = ref.read(taskRepositoryProvider);
+                                await repo.completeTask(goalId, taskId);
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Task completed!')),
+                                  );
+                                }
+                              },
+                              child: _actionChip('Mark Complete', AppColors.success),
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                final repo = ref.read(taskRepositoryProvider);
+                                await repo.skipTask(goalId, taskId);
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Task skipped')),
+                                  );
+                                }
+                              },
+                              child: _actionChip('Skip', AppColors.textSecondaryDark),
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                final picked = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now().add(const Duration(days: 1)),
+                                  firstDate: DateTime.now(),
+                                  lastDate: DateTime(2030),
+                                );
+                                if (picked != null) {
+                                  final repo = ref.read(taskRepositoryProvider);
+                                  await repo.rescheduleTask(goalId, taskId, picked);
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Task rescheduled')),
+                                    );
+                                  }
+                                }
+                              },
+                              child: _actionChip('Reschedule', AppColors.textSecondaryDark),
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                final repo = ref.read(taskRepositoryProvider);
+                                await repo.snoozeTask(goalId, taskId);
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Task snoozed by 1 hour')),
+                                  );
+                                }
+                              },
+                              child: _actionChip('Snooze', AppColors.textSecondaryDark),
+                            ),
                           ],
                         ),
                       ],

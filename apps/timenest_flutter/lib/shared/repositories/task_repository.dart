@@ -38,16 +38,66 @@ class TaskRepository {
             .toList());
   }
 
-  /// Stream all tasks across all goals (uses collectionGroup).
-  Stream<List<TaskModel>> watchAllTasks() {
-    return _firestore
-        .collectionGroup('tasks')
-        .where('__userId', isEqualTo: _uid) // requires a userId field
-        .orderBy('deadlineDate')
-        .snapshots()
-        .map((snap) => snap.docs
-            .map((doc) => TaskModel.fromFirestore(doc.id, doc.data()))
-            .toList());
+  /// Stream all tasks across all goals by iterating each goal's tasks subcollection.
+  Stream<List<TaskModel>> watchAllTasks(Stream<List<String>> goalIdsStream) {
+    return goalIdsStream.asyncExpand((goalIds) {
+      if (goalIds.isEmpty) return Stream.value(<TaskModel>[]);
+      final streams = goalIds.map((gid) => watchTasksForGoal(gid));
+      return streams.first.asyncExpand((_) {
+        // Combine all goal task streams into one merged list.
+        return Stream.fromFuture(Future.wait(
+          goalIds.map((gid) => _tasksRef(gid)
+              .orderBy('deadlineDate')
+              .get()
+              .then((snap) => snap.docs
+                  .map((doc) => TaskModel.fromFirestore(doc.id, doc.data()))
+                  .toList())),
+        ).then((lists) => lists.expand((l) => l).toList()
+          ..sort((a, b) => a.deadlineDate.compareTo(b.deadlineDate))));
+      });
+    });
+  }
+
+  /// Get all tasks across all goals (one-shot).
+  Future<List<TaskModel>> getAllTasks(List<String> goalIds) async {
+    final tasks = <TaskModel>[];
+    for (final goalId in goalIds) {
+      final snap = await _tasksRef(goalId).orderBy('deadlineDate').get();
+      tasks.addAll(
+        snap.docs.map((doc) => TaskModel.fromFirestore(doc.id, doc.data())),
+      );
+    }
+    tasks.sort((a, b) => a.deadlineDate.compareTo(b.deadlineDate));
+    return tasks;
+  }
+
+  /// Skip a task.
+  Future<void> skipTask(String goalId, String taskId) async {
+    await _tasksRef(goalId).doc(taskId).update({
+      'status': 'skipped',
+      'updatedAt': DateTime.now().toIso8601String(),
+    });
+  }
+
+  /// Snooze a task by pushing deadline forward by 1 hour.
+  Future<void> snoozeTask(String goalId, String taskId) async {
+    final doc = await _tasksRef(goalId).doc(taskId).get();
+    if (!doc.exists) return;
+    final task = TaskModel.fromFirestore(doc.id, doc.data()!);
+    final newDeadline = task.deadlineDate.add(const Duration(hours: 1));
+    await _tasksRef(goalId).doc(taskId).update({
+      'deadlineDate': newDeadline.toIso8601String(),
+      'updatedAt': DateTime.now().toIso8601String(),
+    });
+  }
+
+  /// Reschedule a task to a new date.
+  Future<void> rescheduleTask(
+      String goalId, String taskId, DateTime newDate) async {
+    await _tasksRef(goalId).doc(taskId).update({
+      'deadlineDate': newDate.toIso8601String(),
+      'updatedAt': DateTime.now().toIso8601String(),
+    });
   }
 
   /// Get tasks due today across all goals for a specific goal set.

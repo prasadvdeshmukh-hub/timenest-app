@@ -14,6 +14,11 @@ import '../features/tasks/presentation/screens/daily_tasks_screen.dart';
 import '../features/tasks/presentation/screens/task_detail_screen.dart';
 import '../features/tasks/presentation/screens/task_editor_screen.dart';
 import '../features/tasks/presentation/screens/subtask_editor_screen.dart';
+import '../features/habits/presentation/screens/habits_screen.dart';
+import '../features/calendar/presentation/screens/calendar_screen.dart';
+import '../features/notifications/presentation/screens/notifications_screen.dart';
+import '../features/profile/presentation/screens/profile_screen.dart';
+import '../features/settings/presentation/screens/settings_screen.dart';
 import '../shared/models/goal_model.dart';
 import 'shell_screen.dart';
 
@@ -90,12 +95,27 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/habits',
             name: 'habits',
-            builder: (context, state) => const Scaffold(
-              body: Center(
-                child: Text('Habits — Coming Soon',
-                    style: TextStyle(color: Colors.white)),
-              ),
-            ),
+            builder: (context, state) => const HabitsScreen(),
+          ),
+          GoRoute(
+            path: '/calendar',
+            name: 'calendar',
+            builder: (context, state) => const CalendarScreen(),
+          ),
+          GoRoute(
+            path: '/notifications',
+            name: 'notifications',
+            builder: (context, state) => const NotificationsScreen(),
+          ),
+          GoRoute(
+            path: '/profile',
+            name: 'profile',
+            builder: (context, state) => const ProfileScreen(),
+          ),
+          GoRoute(
+            path: '/settings',
+            name: 'settings',
+            builder: (context, state) => const SettingsScreen(),
           ),
         ],
       ),

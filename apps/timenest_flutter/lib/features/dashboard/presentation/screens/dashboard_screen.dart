@@ -8,6 +8,7 @@ import '../../../../shared/models/dashboard_summary.dart';
 import '../../../../shared/models/task_model.dart';
 import '../../../../shared/models/goal_model.dart';
 import '../../../../shared/providers/mock_data.dart';
+import '../../../../shared/providers/repository_providers.dart';
 import '../../../auth/domain/auth_state.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
 import '../widgets/stat_card.dart';
@@ -24,11 +25,31 @@ class DashboardScreen extends ConsumerWidget {
         ? authState.user.displayName ?? 'User'
         : 'User';
 
-    // Using mock data until Firebase is wired.
-    final summary = MockData.dashboardSummary;
+    // Use Firestore streams, fall back to mock data.
+    final goalsAsync = ref.watch(goalsStreamProvider);
+    final goals = goalsAsync.when(
+      data: (g) => g,
+      loading: () => MockData.goals,
+      error: (_, __) => MockData.goals,
+    );
+
+    final completedGoals = goals.where((g) => g.status == GoalStatus.completed).length;
+    final inProgressGoals = goals.where((g) => g.status == GoalStatus.inProgress).length;
+    final completedOnTime = goals.where((g) => g.completedOnTime).length;
+    final delayedGoals = goals.where((g) => g.status == GoalStatus.delayed).length;
+
+    final summary = DashboardSummary(
+      completedGoals: completedGoals,
+      inProgressGoals: inProgressGoals,
+      completedOnTime: completedOnTime,
+      delayedGoals: delayedGoals,
+      activeStreak: MockData.dashboardSummary.activeStreak,
+      snoozedReminders: MockData.dashboardSummary.snoozedReminders,
+      recurringTasksToday: MockData.dashboardSummary.recurringTasksToday,
+      executionRhythm: goals.isEmpty ? 0 : goals.map((g) => g.progressPercent).reduce((a, b) => a + b) / goals.length,
+    );
     final todaysTasks = MockData.todaysTasks;
     final upcomingTasks = MockData.upcomingTasks;
-    final goals = MockData.goals;
 
     return Scaffold(
       body: Container(
