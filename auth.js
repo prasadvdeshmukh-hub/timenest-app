@@ -35,6 +35,17 @@ let phoneConfirmationResult = null;
 let recaptchaVerifier = null;
 
 async function waitForPersistence(auth) {
+  if (!auth.__timenestPersistenceReadyPromise) {
+    auth.__timenestPersistenceReadyPromise = setPersistence(auth, browserLocalPersistence).catch(async (error) => {
+      console.warn("Falling back to session persistence for TimeNest auth", error);
+      try {
+        await setPersistence(auth, browserSessionPersistence);
+      } catch (fallbackError) {
+        console.warn("Session persistence fallback also failed", fallbackError);
+      }
+    });
+  }
+
   try {
     if (auth.__timenestPersistenceReadyPromise) {
       await auth.__timenestPersistenceReadyPromise;
@@ -45,25 +56,66 @@ async function waitForPersistence(auth) {
 }
 
 async function waitForInitialAuthState(auth, timeoutMs = 4500) {
-  const statePromise = (async () => {
-    if (typeof auth.authStateReady === "function") {
-      await auth.authStateReady();
-      return auth.currentUser || null;
+  if (auth.currentUser) {
+    return auth.currentUser;
+  }
+
+  return new Promise((resolve) => {
+    let settled = false;
+    let timeoutId = 0;
+    let unsubscribe = () => {};
+
+    const finish = (user = null) => {
+      if (settled) {
+        return;
+      }
+
+      settled = true;
+      window.clearTimeout(timeoutId);
+      unsubscribe();
+      resolve(user || auth.currentUser || null);
+    };
+
+    timeoutId = window.setTimeout(() => {
+      finish(auth.currentUser || null);
+    }, timeoutMs);
+
+    unsubscribe = onAuthStateChanged(
+      auth,
+      (user) => {
+        finish(user || null);
+      },
+      () => {
+        finish(auth.currentUser || null);
+      }
+    );
+  });
+}
+
+async function resolveGoogleRedirectResult(auth) {
+  if (!isPublicPage()) {
+    return null;
+  }
+
+  try {
+    const result = await getRedirectResult(auth);
+    if (!result?.user) {
+      return null;
     }
 
-    return new Promise((resolve) => {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        unsubscribe();
-        resolve(user || null);
-      });
-    });
-  })();
-
-  const timeoutPromise = new Promise((resolve) => {
-    window.setTimeout(() => resolve(auth.currentUser || null), timeoutMs);
-  });
-
-  return Promise.race([statePromise, timeoutPromise]);
+    setGoogleRedirectPending(false);
+    setAuthNotice(`Signed in as ${getDisplayName(result.user)}.`, "success");
+    showToastMessage("Google sign-in successful.");
+    return result.user;
+  } catch (error) {
+    setGoogleRedirectPending(false);
+    console.error("Google redirect result failed", error);
+    if (error.code !== "auth/popup-closed-by-user") {
+      setAuthNotice(formatAuthError(error), "error");
+      showToastMessage(formatAuthError(error), "error");
+    }
+    return null;
+  }
 }
 
 function setGoogleRedirectPending(pending) {
@@ -455,14 +507,6 @@ async function initializeFirebaseAuth(runtimeConfig) {
   }
 
   useDeviceLanguage(auth);
-  auth.__timenestPersistenceReadyPromise = setPersistence(auth, browserLocalPersistence).catch(async (error) => {
-    console.warn("Falling back to session persistence for TimeNest auth", error);
-    try {
-      await setPersistence(auth, browserSessionPersistence);
-    } catch (fallbackError) {
-      console.warn("Session persistence fallback also failed", fallbackError);
-    }
-  });
   window._fb = {
     ...(window._fb || {}),
     app,
@@ -537,26 +581,6 @@ function canUseRedirectFallback() {
 }
 
 function bindGoogleButtons(auth) {
-  // Handle any leftover redirect result from older deployments gracefully.
-  getRedirectResult(auth).then((result) => {
-    if (result?.user) {
-      setGoogleRedirectPending(false);
-      setAuthNotice(`Signed in as ${getDisplayName(result.user)}.`, "success");
-      showToastMessage("Google sign-in successful.");
-    } else if (isGoogleRedirectPending() && !auth.currentUser) {
-      window.setTimeout(() => {
-        handleIncompleteGoogleRedirect(auth);
-      }, 1800);
-    }
-  }).catch((error) => {
-    setGoogleRedirectPending(false);
-    console.error("Google redirect result failed", error);
-    if (error.code !== "auth/popup-closed-by-user") {
-      setAuthNotice(formatAuthError(error), "error");
-      showToastMessage(formatAuthError(error), "error");
-    }
-  });
-
   document.querySelectorAll("[data-auth-google-login], [data-auth-google-signup]").forEach((button) => {
     button.addEventListener("click", async () => {
       if (shouldDisableGoogleAuthOnThisDevice()) {
@@ -888,70 +912,99 @@ async function bootstrapAuth() {
     return;
   }
 
-  const auth = await initializeFirebaseAuth(runtimeConfig);
-  window.__TIMENEST_REAL_AUTH__ = true;
+  try {
+    const auth = await initializeFirebaseAuth(runtimeConfig);
+    window.__TIMENEST_REAL_AUTH__ = true;
 
-  bindLogout(auth);
-  bindGoogleButtons(auth);
-  bindLoginForm(auth);
-  bindSignupForm(auth);
-  bindResetForm(auth);
-  bindPhoneAuth(auth, runtimeConfig);
+    let publicRedirectStarted = false;
+    const finishPublicSignIn = async (user) => {
+      if (!user || publicRedirectStarted || !isPublicPage()) {
+        return;
+      }
 
-  let publicRedirectStarted = false;
-  const finishPublicSignIn = async (user) => {
-    if (!user || publicRedirectStarted || !isPublicPage()) {
+      publicRedirectStarted = true;
+      setGoogleRedirectPending(false);
+      syncUserScope(user);
+      syncAuthenticatedUi(user);
+      setAuthNotice(`Signed in as ${getDisplayName(user)}.`, "success");
+      window.setTimeout(() => {
+        redirectAfterAuth();
+      }, 120);
+    };
+
+    bindLogout(auth);
+    bindGoogleButtons(auth);
+    bindLoginForm(auth);
+    bindSignupForm(auth);
+    bindResetForm(auth);
+    bindPhoneAuth(auth, runtimeConfig);
+
+    const redirectResultUser = await resolveGoogleRedirectResult(auth);
+    if (redirectResultUser) {
+      await finishPublicSignIn(redirectResultUser);
       return;
     }
 
-    publicRedirectStarted = true;
-    setGoogleRedirectPending(false);
-    syncUserScope(user);
-    syncAuthenticatedUi(user);
-    setAuthNotice(`Signed in as ${getDisplayName(user)}.`, "success");
-    await waitForPersistence(auth);
-    window.setTimeout(() => {
-      redirectAfterAuth();
-    }, 120);
-  };
+    const applyResolvedAuthState = (user) => {
+      syncUserScope(user);
+      syncAuthenticatedUi(user);
 
-  const applyResolvedAuthState = (user) => {
-    syncUserScope(user);
-    syncAuthenticatedUi(user);
-
-    if (user) {
-      if (publicPage) {
-        void finishPublicSignIn(user);
+      if (user) {
+        if (publicPage) {
+          void finishPublicSignIn(user);
+          return "redirected";
+        }
+        setGoogleRedirectPending(false);
+        setAuthNotice(`Signed in as ${getDisplayName(user)}.`, "success");
+      } else if (!publicPage) {
+        if (isGoogleRedirectPending()) {
+          window.setTimeout(() => {
+            handleIncompleteGoogleRedirect(auth);
+          }, 2200);
+          return "pending";
+        }
+        window.location.replace(buildLoginUrl());
         return "redirected";
-      }
-      setGoogleRedirectPending(false);
-      setAuthNotice(`Signed in as ${getDisplayName(user)}.`, "success");
-    } else if (!publicPage) {
-      if (isGoogleRedirectPending()) {
+      } else if (isGoogleRedirectPending()) {
         window.setTimeout(() => {
-          handleIncompleteGoogleRedirect(auth);
+          if (!auth.currentUser && isGoogleRedirectPending()) {
+            handleIncompleteGoogleRedirect(auth);
+          }
         }, 2200);
-        return "pending";
       }
-      window.location.replace(buildLoginUrl());
-      return "redirected";
-    }
-    return "ready";
-  };
+      return "ready";
+    };
 
-  const initialUser = await waitForInitialAuthState(auth);
-  const initialState = applyResolvedAuthState(initialUser);
+    const initialUser = await waitForInitialAuthState(auth);
+    const initialState = applyResolvedAuthState(initialUser);
 
-  if (initialState === "ready") {
-    releaseGate();
-  }
-
-  onAuthStateChanged(auth, (user) => {
-    const state = applyResolvedAuthState(user);
-    if (state === "ready" && document.querySelector("[data-auth-gate]")) {
+    if (initialState === "ready") {
       releaseGate();
     }
-  });
+
+    onAuthStateChanged(auth, (user) => {
+      const state = applyResolvedAuthState(user);
+      if (state === "ready" && document.querySelector("[data-auth-gate]")) {
+        releaseGate();
+      }
+    });
+  } catch (error) {
+    console.error("TimeNest auth bootstrap failed", error);
+    setGoogleRedirectPending(false);
+    if (publicPage) {
+      releaseGate();
+      setAuthNotice(formatAuthError(error), "error");
+      return;
+    }
+
+    renderBlockingSetupState(
+      "Sign-in could not finish",
+      "TimeNest hit an authentication startup problem. Returning to the login page so you can try again."
+    );
+    window.setTimeout(() => {
+      window.location.replace(buildLoginUrl());
+    }, 1800);
+  }
 }
 
 export function initAuth() {
