@@ -454,7 +454,11 @@ function bindGoogleButtons(auth) {
   // Handle any leftover redirect result from older deployments gracefully.
   getRedirectResult(auth).then((result) => {
     if (result?.user) {
+      setAuthNotice(`Signed in as ${getDisplayName(result.user)}.`, "success");
       showToastMessage("Google sign-in successful.");
+      if (isPublicPage()) {
+        redirectAfterAuth();
+      }
     }
   }).catch((error) => {
     console.error("Google redirect result failed", error);
