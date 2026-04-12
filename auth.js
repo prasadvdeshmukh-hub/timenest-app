@@ -44,6 +44,20 @@ async function waitForPersistence(auth) {
   }
 }
 
+async function waitForInitialAuthState(auth) {
+  if (typeof auth.authStateReady === "function") {
+    await auth.authStateReady();
+    return auth.currentUser || null;
+  }
+
+  return new Promise((resolve) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe();
+      resolve(user || null);
+    });
+  });
+}
+
 function setGoogleRedirectPending(pending) {
   if (pending) {
     sessionStorage.setItem(GOOGLE_REDIRECT_PENDING_KEY, "true");
@@ -876,8 +890,7 @@ async function bootstrapAuth() {
   bindResetForm(auth);
   bindPhoneAuth(auth, runtimeConfig);
 
-  let initialized = false;
-  onAuthStateChanged(auth, (user) => {
+  const applyResolvedAuthState = (user) => {
     syncUserScope(user);
     syncAuthenticatedUi(user);
 
@@ -886,22 +899,32 @@ async function bootstrapAuth() {
       setAuthNotice(`Signed in as ${getDisplayName(user)}.`, "success");
       if (publicPage) {
         redirectAfterAuth();
-        return;
+        return "redirected";
       }
     } else if (!publicPage) {
       if (isGoogleRedirectPending()) {
         window.setTimeout(() => {
           handleIncompleteGoogleRedirect(auth);
         }, 2200);
-        return;
+        return "pending";
       }
       window.location.replace(buildLoginUrl());
-      return;
+      return "redirected";
     }
+    return "ready";
+  };
 
-    if (!initialized) {
+  const initialUser = await waitForInitialAuthState(auth);
+  const initialState = applyResolvedAuthState(initialUser);
+
+  if (initialState === "ready") {
+    releaseGate();
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    const state = applyResolvedAuthState(user);
+    if (state === "ready" && document.querySelector("[data-auth-gate]")) {
       releaseGate();
-      initialized = true;
     }
   });
 }
