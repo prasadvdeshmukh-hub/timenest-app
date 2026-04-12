@@ -1,4 +1,5 @@
 import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 import {
   RecaptchaVerifier,
   GoogleAuthProvider,
@@ -371,6 +372,7 @@ async function loadRuntimeConfig() {
 async function initializeFirebaseAuth(runtimeConfig) {
   const app = getApps().length ? getApp() : initializeApp(runtimeConfig.firebase);
   const auth = getAuth(app);
+  const db = getFirestore(app);
 
   if (runtimeConfig.auth.useEmulator && !auth.emulatorConfig) {
     connectAuthEmulator(
@@ -386,6 +388,15 @@ async function initializeFirebaseAuth(runtimeConfig) {
 
   useDeviceLanguage(auth);
   await setPersistence(auth, browserLocalPersistence);
+  window._fb = {
+    ...(window._fb || {}),
+    app,
+    auth,
+    db,
+    onAuthStateChanged,
+    signOut
+  };
+
   return auth;
 }
 
