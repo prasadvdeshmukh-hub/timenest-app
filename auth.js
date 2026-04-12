@@ -1032,10 +1032,40 @@ function lockProtectedPage(message) {
 async function bootstrapAuth() {
   const publicPage = isPublicPage();
   setAuthDebugState({ step: "bootstrap start", publicPage });
-  const releaseGate = mountAuthGate(
-    publicPage ? "Connecting secure sign-in..." : "Checking your signed-in session...",
-    !publicPage
-  );
+  const hasKnownSession = Boolean(localStorage.getItem(USER_SCOPE_STORAGE_KEY) || getRecentSigninMarker());
+  const gateMessage = publicPage ? "Connecting secure sign-in..." : "Checking your signed-in session...";
+  let gateMounted = false;
+  let gateTimerId = 0;
+  let mountedReleaseGate = () => {};
+  const ensureGate = (blocking) => {
+    if (gateMounted) {
+      return;
+    }
+
+    gateMounted = true;
+    mountedReleaseGate = mountAuthGate(gateMessage, blocking);
+  };
+  const releaseGate = () => {
+    window.clearTimeout(gateTimerId);
+    if (!gateMounted) {
+      return;
+    }
+
+    mountedReleaseGate();
+    gateMounted = false;
+  };
+
+  if (publicPage) {
+    gateTimerId = window.setTimeout(() => {
+      ensureGate(false);
+    }, 450);
+  } else if (hasKnownSession) {
+    gateTimerId = window.setTimeout(() => {
+      ensureGate(false);
+    }, 900);
+  } else {
+    ensureGate(true);
+  }
 
   if (window.location.protocol === "file:") {
     setAuthNotice("Run the site from http://localhost:4173 to use real authentication.", "warn");
