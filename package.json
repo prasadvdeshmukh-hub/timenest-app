@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "node claude-test.js",
-    "ui:preview": "node server.js"
+    "ui:preview": "node server.js",
+    "hosting:preview": "firebase emulators:start --only hosting",
+    "hosting:deploy": "firebase deploy --only hosting"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.56.0",

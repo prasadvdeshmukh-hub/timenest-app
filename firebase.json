@@ -1,0 +1,33 @@
+{
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      ".firebaserc",
+      "**/.*",
+      "**/node_modules/**",
+      "apps/**",
+      "docs/**",
+      "tests/**",
+      "__/**",
+      "package.json",
+      "package-lock.json",
+      "server.js",
+      "claude-test.js",
+      "CLAUDE.md",
+      "README.md"
+    ],
+    "cleanUrls": false,
+    "headers": [
+      {
+        "source": "/app-config.json",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-store"
+          }
+        ]
+      }
+    ]
+  }
+}

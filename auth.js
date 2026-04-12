@@ -478,6 +478,11 @@ function bindGoogleButtons(auth) {
       provider.setCustomParameters({ prompt: "select_account" });
 
       try {
+        if (isMobileBrowser() && canUseRedirectFallback()) {
+          await signInWithRedirect(auth, provider);
+          return;
+        }
+
         // Prefer popup for desktop browsers, but fall back to redirect
         // on environments where popup auth is unreliable. Redirect auth
         // stays disabled on GitHub Pages project URLs because Firebase
