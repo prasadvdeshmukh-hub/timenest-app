@@ -380,20 +380,7 @@ async function loadRuntimeConfig() {
     throw new Error(`Could not load auth config (${response.status})`);
   }
 
-  const runtimeConfig = await response.json();
-  const currentHost = window.location.hostname;
-  const isLocalHost = currentHost === "localhost" || currentHost === "127.0.0.1";
-
-  if (
-    currentHost &&
-    !isLocalHost &&
-    !isGitHubPagesProjectSite() &&
-    window.location.protocol.startsWith("http")
-  ) {
-    runtimeConfig.firebase.authDomain = currentHost;
-  }
-
-  return runtimeConfig;
+  return response.json();
 }
 
 async function initializeFirebaseAuth(runtimeConfig) {
@@ -804,6 +791,22 @@ async function bootstrapAuth() {
       releaseGate();
     }
     console.error(error);
+    return;
+  }
+
+  const preferredHostedDomain = `${runtimeConfig.firebase.projectId}.firebaseapp.com`;
+  const currentHost = window.location.hostname;
+  const isLocalHost = currentHost === "localhost" || currentHost === "127.0.0.1";
+
+  if (
+    currentHost &&
+    !isLocalHost &&
+    !isGitHubPagesProjectSite() &&
+    currentHost !== preferredHostedDomain
+  ) {
+    const redirectUrl = new URL(window.location.href);
+    redirectUrl.hostname = preferredHostedDomain;
+    window.location.replace(redirectUrl.toString());
     return;
   }
 

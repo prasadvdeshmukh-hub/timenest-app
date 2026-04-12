@@ -4,7 +4,7 @@
 
 const firebaseConfig = {
   apiKey: "AIzaSyDinsnfdoCG_jqS76T7VwZIiVKtufek2pk",
-  authDomain: "timenest-d97da.web.app",
+  authDomain: "timenest-d97da.firebaseapp.com",
   projectId: "timenest-d97da",
   storageBucket: "timenest-d97da.firebasestorage.app",
   messagingSenderId: "523513677128",
