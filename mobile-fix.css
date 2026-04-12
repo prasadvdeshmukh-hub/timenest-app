@@ -1,0 +1,313 @@
+/* ═══════════════════════════════════════════════════════
+   TimeNest Mobile Fix — Comprehensive Override
+   Loaded AFTER styles.css to fix all mobile issues.
+   ═══════════════════════════════════════════════════════ */
+
+/* ── TABLET (≤1200px) ── */
+@media (max-width: 1200px) {
+  .login-shell {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── MOBILE (≤780px) ── */
+@media (max-width: 780px) {
+
+  /* ─── LOGIN PAGE ─── */
+  .login-shell {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 0.5rem;
+    align-items: stretch;
+    min-height: 100svh;
+    height: auto;
+  }
+
+  .login-copy {
+    display: none;
+  }
+
+  .login-card {
+    min-height: 100svh;
+    max-height: none;
+    height: auto;
+    padding: 1rem;
+    gap: 0.75rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .login-card-top,
+  .login-options {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .login-link {
+    display: none;
+  }
+
+  .login-main-grid {
+    gap: 0.75rem;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  /* Clock: compact so form gets space */
+  .login-clock-wrap {
+    flex: 0 1 auto;
+    min-height: 0;
+    gap: 0.35rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hud-clock-login {
+    width: clamp(180px, 36svh, 300px) !important;
+    height: clamp(180px, 36svh, 300px) !important;
+    aspect-ratio: 1 / 1;
+  }
+
+  .clock-orbit-dots {
+    width: clamp(200px, 40svh, 340px);
+    height: clamp(200px, 40svh, 340px);
+  }
+
+  .login-tagline {
+    white-space: nowrap;
+    text-align: center;
+    font-size: clamp(0.5rem, 2.4vw, 0.78rem);
+  }
+
+  /* Login form: visible and tappable */
+  .login-form-shell {
+    padding: 0.75rem;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .login-form-header p:last-child,
+  .login-divider {
+    display: none;
+  }
+
+  .login-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .login-action {
+    min-height: 48px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .login-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .field input {
+    min-height: 48px;
+    padding: 0.55rem 0.85rem;
+    font-size: 16px;
+  }
+
+  /* ─── DASHBOARD PAGE ─── */
+
+  /* Logout button: VISIBLE on mobile */
+  .logout-button {
+    display: inline-flex !important;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.72rem;
+    min-height: 38px;
+    align-items: center;
+  }
+
+  /* HUD Clock on dashboard: sized by parent width */
+  .hud-clock-wrap {
+    min-height: 0;
+    gap: 0.3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.5rem 0;
+  }
+
+  .hud-clock {
+    width: min(60vw, 240px) !important;
+    height: min(60vw, 240px) !important;
+    aspect-ratio: 1 / 1;
+    max-width: 100%;
+  }
+
+  /* Stat cards: compact, no wasted space */
+  .stat-card {
+    min-height: 0;
+    padding: 0.75rem;
+  }
+
+  .stat-card strong {
+    margin: 0.2rem 0 0.15rem;
+    font-size: 1.2rem;
+  }
+
+  /* ─── BOTTOM TAB BAR (ALL PAGES) ─── */
+  .bottom-tabbar {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0.35rem;
+    padding: 0.45rem;
+  }
+
+  .bottom-tabbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-link {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    word-break: normal;
+    min-height: 42px;
+    padding: 0.45rem 0.8rem;
+    font-size: 0.78rem;
+  }
+
+  /* ─── INNER PAGES (goals, tasks, etc.) ─── */
+  .app-page-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .app-sidebar {
+    display: none;
+  }
+}
+
+/* ── SMALL PHONES (≤560px) ── */
+@media (max-width: 560px) {
+
+  /* ─── LOGIN ─── */
+  .login-shell {
+    padding: 0.35rem;
+  }
+
+  .login-card {
+    padding: 0.65rem;
+    gap: 0.5rem;
+  }
+
+  .login-card-top .brand-subline {
+    display: none;
+  }
+
+  .login-clock-wrap {
+    flex: 0 1 auto;
+  }
+
+  .hud-clock-login {
+    width: clamp(160px, 30svh, 250px) !important;
+    height: clamp(160px, 30svh, 250px) !important;
+  }
+
+  .clock-orbit-dots {
+    width: clamp(180px, 34svh, 280px);
+    height: clamp(180px, 34svh, 280px);
+  }
+
+  .login-tagline {
+    font-size: clamp(0.46rem, 2.2vw, 0.65rem);
+  }
+
+  .login-form-shell {
+    padding: 0.55rem;
+    gap: 0.35rem;
+  }
+
+  .login-form-header h3 {
+    font-size: 0.95rem;
+  }
+
+  .login-actions {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .login-action {
+    min-height: 44px;
+    font-size: 0.84rem;
+    border-radius: 12px;
+  }
+
+  .login-form {
+    display: grid;
+    gap: 8px;
+  }
+
+  .field input {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  /* ─── DASHBOARD ─── */
+  .hud-clock-wrap {
+    min-height: 0;
+    padding: 0.25rem 0;
+  }
+
+  .hud-clock {
+    width: min(55vw, 200px) !important;
+    height: min(55vw, 200px) !important;
+  }
+
+  .stat-card {
+    padding: 0.55rem;
+  }
+
+  .stat-card strong {
+    font-size: 1rem;
+  }
+
+  .stat-card span,
+  .section-head .mini-label {
+    font-size: 0.65rem;
+  }
+
+  /* ─── BOTTOM TAB BAR ─── */
+  .bottom-tabbar {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    width: calc(100vw - 0.6rem);
+    left: 0.3rem;
+    right: 0.3rem;
+    bottom: 0.3rem;
+    transform: none;
+    gap: 0.25rem;
+    padding: 0.35rem;
+    border-radius: 16px;
+  }
+
+  .bottom-tabbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-link {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    word-break: normal;
+    min-height: 40px;
+    padding: 0.4rem 0.65rem;
+    font-size: 0.72rem;
+    border-radius: 12px;
+  }
+}

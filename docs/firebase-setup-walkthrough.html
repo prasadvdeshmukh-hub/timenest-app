@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Firebase Setup Walkthrough - TimeNest</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f5f5f5;color:#333}
+.wizard{max-width:800px;margin:2rem auto;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.1);overflow:hidden}
+.header{background:linear-gradient(135deg,#1a73e8,#4285f4);color:#fff;padding:1.5rem 2rem}
+.header h1{font-size:1.4rem;font-weight:600}
+.header p{font-size:0.85rem;opacity:0.85;margin-top:0.3rem}
+.progress{display:flex;gap:4px;padding:1rem 2rem;background:#f8f9fa;border-bottom:1px solid #e8eaed}
+.progress-dot{width:100%;height:6px;border-radius:3px;background:#e0e0e0;cursor:pointer;transition:background 0.3s}
+.progress-dot.active{background:#1a73e8}
+.progress-dot.done{background:#34a853}
+.step{display:none;padding:2rem}
+.step.active{display:block}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#1a73e8;color:#fff;font-weight:700;font-size:0.85rem;margin-bottom:1rem}
+.step h2{font-size:1.25rem;margin-bottom:0.5rem;color:#1a1a2e}
+.step p{font-size:0.9rem;line-height:1.6;color:#555;margin-bottom:1rem}
+.mock{background:#f8f9fa;border:2px solid #e8eaed;border-radius:12px;padding:1.5rem;margin:1rem 0;position:relative}
+.mock-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#999;margin-bottom:0.75rem}
+.sidebar-mock{display:flex;gap:1rem}
+.sidebar{width:220px;background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:0.5rem 0;flex-shrink:0}
+.sidebar-item{padding:0.5rem 1rem;font-size:0.82rem;color:#555;cursor:pointer;display:flex;align-items:center;gap:0.5rem;transition:background 0.2s}
+.sidebar-item:hover{background:#f0f0f0}
+.sidebar-item.highlight{background:#e8f0fe;color:#1a73e8;font-weight:600;border-left:3px solid #1a73e8;animation:pulse 1.5s infinite}
+.sidebar-item .icon{width:20px;text-align:center;font-size:1rem}
+.sidebar-item .sub{padding-left:1.5rem}
+.content-area{flex:1;background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:1rem}
+.arrow{font-size:1.5rem;color:#ea4335;animation:bounce 1s infinite;display:inline-block}
+@keyframes bounce{0%,100%{transform:translateX(0)}50%{transform:translateX(8px)}}
+@keyframes pulse{0%,100%{background:#e8f0fe}50%{background:#c6dcfc}}
+.tab-mock{display:flex;gap:0;border-bottom:2px solid #e0e0e0;margin-bottom:1rem}
+.tab{padding:0.6rem 1.2rem;font-size:0.82rem;color:#666;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
+.tab.highlight{color:#1a73e8;border-bottom-color:#1a73e8;font-weight:600;animation:pulse 1.5s infinite}
+.provider-row{display:flex;align-items:center;justify-content:space-between;padding:0.65rem 1rem;border:1px solid #e8eaed;border-radius:8px;margin-bottom:0.5rem}
+.provider-row .name{font-weight:500;display:flex;align-items:center;gap:0.5rem}
+.provider-row .name .picon{width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:#fff}
+.toggle{width:44px;height:24px;border-radius:12px;position:relative;cursor:pointer;transition:background 0.3s}
+.toggle.off{background:#ccc}
+.toggle.on{background:#34a853}
+.toggle::after{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:2px;transition:left 0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+.toggle.off::after{left:2px}
+.toggle.on::after{left:22px}
+.btn-row{display:flex;justify-content:space-between;padding:1.5rem 2rem;border-top:1px solid #e8eaed}
+.btn{padding:0.6rem 1.5rem;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;border:none;transition:all 0.2s}
+.btn-prev{background:#f0f0f0;color:#555}
+.btn-prev:hover{background:#e0e0e0}
+.btn-next{background:#1a73e8;color:#fff}
+.btn-next:hover{background:#1557b0}
+.highlight-box{background:#fef7e0;border:1px solid #f9d849;border-radius:8px;padding:0.75rem 1rem;margin:0.75rem 0;font-size:0.82rem;color:#8a6d00}
+.highlight-box strong{color:#5f4b00}
+.url-box{background:#263238;color:#80cbc4;font-family:monospace;font-size:0.8rem;padding:0.6rem 1rem;border-radius:8px;margin:0.5rem 0;word-break:break-all}
+.config-box{background:#263238;color:#a5d6a7;font-family:monospace;font-size:0.75rem;padding:1rem;border-radius:8px;margin:0.75rem 0;line-height:1.7;white-space:pre}
+.step-count{font-size:0.75rem;color:#999;margin-bottom:0.5rem}
+</style>
+</head>
+<body>
+<div class="wizard">
+  <div class="header">
+    <h1>Firebase Setup Walkthrough for TimeNest</h1>
+    <p>Follow each step in your Firebase Console. This guide shows you exactly where to click.</p>
+  </div>
+  <div class="progress" id="progress"></div>
+
+  <!-- STEP 1 -->
+  <div class="step active" data-step="0">
+    <div class="step-num">1</div>
+    <p class="step-count">Step 1 of 8</p>
+    <h2>Open Firebase Console & Your Project</h2>
+    <p>Open this URL in your browser:</p>
+    <div class="url-box">https://console.firebase.google.com</div>
+    <p>Sign in with <strong>prasadvdeshmukh@gmail.com</strong>, then click on your <strong>timenest-app</strong> project. You should see the project dashboard.</p>
+    <div class="highlight-box"><strong>If you haven't created the project yet:</strong> Click "Add project" → name it <strong>timenest-app</strong> → Continue → Create project</div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step" data-step="1">
+    <div class="step-num">2</div>
+    <p class="step-count">Step 2 of 8</p>
+    <h2>Find "Authentication" in the Sidebar</h2>
+    <p>Look at the <strong>left sidebar</strong>. Click on <strong>"Authentication"</strong> — it has a person/key icon.</p>
+    <div class="mock">
+      <div class="mock-title">Firebase Console Left Sidebar</div>
+      <div class="sidebar">
+        <div class="sidebar-item"><span class="icon">🏠</span> Project Overview</div>
+        <div class="sidebar-item" style="font-size:0.7rem;color:#999;padding:0.3rem 1rem;margin-top:0.5rem">── Product categories ──</div>
+        <div class="sidebar-item"><span class="icon">🔨</span> Build</div>
+        <div class="sidebar-item highlight"><span class="arrow">→</span><span class="icon">🔐</span> <strong>Authentication</strong></div>
+        <div class="sidebar-item"><span class="icon">💾</span> Firestore Database</div>
+        <div class="sidebar-item"><span class="icon">📦</span> Storage</div>
+        <div class="sidebar-item"><span class="icon">🌐</span> Hosting</div>
+        <div class="sidebar-item"><span class="icon">⚡</span> Functions</div>
+      </div>
+    </div>
+    <div class="highlight-box"><strong>Can't find it?</strong> Click <strong>"All products"</strong> at the bottom of the sidebar, or look under the <strong>"Build"</strong> section. Some layouts show it as a sub-item under Build.</div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step" data-step="2">
+    <div class="step-num">3</div>
+    <p class="step-count">Step 3 of 8</p>
+    <h2>Click "Get Started" then "Sign-in method" Tab</h2>
+    <p>If this is your first time, click <strong>"Get started"</strong> button. Then click the <strong>"Sign-in method"</strong> tab.</p>
+    <div class="mock">
+      <div class="mock-title">Authentication Page - Top Tabs</div>
+      <div class="tab-mock">
+        <div class="tab">Users</div>
+        <div class="tab highlight"><span class="arrow">→</span> <strong>Sign-in method</strong></div>
+        <div class="tab">Templates</div>
+        <div class="tab">Usage</div>
+        <div class="tab">Settings</div>
+      </div>
+      <p style="font-size:0.82rem;color:#666">Click the "Sign-in method" tab to see all available login providers</p>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step" data-step="3">
+    <div class="step-num">4</div>
+    <p class="step-count">Step 4 of 8</p>
+    <h2>Enable Email/Password</h2>
+    <p>Click on <strong>"Email/Password"</strong> in the provider list, toggle it <strong>ON</strong>, and click <strong>Save</strong>.</p>
+    <div class="mock">
+      <div class="mock-title">Sign-in Providers</div>
+      <div class="provider-row" style="border-color:#1a73e8;background:#f8fbff">
+        <div class="name"><div class="picon" style="background:#ea4335">@</div> <strong>Email/Password</strong></div>
+        <div class="toggle on"></div>
+      </div>
+      <div class="provider-row">
+        <div class="name"><div class="picon" style="background:#4285f4">G</div> Google</div>
+        <div class="toggle off"></div>
+      </div>
+      <div class="provider-row">
+        <div class="name"><div class="picon" style="background:#34a853">📱</div> Phone</div>
+        <div class="toggle off"></div>
+      </div>
+    </div>
+    <div class="highlight-box"><strong>Action:</strong> Click "Email/Password" → Toggle the switch to <strong>Enabled</strong> → Click <strong>Save</strong></div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step" data-step="4">
+    <div class="step-num">5</div>
+    <p class="step-count">Step 5 of 8</p>
+    <h2>Enable Google Sign-In</h2>
+    <p>Click on <strong>"Google"</strong> in the provider list, toggle it <strong>ON</strong>, select your <strong>support email</strong>, and click <strong>Save</strong>.</p>
+    <div class="mock">
+      <div class="mock-title">Google Provider Settings</div>
+      <div class="provider-row" style="border-color:#34a853;background:#f0faf0">
+        <div class="name"><div class="picon" style="background:#ea4335">@</div> Email/Password</div>
+        <div class="toggle on"></div>
+      </div>
+      <div class="provider-row" style="border-color:#1a73e8;background:#f8fbff">
+        <div class="name"><div class="picon" style="background:#4285f4">G</div> <strong>Google</strong></div>
+        <div class="toggle on"></div>
+      </div>
+      <div class="provider-row">
+        <div class="name"><div class="picon" style="background:#34a853">📱</div> Phone</div>
+        <div class="toggle off"></div>
+      </div>
+    </div>
+    <div class="highlight-box"><strong>Action:</strong> Click "Google" → Toggle <strong>Enable</strong> → Select <strong>prasadvdeshmukh@gmail.com</strong> as support email → Click <strong>Save</strong></div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step" data-step="5">
+    <div class="step-num">6</div>
+    <p class="step-count">Step 6 of 8</p>
+    <h2>Enable Phone Authentication</h2>
+    <p>Click on <strong>"Phone"</strong>, toggle it <strong>ON</strong>. Add a test number for development.</p>
+    <div class="mock">
+      <div class="mock-title">Phone Provider Settings</div>
+      <div class="provider-row" style="border-color:#34a853;background:#f0faf0">
+        <div class="name"><div class="picon" style="background:#ea4335">@</div> Email/Password</div>
+        <div class="toggle on"></div>
+      </div>
+      <div class="provider-row" style="border-color:#34a853;background:#f0faf0">
+        <div class="name"><div class="picon" style="background:#4285f4">G</div> Google</div>
+        <div class="toggle on"></div>
+      </div>
+      <div class="provider-row" style="border-color:#1a73e8;background:#f8fbff">
+        <div class="name"><div class="picon" style="background:#34a853">📱</div> <strong>Phone</strong></div>
+        <div class="toggle on"></div>
+      </div>
+    </div>
+    <div class="highlight-box"><strong>Action:</strong> Click "Phone" → Toggle <strong>Enable</strong> → Scroll to "Phone numbers for testing" → Add: <strong>+91 9876543210</strong> with verification code <strong>123456</strong> → Click <strong>Save</strong></div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step" data-step="6">
+    <div class="step-num">7</div>
+    <p class="step-count">Step 7 of 8</p>
+    <h2>Create Firestore Database</h2>
+    <p>Go back to the sidebar, click <strong>"Firestore Database"</strong>, then click <strong>"Create database"</strong>.</p>
+    <div class="mock">
+      <div class="mock-title">Firestore Database Setup</div>
+      <div style="text-align:center;padding:1.5rem">
+        <p style="font-size:1rem;font-weight:600;margin-bottom:0.5rem">Create a Cloud Firestore database</p>
+        <p style="font-size:0.8rem;color:#666;margin-bottom:1rem">Choose security rules and location</p>
+        <div style="display:inline-flex;gap:1rem">
+          <div style="background:#e8f0fe;border:2px solid #1a73e8;border-radius:8px;padding:0.8rem 1.2rem;font-size:0.82rem;font-weight:600;color:#1a73e8">✓ Start in test mode</div>
+          <div style="background:#f5f5f5;border:2px solid #e0e0e0;border-radius:8px;padding:0.8rem 1.2rem;font-size:0.82rem;color:#666">Start in production mode</div>
+        </div>
+      </div>
+    </div>
+    <div class="highlight-box"><strong>Action:</strong> Select <strong>"Start in test mode"</strong> → Click Next → Select location <strong>asia-south1 (Mumbai)</strong> → Click <strong>Enable</strong></div>
+  </div>
+
+  <!-- STEP 8 -->
+  <div class="step" data-step="7">
+    <div class="step-num">8</div>
+    <p class="step-count">Step 8 of 8</p>
+    <h2>Register Web App & Get Config</h2>
+    <p>Click the <strong>gear icon ⚙️</strong> (Project Settings) at the top of the sidebar. Scroll down to <strong>"Your apps"</strong> and click the <strong>web icon &lt;/&gt;</strong>.</p>
+    <div class="mock">
+      <div class="mock-title">Register Web App</div>
+      <div style="padding:0.5rem">
+        <p style="font-size:0.85rem;margin-bottom:0.5rem"><strong>App nickname:</strong> timenest-web</p>
+        <p style="font-size:0.8rem;color:#666;margin-bottom:0.75rem">After registering, you'll see this config object. Copy it!</p>
+      </div>
+    </div>
+    <p>Copy the config and <strong>paste it into the chat</strong>. It looks like this:</p>
+    <div class="config-box">const firebaseConfig = {
+  apiKey: "AIzaSyB.....................",
+  authDomain: "timenest-app.firebaseapp.com",
+  projectId: "timenest-app",
+  storageBucket: "timenest-app.appspot.com",
+  messagingSenderId: "123456789012",
+  appId: "1:123456789:web:abc123def456"
+};</div>
+    <div class="highlight-box" style="background:#e8f5e9;border-color:#66bb6a;color:#2e7d32"><strong>🎉 That's it!</strong> Once you paste the config here, I'll update your project files and everything will be connected.</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="navigate(-1)">← Previous</button>
+    <button class="btn btn-next" onclick="navigate(1)">Next →</button>
+  </div>
+</div>
+
+<script>
+let current = 0;
+const total = 8;
+
+function render() {
+  document.querySelectorAll('.step').forEach((s, i) => s.classList.toggle('active', i === current));
+  const prog = document.getElementById('progress');
+  prog.innerHTML = '';
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    d.className = 'progress-dot' + (i < current ? ' done' : '') + (i === current ? ' active' : '');
+    d.onclick = () => { current = i; render(); };
+    prog.appendChild(d);
+  }
+}
+
+function navigate(dir) {
+  current = Math.max(0, Math.min(total - 1, current + dir));
+  render();
+  document.querySelector('.wizard').scrollIntoView({ behavior: 'smooth' });
+}
+
+render();
+</script>
+</body>
+</html>
