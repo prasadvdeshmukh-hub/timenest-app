@@ -22,6 +22,7 @@ import {
 
 const PUBLIC_PAGES = new Set(["login.html", "signup.html", "forgot-password.html"]);
 const USER_SCOPE_STORAGE_KEY = "timenest-user-scope";
+const GOOGLE_REDIRECT_PENDING_KEY = "timenest-google-redirect-pending";
 const AUTH_PUBLIC_PATHS = {
   login: "./login.html",
   app: "./index.html"
@@ -31,6 +32,19 @@ let authBootstrapPromise = null;
 let logoutInProgress = false;
 let phoneConfirmationResult = null;
 let recaptchaVerifier = null;
+
+function setGoogleRedirectPending(pending) {
+  if (pending) {
+    sessionStorage.setItem(GOOGLE_REDIRECT_PENDING_KEY, "true");
+    return;
+  }
+
+  sessionStorage.removeItem(GOOGLE_REDIRECT_PENDING_KEY);
+}
+
+function isGoogleRedirectPending() {
+  return sessionStorage.getItem(GOOGLE_REDIRECT_PENDING_KEY) === "true";
+}
 
 function getPageName(urlLike = window.location.href) {
   try {
@@ -465,13 +479,22 @@ function bindGoogleButtons(auth) {
   // Handle any leftover redirect result from older deployments gracefully.
   getRedirectResult(auth).then((result) => {
     if (result?.user) {
+      setGoogleRedirectPending(false);
       setAuthNotice(`Signed in as ${getDisplayName(result.user)}.`, "success");
       showToastMessage("Google sign-in successful.");
       if (isPublicPage()) {
         redirectAfterAuth();
       }
+    } else if (isGoogleRedirectPending() && !auth.currentUser) {
+      window.setTimeout(() => {
+        if (!auth.currentUser && isGoogleRedirectPending()) {
+          setGoogleRedirectPending(false);
+          setAuthNotice("Google sign-in did not complete. Please try again.", "warn");
+        }
+      }, 1800);
     }
   }).catch((error) => {
+    setGoogleRedirectPending(false);
     console.error("Google redirect result failed", error);
     if (error.code !== "auth/popup-closed-by-user") {
       setAuthNotice(formatAuthError(error), "error");
@@ -491,9 +514,11 @@ function bindGoogleButtons(auth) {
       const resetButton = setBusyState(button, "Opening Google...");
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({ prompt: "select_account" });
+      setAuthNotice("Opening Google sign-in...", "info");
 
       try {
-        if (isMobileBrowser() && canUseRedirectFallback()) {
+        if (canUseRedirectFallback()) {
+          setGoogleRedirectPending(true);
           await signInWithRedirect(auth, provider);
           return;
         }
@@ -503,8 +528,10 @@ function bindGoogleButtons(auth) {
         // stays disabled on GitHub Pages project URLs because Firebase
         // returns to a different origin there.
         await signInWithPopup(auth, provider);
+        setGoogleRedirectPending(false);
         showToastMessage("Google sign-in successful.");
       } catch (error) {
+        setGoogleRedirectPending(false);
         console.error("Google sign-in failed", error);
 
         if (
@@ -680,7 +707,7 @@ function bindPhoneAuth(auth, runtimeConfig) {
     verifyButton.disabled = true;
     phoneConfirmationResult = null;
 
-    const resetButton = setBusyState(sendButton, "Sending code...");
+      const resetButton = setBusyState(sendButton, "Sending code...");
 
     try {
       const verifier = await ensureRecaptcha(auth);
@@ -774,6 +801,8 @@ async function bootstrapAuth() {
 
   if (runtimeConfig.auth.googleEnabled && shouldDisableGoogleAuthOnThisDevice()) {
     setAuthNotice(getMobileGoogleAuthWarning(), "warn");
+  } else if (isGoogleRedirectPending()) {
+    setAuthNotice("Finishing Google sign-in...", "info");
   }
 
   if (!runtimeConfig.hasFirebaseConfig) {
@@ -802,12 +831,16 @@ async function bootstrapAuth() {
     syncAuthenticatedUi(user);
 
     if (user) {
+      setGoogleRedirectPending(false);
       setAuthNotice(`Signed in as ${getDisplayName(user)}.`, "success");
       if (publicPage) {
         redirectAfterAuth();
         return;
       }
     } else if (!publicPage) {
+      if (isGoogleRedirectPending()) {
+        return;
+      }
       window.location.replace(buildLoginUrl());
       return;
     }

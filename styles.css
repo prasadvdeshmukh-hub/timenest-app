@@ -3939,6 +3939,8 @@ body.login-page .bottom-tabbar {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 0.65rem;
+  position: relative;
+  z-index: 4;
 }
 
 .login-actions-row {
@@ -3962,6 +3964,8 @@ body.login-page .bottom-tabbar {
     box-shadow 180ms ease;
   position: relative;
   overflow: hidden;
+  z-index: 4;
+  pointer-events: auto;
 }
 
 .login-action::after {
