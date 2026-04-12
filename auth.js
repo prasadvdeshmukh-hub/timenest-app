@@ -1032,7 +1032,6 @@ function lockProtectedPage(message) {
 async function bootstrapAuth() {
   const publicPage = isPublicPage();
   setAuthDebugState({ step: "bootstrap start", publicPage });
-  const hasKnownSession = Boolean(localStorage.getItem(USER_SCOPE_STORAGE_KEY) || getRecentSigninMarker());
   const gateMessage = publicPage ? "Connecting secure sign-in..." : "Checking your signed-in session...";
   let gateMounted = false;
   let gateTimerId = 0;
@@ -1059,8 +1058,6 @@ async function bootstrapAuth() {
     gateTimerId = window.setTimeout(() => {
       ensureGate(false);
     }, 450);
-  } else {
-    ensureGate(true);
   }
 
   if (window.location.protocol === "file:") {
@@ -1189,7 +1186,6 @@ async function bootstrapAuth() {
       } else if (!publicPage) {
         const recentSignin = getRecentSigninMarker();
         if (isGoogleRedirectPending() || recentSignin) {
-          ensureGate(false);
           window.setTimeout(() => {
             if (auth.currentUser) {
               return;
