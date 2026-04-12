@@ -247,14 +247,25 @@ async function waitForAuthenticatedUser(auth, expectedUid = "", timeoutMs = 7000
   });
 }
 
-async function resolveGoogleRedirectResult(auth) {
+async function resolveGoogleRedirectResult(auth, timeoutMs = 2500) {
   if (!isPublicPage()) {
     return null;
   }
 
   setAuthDebugState({ step: "awaiting redirect result" });
   try {
-    const result = await getRedirectResult(auth);
+    const result = await Promise.race([
+      getRedirectResult(auth),
+      new Promise((resolve) => {
+        window.setTimeout(() => resolve(undefined), timeoutMs);
+      })
+    ]);
+
+    if (typeof result === "undefined") {
+      setAuthDebugState({ step: "redirect result timeout" });
+      return null;
+    }
+
     if (!result?.user) {
       setAuthDebugState({ step: "no redirect result" });
       return null;
@@ -1054,12 +1065,6 @@ async function bootstrapAuth() {
     gateMounted = false;
   };
 
-  if (publicPage) {
-    gateTimerId = window.setTimeout(() => {
-      ensureGate(false);
-    }, 450);
-  }
-
   if (window.location.protocol === "file:") {
     setAuthNotice("Run the site from http://localhost:4173 to use real authentication.", "warn");
     if (!publicPage) {
@@ -1161,10 +1166,13 @@ async function bootstrapAuth() {
     bindResetForm(auth);
     bindPhoneAuth(auth, runtimeConfig);
 
-    const redirectResultUser = await resolveGoogleRedirectResult(auth);
-    if (redirectResultUser) {
-      await finishPublicSignIn(redirectResultUser);
-      return;
+    if (publicPage) {
+      void resolveGoogleRedirectResult(auth).then((redirectResultUser) => {
+        if (redirectResultUser) {
+          return finishPublicSignIn(redirectResultUser);
+        }
+        return null;
+      });
     }
 
     const applyResolvedAuthState = (user) => {
