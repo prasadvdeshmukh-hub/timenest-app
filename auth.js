@@ -46,6 +46,27 @@ function isGoogleRedirectPending() {
   return sessionStorage.getItem(GOOGLE_REDIRECT_PENDING_KEY) === "true";
 }
 
+function handleIncompleteGoogleRedirect(auth) {
+  if (!isGoogleRedirectPending() || auth.currentUser) {
+    return;
+  }
+
+  setGoogleRedirectPending(false);
+
+  if (isPublicPage()) {
+    setAuthNotice("Google sign-in did not complete. Please try again.", "warn");
+    return;
+  }
+
+  renderBlockingSetupState(
+    "Google sign-in did not finish",
+    "TimeNest could not restore the Google session. Returning to the login page so you can try again."
+  );
+  window.setTimeout(() => {
+    window.location.replace(buildLoginUrl());
+  }, 1400);
+}
+
 function getPageName(urlLike = window.location.href) {
   try {
     return new URL(urlLike, window.location.href).pathname.split("/").pop().toLowerCase() || "index.html";
@@ -482,15 +503,9 @@ function bindGoogleButtons(auth) {
       setGoogleRedirectPending(false);
       setAuthNotice(`Signed in as ${getDisplayName(result.user)}.`, "success");
       showToastMessage("Google sign-in successful.");
-      if (isPublicPage()) {
-        redirectAfterAuth();
-      }
     } else if (isGoogleRedirectPending() && !auth.currentUser) {
       window.setTimeout(() => {
-        if (!auth.currentUser && isGoogleRedirectPending()) {
-          setGoogleRedirectPending(false);
-          setAuthNotice("Google sign-in did not complete. Please try again.", "warn");
-        }
+        handleIncompleteGoogleRedirect(auth);
       }, 1800);
     }
   }).catch((error) => {
@@ -852,6 +867,9 @@ async function bootstrapAuth() {
       }
     } else if (!publicPage) {
       if (isGoogleRedirectPending()) {
+        window.setTimeout(() => {
+          handleIncompleteGoogleRedirect(auth);
+        }, 2200);
         return;
       }
       window.location.replace(buildLoginUrl());
