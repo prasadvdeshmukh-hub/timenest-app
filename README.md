@@ -40,6 +40,28 @@ Then open:
 http://localhost:4173
 ```
 
+## Firebase Auth Setup
+
+The prototype now supports real Firebase Authentication for:
+
+- Google sign-in
+- email/password sign-in and sign-up
+- password reset emails
+- phone OTP sign-in
+
+To enable it locally:
+
+1. Copy `.env.example` to `.env`
+2. Fill in your Firebase web app config values
+3. Enable the same providers in Firebase Authentication
+4. Add `localhost` as an authorized domain in Firebase
+5. Start the preview server with `npm run ui:preview`
+
+Notes:
+
+- Auth is served from `/app-config.json`, so you should use `http://localhost:4173` instead of opening the HTML files directly from disk.
+- Phone auth on web may require Firebase test numbers, the Auth emulator, or a non-localhost authorized domain depending on your Firebase setup.
+
 ## Claude Handoff
 
 Claude should not rewrite this prototype in place. The safer parallel workflow is:

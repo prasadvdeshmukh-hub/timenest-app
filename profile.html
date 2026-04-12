@@ -19,29 +19,29 @@
           <a class="sidebar-link" href="./index.html">Dashboard <span>01</span></a>
           <a class="sidebar-link is-active" href="./profile.html">Profile <span>03</span></a>
           <a class="sidebar-link" href="./settings.html">Settings <span>06</span></a>
-          <a class="sidebar-link" href="./login.html">Logout Preview <span>00</span></a>
+          <a class="sidebar-link" href="./login.html" data-auth-logout>Logout <span>00</span></a>
         </nav>
       </aside>
       <section class="app-main">
         <section class="page-hero">
           <article class="hero-panel-large panel">
             <p class="mini-label">Profile</p>
-            <h1 class="section-title">Vihaan Deshmukh</h1>
-            <p>Primary owner of the TimeNest workspace with Google, email, and mobile access options configured for account continuity.</p>
+            <h1 class="section-title" data-auth-display-name>TimeNest User</h1>
+            <p>Signed in as <strong data-auth-email>Not signed in</strong> with Google, email, and mobile options managed through Firebase Authentication.</p>
           </article>
           <article class="hero-panel-side panel">
-            <p class="mini-label">Theme</p>
-            <strong class="value-big">Dual</strong>
-            <p>Dark and light modes available with English and Marathi language support.</p>
+            <p class="mini-label">Session</p>
+            <strong class="value-big" data-auth-sync-state>Authenticated</strong>
+            <p>Dark and light modes remain available while your auth session persists across reloads.</p>
           </article>
         </section>
         <section class="content-split">
           <article class="page-card panel">
             <p class="mini-label">Connected Access</p>
             <div class="surface-list">
-              <div class="surface-item surface-item-status-good" data-access="google"><div><strong>Google Sign-In</strong><small>Primary login method</small></div><span class="status-pill good" data-action="toggle-access">Active</span></div>
-              <div class="surface-item surface-item-status-good" data-access="email"><div><strong>Email + Password</strong><small>Recovery and secondary access</small></div><span class="status-pill good" data-action="toggle-access">Configured</span></div>
-              <div class="surface-item" data-access="mobile"><div><strong>Mobile Access</strong><small>SMS-linked fallback flow</small></div><span class="status-pill warn" data-action="toggle-access">Optional</span></div>
+              <div class="surface-item" data-auth-provider-card="google.com"><div><strong>Google Sign-In</strong><small data-auth-provider-copy>Google sign-in is available when linked on the account.</small></div><span class="status-pill warn" data-auth-provider-pill>Not linked</span></div>
+              <div class="surface-item" data-auth-provider-card="password"><div><strong>Email + Password</strong><small data-auth-provider-copy>Email and password are available once configured on the account.</small></div><span class="status-pill warn" data-auth-provider-pill>Not linked</span></div>
+              <div class="surface-item" data-auth-provider-card="phone"><div><strong>Mobile Access</strong><small data-auth-provider-copy>Phone OTP sign-in can be linked for SMS-based access.</small></div><span class="status-pill warn" data-auth-provider-pill>Not linked</span></div>
             </div>
           </article>
           <article class="page-card panel">

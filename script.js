@@ -2794,24 +2794,51 @@ const STORE_KEYS = {
   settings: "timenest-settings-v1",
 };
 
-function readStore(key) {
+const USER_SCOPE_STORAGE_KEY = "timenest-user-scope";
+
+function getStoreScope() {
+  return localStorage.getItem(USER_SCOPE_STORAGE_KEY) || "guest";
+}
+
+function getScopedStorageKey(key) {
+  return `${key}::${getStoreScope()}`;
+}
+
+function readStoredJson(key) {
   try {
-    return JSON.parse(localStorage.getItem(key)) || [];
+    const rawValue = localStorage.getItem(key);
+    return rawValue ? JSON.parse(rawValue) : null;
   } catch (_) {
-    return [];
+    return null;
   }
+}
+
+function readStore(key) {
+  const scopedValue = readStoredJson(getScopedStorageKey(key));
+  if (Array.isArray(scopedValue)) {
+    return scopedValue;
+  }
+
+  const legacyValue = readStoredJson(key);
+  return Array.isArray(legacyValue) ? legacyValue : [];
 }
 
 function writeStore(key, data) {
-  localStorage.setItem(key, JSON.stringify(data));
+  localStorage.setItem(getScopedStorageKey(key), JSON.stringify(data));
 }
 
 function readStoreObject(key, fallback) {
-  try {
-    return JSON.parse(localStorage.getItem(key)) || fallback;
-  } catch (_) {
-    return fallback;
+  const scopedValue = readStoredJson(getScopedStorageKey(key));
+  if (scopedValue && typeof scopedValue === "object" && !Array.isArray(scopedValue)) {
+    return scopedValue;
   }
+
+  const legacyValue = readStoredJson(key);
+  if (legacyValue && typeof legacyValue === "object" && !Array.isArray(legacyValue)) {
+    return legacyValue;
+  }
+
+  return fallback;
 }
 
 function generateId() {
@@ -3269,8 +3296,13 @@ function generateId() {
       showToast("Backup initiated — exporting data to cloud sync...", "info");
       const allData = {};
       Object.entries(STORE_KEYS).forEach(([key, storeKey]) => {
-        const val = localStorage.getItem(storeKey);
-        if (val) allData[key] = val;
+        const scopedValue = localStorage.getItem(getScopedStorageKey(storeKey));
+        const legacyValue = localStorage.getItem(storeKey);
+        if (scopedValue) {
+          allData[key] = scopedValue;
+        } else if (legacyValue) {
+          allData[key] = legacyValue;
+        }
       });
       localStorage.setItem("timenest-backup-snapshot", JSON.stringify({ timestamp: new Date().toISOString(), data: allData }));
       setTimeout(() => showToast("Backup complete — restore point saved"), 1500);
@@ -3291,6 +3323,10 @@ function generateId() {
 
 // ──────────── Profile: Connected Access Wiring ────────────
 (function initProfileAccess() {
+  if (document.body.dataset.authMode !== "prototype") {
+    return;
+  }
+
   const accessItems = document.querySelectorAll("[data-action='toggle-access']");
   if (!accessItems.length) return;
 
@@ -3360,6 +3396,10 @@ function generateId() {
 
 // ──────────── Login Page: Wire preview actions ────────────
 (function initLoginActions() {
+  if (document.body.dataset.authMode !== "prototype") {
+    return;
+  }
+
   const loginSubmit = document.querySelector(".login-submit");
   if (loginSubmit) {
     loginSubmit.addEventListener("click", (e) => {
@@ -3377,3 +3417,9 @@ function generateId() {
     });
   }
 })();
+
+import("./auth.js")
+  .then(({ initAuth }) => initAuth())
+  .catch((error) => {
+    console.error("Failed to initialize TimeNest auth", error);
+  });

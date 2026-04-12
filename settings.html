@@ -20,7 +20,7 @@
           <a class="sidebar-link" href="./profile.html">Profile <span>03</span></a>
           <a class="sidebar-link is-active" href="./settings.html">Settings <span>06</span></a>
           <a class="sidebar-link" href="./notifications.html">Alerts <span>05</span></a>
-          <a class="sidebar-link" href="./login.html">Logout Preview <span>00</span></a>
+          <a class="sidebar-link" href="./login.html" data-auth-logout>Logout <span>00</span></a>
         </nav>
       </aside>
       <section class="app-main">
@@ -31,9 +31,9 @@
             <p>Settings are organized to keep performance, safety, multilingual support, and offline mode easy to manage.</p>
           </article>
           <article class="hero-panel-side panel">
-            <p class="mini-label">Sync State</p>
-            <strong class="value-big">Live</strong>
-            <p>Offline cache active and cloud sync restored on reconnect.</p>
+            <p class="mini-label">Auth State</p>
+            <strong class="value-big" data-auth-sync-state>Authenticated</strong>
+            <p>Offline cache stays local while authentication persists across browser reloads.</p>
           </article>
         </section>
         <section class="goal-grid">

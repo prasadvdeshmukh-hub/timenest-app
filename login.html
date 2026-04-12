@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>TimeNest Login Preview</title>
+    <title>TimeNest Sign In</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,25 +13,24 @@
     />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body class="login-page">
+  <body class="login-page" data-auth-public="true">
     <div class="aurora aurora-left" aria-hidden="true"></div>
     <div class="aurora aurora-right" aria-hidden="true"></div>
 
     <main class="login-shell">
       <section class="login-copy">
-        <p class="eyebrow">TimeNest Prototype Access</p>
-        <h1>Preview the futuristic TimeNest login experience</h1>
+        <p class="eyebrow">TimeNest Secure Access</p>
+        <h1>Sign in to your live TimeNest workspace</h1>
         <p class="lede">
-          This is a UI prototype for the TimeNest product concept. It previews the
-          login experience for goals, tasks, habits, and reminders across desktop,
-          Android, and iOS without collecting real credentials.
+          Firebase Authentication now powers Google, email/password, and phone
+          verification flows for the same TimeNest dashboard, goals, tasks, habits,
+          and reminders experience across desktop and mobile.
         </p>
 
         <div class="insight-pills">
-          <span>Prototype only</span>
-          <span>Google flow preview</span>
-          <span>Email flow preview</span>
-          <span>No real sign-in</span>
+          <span>Firebase Auth</span>
+          <span>Google sign-in</span>
+          <span>Email + password</span>
         </div>
 
         <div class="login-highlights panel">
@@ -50,17 +49,17 @@
         </div>
       </section>
 
-      <section class="login-stage" aria-label="TimeNest login preview">
+      <section class="login-stage" aria-label="TimeNest sign in">
         <article class="login-card panel">
           <div class="login-card-top">
             <div class="brand-cluster">
               <div>
-                <p class="mini-label">Prototype Preview</p>
+                <p class="mini-label">Secure Access</p>
                 <h2 class="brand-wordmark">TimeNest</h2>
               </div>
             </div>
 
-            <a class="ghost-chip login-link" href="./index.html">Open Dashboard Preview</a>
+            <a class="ghost-chip login-link" href="./signup.html">Create Account</a>
           </div>
 
           <div class="login-main-grid">
@@ -81,66 +80,56 @@
             </div>
 
             <div class="login-form-shell">
-              <div class="prototype-notice" role="note">
-                <strong>UI prototype only</strong>
-                <span>Do not enter real email addresses, phone numbers, or passwords on this preview page.</span>
+              <div class="prototype-notice auth-notice" role="status" data-auth-banner>
+                <strong>Authentication ready</strong>
+                <span>Run this on localhost with Firebase configured to enable Google, email/password, and phone sign-in.</span>
               </div>
 
               <div class="login-form-header">
-                <p class="mini-label">Preview Access</p>
-                <h3>Explore the sign-in layout</h3>
-                <p>
-                  These controls are for UX review only. They demonstrate the
-                  future Google, email, and mobile entry points without submitting
-                  real account data.
-                </p>
+                <p class="mini-label">Sign In</p>
+                <h3>Use your preferred TimeNest login method</h3>
               </div>
 
-              <div class="login-actions">
-                <a class="login-action primary-login" href="./index.html">
+              <div class="login-actions login-actions-row">
+                <button class="login-action primary-login" type="button" data-auth-google-login data-auth-google-control>
                   <span class="login-action-icon">G</span>
-                  <span>Preview Google Flow</span>
-                </a>
+                  <span>Continue with Google</span>
+                </button>
 
-                <a class="login-action secondary-login" href="./signup.html">
+                <a class="login-action secondary-login" href="./signup.html" data-auth-email-control>
                   <span class="login-action-icon">@</span>
-                  <span>Preview Email Flow</span>
-                </a>
-
-                <a class="login-action secondary-login" href="./signup.html">
-                  <span class="login-action-icon">#</span>
-                  <span>Preview Mobile Flow</span>
+                  <span>Create with Email</span>
                 </a>
               </div>
 
-              <div class="login-divider" aria-hidden="true">
+              <div class="login-divider" aria-hidden="true" data-auth-email-control>
                 <span></span>
-                <strong>Quick Access</strong>
+                <strong>Email Sign-In</strong>
                 <span></span>
               </div>
 
-              <div class="login-middle-link">
-                <a class="text-button" href="./forgot-password.html">Forgot password?</a>
-              </div>
-
-              <form class="login-form">
+              <form class="login-form auth-form-grid" data-auth-login-form data-auth-email-control>
                 <label class="field">
-                  <span>Demo email or mobile field</span>
-                  <input type="text" placeholder="Prototype only - no real login" readonly />
+                  <span>Email</span>
+                  <input name="email" type="email" autocomplete="username" placeholder="you@example.com" required />
                 </label>
 
                 <label class="field">
-                  <span>Demo password field</span>
-                  <input type="text" placeholder="Disabled for public preview" readonly />
+                  <span>Password</span>
+                  <input name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required />
                 </label>
+
+                <button class="login-action primary-login login-submit" type="submit" data-auth-email-control>
+                  Sign In
+                </button>
 
                 <div class="login-options">
-                  <label class="remember-choice">
-                    <input type="checkbox" checked disabled />
-                    <span>Remember me preview</span>
-                  </label>
+                  <a class="text-button" href="./forgot-password.html" data-auth-email-control>Forgot password?</a>
                 </div>
               </form>
+
+
+              <p class="auth-feedback" data-auth-feedback hidden></p>
             </div>
           </div>
         </article>

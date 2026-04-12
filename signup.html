@@ -9,14 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
+  <body data-auth-public="true">
     <div class="aurora aurora-left" aria-hidden="true"></div>
     <div class="aurora aurora-right" aria-hidden="true"></div>
     <main class="login-shell">
       <section class="login-copy">
         <p class="eyebrow">TimeNest Create Account</p>
-        <h1>Start your goal system with a calm futuristic setup</h1>
-        <p class="lede">Create your account, choose a login method, and unlock default goal templates for fitness, finance, and learning.</p>
+        <h1>Create a secure TimeNest workspace</h1>
+        <p class="lede">Register with Google or email/password, then continue into the same goals, tasks, habits, and reminder workspace.</p>
       </section>
       <section class="login-stage">
         <article class="login-card panel">
@@ -25,8 +25,37 @@
             <a class="ghost-chip login-link" href="./login.html">Back to Login</a>
           </div>
           <div class="login-form-shell">
-            <div class="login-form-header"><p class="mini-label">New Account</p><h3>Create your space</h3><p>Google is the fastest route, but email and mobile options remain available.</p></div>
-            <div class="login-actions"><button class="login-action primary-login" type="button" data-action="signup-google"><span class="login-action-icon">G</span><span>Sign up with Google</span></button><button class="login-action secondary-login" type="button" data-action="signup-email"><span class="login-action-icon">@</span><span>Email Sign Up</span></button><button class="login-action secondary-login" type="button" data-action="signup-mobile"><span class="login-action-icon">#</span><span>Mobile Sign Up</span></button></div>
+            <div class="prototype-notice auth-notice" role="status" data-auth-banner>
+              <strong>Account setup</strong>
+              <span>Use Firebase Authentication for Google or email sign-up. Phone OTP is available from the login page.</span>
+            </div>
+            <div class="login-form-header"><p class="mini-label">New Account</p><h3>Create your space</h3><p>Google is the fastest route, while email/password gives you a reusable recovery path.</p></div>
+            <div class="login-actions"><button class="login-action primary-login" type="button" data-auth-google-signup data-auth-google-control><span class="login-action-icon">G</span><span>Sign Up with Google</span></button><a class="login-action secondary-login" href="./login.html" data-auth-phone-control><span class="login-action-icon">#</span><span>Use Phone Sign-In</span></a></div>
+            <div class="login-divider" aria-hidden="true" data-auth-email-control>
+              <span></span>
+              <strong>Email Sign-Up</strong>
+              <span></span>
+            </div>
+            <form class="login-form auth-form-grid auth-signup-grid" data-auth-signup-form data-auth-email-control>
+              <label class="field">
+                <span>Full Name</span>
+                <input name="displayName" type="text" autocomplete="name" placeholder="Your name" required />
+              </label>
+              <label class="field">
+                <span>Email</span>
+                <input name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
+              </label>
+              <label class="field">
+                <span>Password</span>
+                <input name="password" type="password" autocomplete="new-password" placeholder="At least 6 characters" required />
+              </label>
+              <label class="field">
+                <span>Confirm Password</span>
+                <input name="confirmPassword" type="password" autocomplete="new-password" placeholder="Repeat password" required />
+              </label>
+              <button class="login-action primary-login login-submit" type="submit">Create Account</button>
+            </form>
+            <p class="auth-feedback" data-auth-feedback hidden></p>
           </div>
         </article>
       </section>
