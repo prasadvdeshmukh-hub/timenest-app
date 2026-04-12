@@ -12,6 +12,8 @@ import {
   signInWithEmailAndPassword,
   signInWithPhoneNumber,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signOut,
   updateProfile,
   useDeviceLanguage
@@ -406,7 +408,22 @@ function bindLogout(auth) {
   });
 }
 
+function isMobileBrowser() {
+  return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
 function bindGoogleButtons(auth) {
+  // Handle redirect result on page load (for mobile flow)
+  getRedirectResult(auth).then((result) => {
+    if (result?.user) {
+      showToastMessage("Google sign-in successful.");
+    }
+  }).catch((error) => {
+    if (error.code !== "auth/popup-closed-by-user") {
+      showToastMessage(formatAuthError(error), "error");
+    }
+  });
+
   document.querySelectorAll("[data-auth-google-login], [data-auth-google-signup]").forEach((button) => {
     button.addEventListener("click", async () => {
       const resetButton = setBusyState(button, "Opening Google...");
@@ -414,10 +431,29 @@ function bindGoogleButtons(auth) {
       try {
         const provider = new GoogleAuthProvider();
         provider.setCustomParameters({ prompt: "select_account" });
+
+        if (isMobileBrowser()) {
+          await signInWithRedirect(auth, provider);
+          // Page will redirect, no need for resetButton
+          return;
+        }
+
         await signInWithPopup(auth, provider);
         showToastMessage("Google sign-in successful.");
       } catch (error) {
-        showToastMessage(formatAuthError(error), "error");
+        // If popup fails (e.g. blocked), fall back to redirect
+        if (error.code === "auth/popup-blocked" || error.code === "auth/popup-closed-by-user") {
+          try {
+            const provider = new GoogleAuthProvider();
+            provider.setCustomParameters({ prompt: "select_account" });
+            await signInWithRedirect(auth, provider);
+            return;
+          } catch (redirectError) {
+            showToastMessage(formatAuthError(redirectError), "error");
+          }
+        } else {
+          showToastMessage(formatAuthError(error), "error");
+        }
       } finally {
         resetButton();
       }
