@@ -47,12 +47,13 @@ Please share your feedback with Prasad directly. When reporting issues, it helps
 - The app is **mobile-first** — it looks best on phones, but also works on desktop browsers.
 - Some buttons may not have full functionality yet — this is expected during beta.
 - **WhatsApp and SMS notifications** are not active yet — only in-app and push toggles are functional.
+- On the GitHub Pages beta link, **Google sign-in is desktop-only**. On mobile, use **email/password** because Firebase cannot safely return Google redirect auth to a repo subpath such as `/timenest-app/`.
 
 ## Tips
 
 - Use Chrome or Safari for the best experience.
 - On mobile, you can add the site to your home screen for an app-like experience: tap the browser menu and select "Add to Home Screen."
-- If Google Sign-In doesn't work, make sure pop-ups are enabled in your browser.
+- If Google Sign-In doesn't work, make sure pop-ups are enabled in your browser. On the GitHub Pages mobile link, use email/password instead.
 
 ## Thank You!
 

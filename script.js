@@ -3422,4 +3422,10 @@ import("./auth.js")
   .then(({ initAuth }) => initAuth())
   .catch((error) => {
     console.error("Failed to initialize TimeNest auth", error);
+    const authBanner = document.querySelector("[data-auth-banner], [data-auth-feedback]");
+    if (authBanner) {
+      authBanner.hidden = false;
+      authBanner.dataset.tone = "error";
+      authBanner.textContent = "TimeNest could not initialize Firebase Authentication. Open the browser console to see the exact error.";
+    }
   });

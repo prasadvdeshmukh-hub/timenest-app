@@ -4224,6 +4224,10 @@ body.login-page .bottom-tabbar {
   backdrop-filter: blur(18px);
 }
 
+.auth-gate[data-auth-gate-blocking="false"] {
+  pointer-events: none;
+}
+
 .auth-gate-card {
   width: min(100%, 520px);
   display: grid;

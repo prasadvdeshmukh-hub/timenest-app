@@ -12,9 +12,9 @@ import {
   signInWithEmailAndPassword,
   signInWithPhoneNumber,
   signInWithPopup,
-  signInWithRedirect,
   getRedirectResult,
   signOut,
+  signInWithRedirect,
   updateProfile,
   useDeviceLanguage
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
@@ -41,6 +41,24 @@ function getPageName(urlLike = window.location.href) {
 
 function isPublicPage() {
   return document.body.dataset.authPublic === "true" || PUBLIC_PAGES.has(getPageName());
+}
+
+function getGitHubPagesProjectSegment(urlLike = window.location.href) {
+  try {
+    const url = new URL(urlLike, window.location.href);
+    if (!url.hostname.toLowerCase().endsWith(".github.io")) {
+      return "";
+    }
+
+    const [firstSegment = ""] = url.pathname.split("/").filter(Boolean);
+    return firstSegment && !firstSegment.includes(".") ? firstSegment : "";
+  } catch (_) {
+    return "";
+  }
+}
+
+function isGitHubPagesProjectSite(urlLike = window.location.href) {
+  return Boolean(getGitHubPagesProjectSegment(urlLike));
 }
 
 function getCurrentAppUrl() {
@@ -105,7 +123,7 @@ function setAuthMethodAvailability(selector, enabled) {
   });
 }
 
-function mountAuthGate(message) {
+function mountAuthGate(message, blocking = true) {
   if (document.querySelector("[data-auth-gate]")) {
     return () => {};
   }
@@ -113,10 +131,11 @@ function mountAuthGate(message) {
   const gate = document.createElement("div");
   gate.className = "auth-gate";
   gate.dataset.authGate = "true";
+  gate.dataset.authGateBlocking = blocking ? "true" : "false";
   gate.innerHTML = `
     <div class="auth-gate-card panel">
-      <p class="mini-label">Authentication</p>
-      <h2>TimeNest is checking your session</h2>
+      <p class="mini-label">Secure Access</p>
+      <h2>TimeNest is preparing sign-in</h2>
       <p>${message}</p>
     </div>
   `;
@@ -130,7 +149,7 @@ function renderBlockingSetupState(title, message) {
   if (existing) {
     existing.innerHTML = `
       <div class="auth-gate-card panel">
-        <p class="mini-label">Authentication</p>
+        <p class="mini-label">Secure Access</p>
         <h2>${title}</h2>
         <p>${message}</p>
       </div>
@@ -143,7 +162,7 @@ function renderBlockingSetupState(title, message) {
   gate.dataset.authGate = "true";
   gate.innerHTML = `
     <div class="auth-gate-card panel">
-      <p class="mini-label">Authentication</p>
+      <p class="mini-label">Secure Access</p>
       <h2>${title}</h2>
       <p>${message}</p>
     </div>
@@ -246,6 +265,7 @@ function formatAuthError(error) {
   const authErrors = {
     "auth/invalid-email": "The email address format is invalid.",
     "auth/invalid-credential": "The credentials were rejected. Double-check the email or password.",
+    "auth/unauthorized-domain": "This domain is not authorized for Firebase Auth. Add localhost in Firebase Authentication Settings -> Authorized domains.",
     "auth/user-not-found": "No account exists for that email yet.",
     "auth/wrong-password": "The password is incorrect.",
     "auth/email-already-in-use": "That email already has a TimeNest account.",
@@ -257,6 +277,7 @@ function formatAuthError(error) {
     "auth/code-expired": "The verification code expired. Request a new code.",
     "auth/invalid-verification-code": "The verification code is invalid.",
     "auth/network-request-failed": "A network request failed. Check the browser connection and try again.",
+    "auth/operation-not-supported-in-this-environment": "This browser cannot complete Google sign-in here. Open TimeNest in Chrome or Safari, or use email/password instead.",
     "auth/too-many-requests": "Firebase temporarily throttled this request. Wait a moment and try again."
   };
 
@@ -412,46 +433,85 @@ function isMobileBrowser() {
   return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
+function shouldDisableGoogleAuthOnThisDevice() {
+  return isMobileBrowser() && isGitHubPagesProjectSite();
+}
+
+function getMobileGoogleAuthWarning() {
+  const projectSegment = getGitHubPagesProjectSegment();
+  const projectUrl = projectSegment
+    ? `${window.location.origin}/${projectSegment}/`
+    : window.location.origin;
+
+  return `Google sign-in is not supported on this mobile GitHub Pages link because Firebase cannot return redirect auth to ${projectUrl}. Use email/password here, or deploy TimeNest on a root or custom domain for mobile Google sign-in.`;
+}
+
+function canUseRedirectFallback() {
+  return !isGitHubPagesProjectSite();
+}
+
 function bindGoogleButtons(auth) {
-  // Handle redirect result on page load (for mobile flow)
+  // Handle any leftover redirect result from older deployments gracefully.
   getRedirectResult(auth).then((result) => {
     if (result?.user) {
       showToastMessage("Google sign-in successful.");
     }
   }).catch((error) => {
+    console.error("Google redirect result failed", error);
     if (error.code !== "auth/popup-closed-by-user") {
+      setAuthNotice(formatAuthError(error), "error");
       showToastMessage(formatAuthError(error), "error");
     }
   });
 
   document.querySelectorAll("[data-auth-google-login], [data-auth-google-signup]").forEach((button) => {
     button.addEventListener("click", async () => {
+      if (shouldDisableGoogleAuthOnThisDevice()) {
+        const warningMessage = getMobileGoogleAuthWarning();
+        setAuthNotice(warningMessage, "warn");
+        showToastMessage(warningMessage, "error", 5600);
+        return;
+      }
+
       const resetButton = setBusyState(button, "Opening Google...");
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
 
       try {
-        const provider = new GoogleAuthProvider();
-        provider.setCustomParameters({ prompt: "select_account" });
-
-        if (isMobileBrowser()) {
-          await signInWithRedirect(auth, provider);
-          // Page will redirect, no need for resetButton
-          return;
-        }
-
+        // Prefer popup for desktop browsers, but fall back to redirect
+        // on environments where popup auth is unreliable. Redirect auth
+        // stays disabled on GitHub Pages project URLs because Firebase
+        // returns to a different origin there.
         await signInWithPopup(auth, provider);
         showToastMessage("Google sign-in successful.");
       } catch (error) {
-        // If popup fails (e.g. blocked), fall back to redirect
-        if (error.code === "auth/popup-blocked" || error.code === "auth/popup-closed-by-user") {
-          try {
-            const provider = new GoogleAuthProvider();
-            provider.setCustomParameters({ prompt: "select_account" });
-            await signInWithRedirect(auth, provider);
-            return;
-          } catch (redirectError) {
-            showToastMessage(formatAuthError(redirectError), "error");
-          }
-        } else {
+        console.error("Google sign-in failed", error);
+
+        if (
+          canUseRedirectFallback() &&
+          [
+            "auth/popup-blocked",
+            "auth/popup-closed-by-user",
+            "auth/cancelled-popup-request",
+            "auth/operation-not-supported-in-this-environment"
+          ].includes(error.code)
+        ) {
+          setAuthNotice("Popup sign-in failed, switching to Google redirect sign-in...", "warn");
+          await signInWithRedirect(auth, provider);
+          return;
+        }
+
+        if (error.code === "auth/popup-blocked") {
+          setAuthNotice(
+            "Please allow pop-ups for this site to sign in with Google. If you are on mobile GitHub Pages, use email/password instead.",
+            "error"
+          );
+          showToastMessage(
+            "Please allow pop-ups for this site to sign in with Google. If you are on mobile GitHub Pages, use email/password instead.",
+            "error"
+          );
+        } else if (error.code !== "auth/popup-closed-by-user") {
+          setAuthNotice(formatAuthError(error), "error");
           showToastMessage(formatAuthError(error), "error");
         }
       } finally {
@@ -646,21 +706,25 @@ function bindPhoneAuth(auth, runtimeConfig) {
 }
 
 function applyProviderAvailability(runtimeConfig) {
-  setAuthMethodAvailability("[data-auth-google-control]", runtimeConfig.auth.googleEnabled);
+  const googleEnabled = runtimeConfig.auth.googleEnabled && !shouldDisableGoogleAuthOnThisDevice();
+  setAuthMethodAvailability("[data-auth-google-control]", googleEnabled);
   setAuthMethodAvailability("[data-auth-email-control]", runtimeConfig.auth.emailPasswordEnabled);
   setAuthMethodAvailability("[data-auth-phone-control]", runtimeConfig.auth.phoneEnabled);
 }
 
 function lockProtectedPage(message) {
   renderBlockingSetupState(
-    "Authentication setup is incomplete",
-    `${message} Start the preview with npm run ui:preview and configure Firebase in .env.`
+    "Sign-in setup is incomplete",
+    `${message} Start the preview with npm run ui:preview and complete the sign-in configuration in .env.`
   );
 }
 
 async function bootstrapAuth() {
   const publicPage = isPublicPage();
-  const releaseGate = mountAuthGate(publicPage ? "Connecting Firebase Authentication..." : "Checking your signed-in session...");
+  const releaseGate = mountAuthGate(
+    publicPage ? "Connecting secure sign-in..." : "Checking your signed-in session...",
+    !publicPage
+  );
 
   if (window.location.protocol === "file:") {
     setAuthNotice("Run the site from http://localhost:4173 to use real authentication.", "warn");
@@ -676,9 +740,9 @@ async function bootstrapAuth() {
   try {
     runtimeConfig = await loadRuntimeConfig();
   } catch (error) {
-    setAuthNotice("Could not load Firebase config from the preview server.", "error");
+    setAuthNotice("Could not load the sign-in configuration from the preview server.", "error");
     if (!publicPage) {
-      lockProtectedPage("The preview server could not provide Firebase configuration.");
+      lockProtectedPage("The preview server could not provide sign-in configuration.");
     } else {
       releaseGate();
     }
@@ -688,10 +752,14 @@ async function bootstrapAuth() {
 
   applyProviderAvailability(runtimeConfig);
 
+  if (runtimeConfig.auth.googleEnabled && shouldDisableGoogleAuthOnThisDevice()) {
+    setAuthNotice(getMobileGoogleAuthWarning(), "warn");
+  }
+
   if (!runtimeConfig.hasFirebaseConfig) {
-    setAuthNotice("Firebase Auth is not configured yet. Add the Firebase values to .env and restart the preview server.", "warn");
+    setAuthNotice("Sign-in is not configured yet. Add the required values to .env and restart the preview server.", "warn");
     if (!publicPage) {
-      lockProtectedPage("Firebase configuration is missing.");
+      lockProtectedPage("Sign-in configuration is missing.");
     } else {
       releaseGate();
     }
