@@ -44,18 +44,26 @@ async function waitForPersistence(auth) {
   }
 }
 
-async function waitForInitialAuthState(auth) {
-  if (typeof auth.authStateReady === "function") {
-    await auth.authStateReady();
-    return auth.currentUser || null;
-  }
+async function waitForInitialAuthState(auth, timeoutMs = 4500) {
+  const statePromise = (async () => {
+    if (typeof auth.authStateReady === "function") {
+      await auth.authStateReady();
+      return auth.currentUser || null;
+    }
 
-  return new Promise((resolve) => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      unsubscribe();
-      resolve(user || null);
+    return new Promise((resolve) => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        unsubscribe();
+        resolve(user || null);
+      });
     });
+  })();
+
+  const timeoutPromise = new Promise((resolve) => {
+    window.setTimeout(() => resolve(auth.currentUser || null), timeoutMs);
   });
+
+  return Promise.race([statePromise, timeoutPromise]);
 }
 
 function setGoogleRedirectPending(pending) {
@@ -890,17 +898,34 @@ async function bootstrapAuth() {
   bindResetForm(auth);
   bindPhoneAuth(auth, runtimeConfig);
 
+  let publicRedirectStarted = false;
+  const finishPublicSignIn = async (user) => {
+    if (!user || publicRedirectStarted || !isPublicPage()) {
+      return;
+    }
+
+    publicRedirectStarted = true;
+    setGoogleRedirectPending(false);
+    syncUserScope(user);
+    syncAuthenticatedUi(user);
+    setAuthNotice(`Signed in as ${getDisplayName(user)}.`, "success");
+    await waitForPersistence(auth);
+    window.setTimeout(() => {
+      redirectAfterAuth();
+    }, 120);
+  };
+
   const applyResolvedAuthState = (user) => {
     syncUserScope(user);
     syncAuthenticatedUi(user);
 
     if (user) {
-      setGoogleRedirectPending(false);
-      setAuthNotice(`Signed in as ${getDisplayName(user)}.`, "success");
       if (publicPage) {
-        redirectAfterAuth();
+        void finishPublicSignIn(user);
         return "redirected";
       }
+      setGoogleRedirectPending(false);
+      setAuthNotice(`Signed in as ${getDisplayName(user)}.`, "success");
     } else if (!publicPage) {
       if (isGoogleRedirectPending()) {
         window.setTimeout(() => {
