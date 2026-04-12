@@ -747,7 +747,7 @@ function isMobileBrowser() {
 }
 
 function shouldDisableGoogleAuthOnThisDevice() {
-  return isMobileBrowser() && isGitHubPagesProjectSite();
+  return false;
 }
 
 function getMobileGoogleAuthWarning() {
@@ -760,7 +760,7 @@ function getMobileGoogleAuthWarning() {
 }
 
 function canUseRedirectFallback() {
-  return !isGitHubPagesProjectSite();
+  return true;
 }
 
 function bindGoogleButtons(auth, onGoogleSuccess = null) {
