@@ -3672,18 +3672,19 @@ html[data-theme="light"] body.dashboard-home .task-tag {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(280px, 420px) minmax(340px, 1fr);
-  gap: 2rem;
-  height: 100svh;
-  padding: 1.5rem;
+  grid-template-columns: minmax(280px, 400px) minmax(0, 1fr);
+  gap: clamp(1.25rem, 2vw, 2rem);
+  min-height: 100vh;
+  padding: clamp(1rem, 2vw, 1.5rem);
   padding-bottom: max(1.5rem, calc(var(--safe-bottom) + 1rem));
   align-items: center;
-  overflow: hidden;
+  overflow: visible;
 }
 
 body.login-page {
-  height: 100svh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 body.login-page .bottom-tabbar {
@@ -3719,18 +3720,19 @@ body.login-page .bottom-tabbar {
 
 .login-stage {
   min-width: 0;
+  align-self: stretch;
 }
 
 .login-card {
   display: grid;
   gap: 0.5rem;
-  padding: 1rem;
+  padding: clamp(0.85rem, 1.8vw, 1rem);
   overflow: hidden;
   position: relative;
   transform-style: preserve-3d;
   transform: perspective(1400px) rotateX(var(--login-tilt-x, 0deg)) rotateY(var(--login-tilt-y, 0deg));
   transition: transform 180ms ease;
-  height: 100%;
+  min-height: min(860px, calc(100vh - 3rem));
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 30%),
     var(--panel);
@@ -3790,16 +3792,16 @@ body.login-page .bottom-tabbar {
 }
 
 .login-clock-wrap {
-  --login-clock-size: clamp(320px, 36vw, 520px);
-  --login-clock-orbit-size: calc(var(--login-clock-size) + 5.5rem);
+  --login-clock-size: clamp(260px, 30vw, 440px);
+  --login-clock-orbit-size: calc(var(--login-clock-size) + 3.5rem);
   display: grid;
   justify-items: center;
   gap: 0.55rem;
-  padding: 0.1rem 0 0;
+  padding: 0;
   position: relative;
   z-index: 1;
   animation: float-login 5.8s ease-in-out infinite;
-  min-height: 100%;
+  min-height: clamp(280px, 48vh, 520px);
   align-content: center;
   width: 100%;
   min-width: 0;
@@ -3874,9 +3876,9 @@ body.login-page .bottom-tabbar {
 .login-main-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
-  gap: 1rem;
-  min-height: 100%;
-  align-items: stretch;
+  gap: clamp(0.85rem, 2vw, 1.25rem);
+  min-height: 0;
+  align-items: center;
   position: relative;
   z-index: 1;
 }
@@ -3897,6 +3899,18 @@ body.login-page .bottom-tabbar {
   animation: login-form-enter 780ms ease-out;
   backdrop-filter: blur(20px);
   pointer-events: auto;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .login-card:hover {
+    transform: perspective(1400px) rotateX(var(--login-tilt-x, 0deg)) rotateY(var(--login-tilt-y, 0deg));
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .login-card {
+    transform: none;
+  }
 }
 
 .prototype-notice {
@@ -4358,11 +4372,25 @@ body.login-page .bottom-tabbar {
 @media (max-width: 1200px) {
   .login-shell {
     grid-template-columns: 1fr;
+    min-height: auto;
   }
 
   .login-clock-wrap {
-    --login-clock-size: clamp(380px, 72vw, 640px);
-    --login-clock-orbit-size: calc(var(--login-clock-size) + 4.5rem);
+    --login-clock-size: clamp(280px, 54vw, 420px);
+    --login-clock-orbit-size: calc(var(--login-clock-size) + 2.8rem);
+  }
+
+  .login-card {
+    min-height: auto;
+  }
+
+  .login-main-grid {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .login-form-shell {
+    max-width: 100%;
   }
 }
 
@@ -4370,7 +4398,7 @@ body.login-page .bottom-tabbar {
   .login-shell {
     grid-template-columns: 1fr;
     gap: 0;
-    height: 100svh;
+    min-height: 100vh;
     padding:
       max(0.75rem, var(--safe-top))
       max(0.75rem, var(--safe-right))
@@ -4378,7 +4406,7 @@ body.login-page .bottom-tabbar {
       max(0.75rem, var(--safe-left));
     padding-bottom: max(0.75rem, calc(var(--safe-bottom) + 0.45rem));
     align-items: stretch;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .login-copy {
@@ -4387,10 +4415,10 @@ body.login-page .bottom-tabbar {
 
   .login-card {
     min-height: 0;
-    height: 100%;
+    height: auto;
     padding: 0.55rem 0.65rem;
     gap: 0.25rem;
-    overflow: hidden;
+    overflow: clip;
   }
 
   .login-card-top {
@@ -4436,16 +4464,17 @@ body.login-page .bottom-tabbar {
 
   .login-main-grid {
     gap: 0.3rem;
-    grid-template-rows: minmax(0, 1.8fr) minmax(0, auto);
-    height: 100%;
-    overflow: hidden;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    height: auto;
+    overflow: visible;
   }
 
   .login-clock-wrap {
-    --login-clock-size: clamp(240px, 62vw, 380px);
-    --login-clock-orbit-size: calc(var(--login-clock-size) + 2.4rem);
+    --login-clock-size: clamp(220px, 58vw, 320px);
+    --login-clock-orbit-size: calc(var(--login-clock-size) + 1.9rem);
     gap: 0.15rem;
-    min-height: clamp(230px, 44vh, 360px);
+    min-height: clamp(210px, 34vh, 300px);
     padding-top: 0;
     animation: none;
   }
