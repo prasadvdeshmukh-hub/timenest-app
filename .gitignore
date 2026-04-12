@@ -4,3 +4,4 @@ mobile-*-preview*.png
 screen-*-preview.*
 .chrome-mobile-devtools/
 .chrome-mobile-preview/
+.firebase/

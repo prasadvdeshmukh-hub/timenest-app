@@ -3790,7 +3790,7 @@ body.login-page .bottom-tabbar {
 }
 
 .login-clock-wrap {
-  --login-clock-size: clamp(440px, 62vw, 800px);
+  --login-clock-size: clamp(320px, 36vw, 520px);
   --login-clock-orbit-size: calc(var(--login-clock-size) + 5.5rem);
   display: grid;
   justify-items: center;
@@ -3871,9 +3871,8 @@ body.login-page .bottom-tabbar {
 
 .login-main-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: minmax(0, 1.6fr) minmax(0, auto);
-  gap: 0.4rem;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
+  gap: 1rem;
   min-height: 100%;
   align-items: stretch;
   position: relative;
@@ -3883,9 +3882,9 @@ body.login-page .bottom-tabbar {
 .login-form-shell {
   display: grid;
   gap: 0.55rem;
-  max-width: 980px;
+  max-width: 430px;
   justify-self: stretch;
-  align-self: end;
+  align-self: center;
   width: 100%;
   padding: 0.75rem 0.85rem;
   border: 1px solid rgba(148, 197, 255, 0.1);
