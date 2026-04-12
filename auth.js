@@ -1059,10 +1059,6 @@ async function bootstrapAuth() {
     gateTimerId = window.setTimeout(() => {
       ensureGate(false);
     }, 450);
-  } else if (hasKnownSession) {
-    gateTimerId = window.setTimeout(() => {
-      ensureGate(false);
-    }, 900);
   } else {
     ensureGate(true);
   }
@@ -1193,6 +1189,7 @@ async function bootstrapAuth() {
       } else if (!publicPage) {
         const recentSignin = getRecentSigninMarker();
         if (isGoogleRedirectPending() || recentSignin) {
+          ensureGate(false);
           window.setTimeout(() => {
             if (auth.currentUser) {
               return;
