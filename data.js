@@ -1,4 +1,4 @@
-// ─── TimeNest Data Layer ───
+// ─── TIMENEST Data Layer ───
 // Firestore-backed CRUD for tasks, subtasks, goals, habits, notifications,
 // settings, and calendar events, plus pure helper functions that are unit
 // tested in tests/data.test.js.

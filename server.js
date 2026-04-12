@@ -78,5 +78,5 @@ createServer((request, response) => {
   response.writeHead(200, { "Content-Type": contentType });
   createReadStream(filePath).pipe(response);
 }).listen(port, () => {
-  console.log(`TimeNest preview available at http://localhost:${port}`);
+  console.log(`TIMENEST preview available at http://localhost:${port}`);
 });

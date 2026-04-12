@@ -859,7 +859,7 @@ const goalDetailDrilldowns = {
       progressValue: "100%",
       timelineLabel: "Milestone Archive",
       tasks: [
-        { title: "Finalize TimeNest MVP milestone", meta: "Done Â· Core release checkpoint marked complete", badge: "Done", tone: "good" },
+        { title: "Finalize TIMENEST MVP milestone", meta: "Done Â· Core release checkpoint marked complete", badge: "Done", tone: "good" },
         { title: "Close annual savings milestone", meta: "Done Â· Reserve target for the quarter achieved", badge: "Done", tone: "good" },
         { title: "Complete Marathi fluency checkpoint", meta: "Done Â· Conversation benchmark reached", badge: "Done", tone: "good" },
         { title: "Finish strength baseline block", meta: "Done Â· Mobility and performance review closed", badge: "Done", tone: "good" }
@@ -1015,7 +1015,7 @@ const goalDetailRangeOverrides = {
         start: "Milestone closed this month: Apr 2026",
         target: "Next annual review: 30 Jun 2026",
         tasks: [
-          { title: "Finalize TimeNest MVP milestone", meta: "Done · Current monthly milestone approved", badge: "Done", tone: "good" }
+          { title: "Finalize TIMENEST MVP milestone", meta: "Done · Current monthly milestone approved", badge: "Done", tone: "good" }
         ]
       }
     },
@@ -1185,7 +1185,7 @@ if (
     goalDetailTaskList.innerHTML = renderGoalDetailItems(detailView.tasks);
     goalDetailTimeline.innerHTML = renderGoalTimeline(detailView.timeline);
     goalDetailTimelineLabel.textContent = detailView.timelineLabel;
-    document.title = `TimeNest ${detailView.eyebrow}`;
+    document.title = `TIMENEST ${detailView.eyebrow}`;
   }
 }
 
@@ -1220,7 +1220,7 @@ if (goalEditorTitle && goalEditorEyebrow && goalEditorTypeLabel && goalEditorTyp
     goalEditorTypeLabel.textContent = selectedGoalType.label;
     goalEditorTypeInput.value = selectedGoalType.value;
     goalEditorTypeInput.placeholder = selectedGoalType.placeholder;
-    document.title = `TimeNest ${selectedGoalType.eyebrow}`;
+    document.title = `TIMENEST ${selectedGoalType.eyebrow}`;
   }
 }
 
@@ -1284,7 +1284,7 @@ const goalDashboardContent = {
       healthCopy: "Three long-term goals are moving ahead of plan and one needs a milestone reset.",
       timelineLabel: "Quarter Milestones",
       portfolio: [
-        { title: "Launch TimeNest MVP", meta: "12-month product goal", badge: "81%", tone: "good" },
+        { title: "Launch TIMENEST MVP", meta: "12-month product goal", badge: "81%", tone: "good" },
         { title: "Build financial freedom runway", meta: "18-month savings target", badge: "63%", tone: "warn" },
         { title: "Master Marathi communication", meta: "12-month fluency track", badge: "72%", tone: "good" },
         { title: "Reach advanced fitness baseline", meta: "Annual strength and mobility target", badge: "49%", tone: "alert" }
@@ -1302,7 +1302,7 @@ const goalDashboardContent = {
       healthCopy: "This month is focused on protecting annual momentum with milestone reviews, recovery actions, and tighter follow-up.",
       timelineLabel: "Monthly Roadmap",
       portfolio: [
-        { title: "Launch TimeNest MVP", meta: "Auth and dashboard milestone closes in this month window", badge: "84%", tone: "good" },
+        { title: "Launch TIMENEST MVP", meta: "Auth and dashboard milestone closes in this month window", badge: "84%", tone: "good" },
         { title: "Master Marathi communication", meta: "Speaking checkpoint and review cycle land this month", badge: "78%", tone: "good" },
         { title: "Build financial freedom runway", meta: "Savings contribution pace needs a monthly correction", badge: "66%", tone: "warn" },
         { title: "Reach advanced fitness baseline", meta: "Mobility reset is still behind the monthly target", badge: "52%", tone: "alert" }
@@ -1469,7 +1469,7 @@ function applyGoalDashboardView(view, options = {}) {
   updateGoalMetrics(selectedView, selectedRange);
   updateGoalDashboardContent(selectedView, selectedRange);
   syncGoalAddButton(selectedView);
-  document.title = selectedView === "long" ? "TimeNest Goals - Long-Term" : "TimeNest Goals";
+  document.title = selectedView === "long" ? "TIMENEST Goals - Long-Term" : "TIMENEST Goals";
 
   if (shouldUpdateUrl && window.history && typeof window.history.replaceState === "function") {
     const params = new URLSearchParams(window.location.search);
@@ -3421,11 +3421,11 @@ function generateId() {
 import("./auth.js")
   .then(({ initAuth }) => initAuth())
   .catch((error) => {
-    console.error("Failed to initialize TimeNest auth", error);
+    console.error("Failed to initialize TIMENEST auth", error);
     const authBanner = document.querySelector("[data-auth-banner], [data-auth-feedback]");
     if (authBanner) {
       authBanner.hidden = false;
       authBanner.dataset.tone = "error";
-      authBanner.textContent = "TimeNest could not initialize Firebase Authentication. Open the browser console to see the exact error.";
+      authBanner.textContent = "TIMENEST could not initialize Firebase Authentication. Open the browser console to see the exact error.";
     }
   });

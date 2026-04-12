@@ -123,7 +123,7 @@ function setAuthDebugState(patch = {}) {
     updatedAt: new Date().toLocaleTimeString()
   };
   updateAuthGateDiagnostics();
-  console.debug("TimeNest auth debug", authDebugState);
+  console.debug("TIMENEST auth debug", authDebugState);
 }
 
 function armAuthGateDiagnostics() {
@@ -142,7 +142,7 @@ function armAuthGateDiagnostics() {
 async function waitForPersistence(auth) {
   if (!auth.__timenestPersistenceReadyPromise) {
     auth.__timenestPersistenceReadyPromise = setPersistence(auth, browserLocalPersistence).catch(async (error) => {
-      console.warn("Falling back to session persistence for TimeNest auth", error);
+      console.warn("Falling back to session persistence for TIMENEST auth", error);
       try {
         await setPersistence(auth, browserSessionPersistence);
       } catch (fallbackError) {
@@ -156,7 +156,7 @@ async function waitForPersistence(auth) {
       await auth.__timenestPersistenceReadyPromise;
     }
   } catch (error) {
-    console.warn("TimeNest auth persistence setup did not complete cleanly", error);
+    console.warn("TIMENEST auth persistence setup did not complete cleanly", error);
   }
 }
 
@@ -320,7 +320,7 @@ function handleIncompleteGoogleRedirect(auth) {
 
   renderBlockingSetupState(
     "Google sign-in did not finish",
-    "TimeNest could not restore the Google session. Returning to the login page so you can try again."
+    "TIMENEST could not restore the Google session. Returning to the login page so you can try again."
   );
   window.setTimeout(() => {
     window.location.replace(buildLoginUrl());
@@ -431,7 +431,7 @@ function mountAuthGate(message, blocking = true) {
   gate.innerHTML = `
     <div class="auth-gate-card panel">
       <p class="mini-label">Secure Access</p>
-      <h2>TimeNest is preparing sign-in</h2>
+      <h2>TIMENEST is preparing sign-in</h2>
       <p>${message}</p>
     </div>
   `;
@@ -476,7 +476,7 @@ function renderBlockingSetupState(title, message) {
 
 function getDisplayName(user) {
   if (!user) {
-    return "TimeNest User";
+    return "TIMENEST User";
   }
 
   if (user.displayName?.trim()) {
@@ -487,7 +487,7 @@ function getDisplayName(user) {
     return user.email.split("@")[0];
   }
 
-  return user.phoneNumber || "TimeNest User";
+  return user.phoneNumber || "TIMENEST User";
 }
 
 function getFirstName(user) {
@@ -572,7 +572,7 @@ function formatAuthError(error) {
     "auth/unauthorized-domain": "This domain is not authorized for Firebase Auth. Add localhost in Firebase Authentication Settings -> Authorized domains.",
     "auth/user-not-found": "No account exists for that email yet.",
     "auth/wrong-password": "The password is incorrect.",
-    "auth/email-already-in-use": "That email already has a TimeNest account.",
+    "auth/email-already-in-use": "That email already has a TIMENEST account.",
     "auth/weak-password": "Use a stronger password with at least 6 characters.",
     "auth/popup-closed-by-user": "The Google sign-in popup was closed before completion.",
     "auth/popup-blocked": "The browser blocked the Google sign-in popup.",
@@ -581,7 +581,7 @@ function formatAuthError(error) {
     "auth/code-expired": "The verification code expired. Request a new code.",
     "auth/invalid-verification-code": "The verification code is invalid.",
     "auth/network-request-failed": "A network request failed. Check the browser connection and try again.",
-    "auth/operation-not-supported-in-this-environment": "This browser cannot complete Google sign-in here. Open TimeNest in Chrome or Safari, or use email/password instead.",
+    "auth/operation-not-supported-in-this-environment": "This browser cannot complete Google sign-in here. Open TIMENEST in Chrome or Safari, or use email/password instead.",
     "auth/too-many-requests": "Firebase temporarily throttled this request. Wait a moment and try again."
   };
 
@@ -756,7 +756,7 @@ function getMobileGoogleAuthWarning() {
     ? `${window.location.origin}/${projectSegment}/`
     : window.location.origin;
 
-  return `Google sign-in is not supported on this mobile GitHub Pages link because Firebase cannot return redirect auth to ${projectUrl}. Use email/password here, or deploy TimeNest on a root or custom domain for mobile Google sign-in.`;
+  return `Google sign-in is not supported on this mobile GitHub Pages link because Firebase cannot return redirect auth to ${projectUrl}. Use email/password here, or deploy TIMENEST on a root or custom domain for mobile Google sign-in.`;
 }
 
 function canUseRedirectFallback() {
@@ -888,375 +888,4 @@ function bindSignupForm(auth) {
 
     if (!displayName || !email || !password || !confirmPassword) {
       showToastMessage("Complete all account fields before continuing.", "error");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      showToastMessage("The password confirmation does not match.", "error");
-      return;
-    }
-
-    const resetButton = setBusyState(submitButton, "Creating account...");
-
-    try {
-      await waitForPersistence(auth);
-      const credential = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(credential.user, { displayName });
-      showToastMessage("Account created successfully.");
-    } catch (error) {
-      showToastMessage(formatAuthError(error), "error");
-    } finally {
-      resetButton();
-    }
-  });
-}
-
-function bindResetForm(auth) {
-  const resetForm = document.querySelector("[data-auth-reset-form]");
-  if (!resetForm) {
-    return;
-  }
-
-  resetForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const email = resetForm.querySelector("[name='email']")?.value.trim();
-    const submitButton = resetForm.querySelector("[type='submit']");
-
-    if (!email) {
-      showToastMessage("Enter the email address tied to your TimeNest account.", "error");
-      return;
-    }
-
-    const resetButton = setBusyState(submitButton, "Sending link...");
-
-    try {
-      await sendPasswordResetEmail(auth, email);
-      showToastMessage("Password reset email sent.", "success");
-      setAuthNotice("Reset link sent. Check your inbox and spam folder.", "success");
-    } catch (error) {
-      showToastMessage(formatAuthError(error), "error");
-    } finally {
-      resetButton();
-    }
-  });
-}
-
-function bindPhoneAuth(auth, runtimeConfig) {
-  const phoneSection = document.querySelector("[data-auth-phone-section]");
-  if (!phoneSection) {
-    return;
-  }
-
-  if (!runtimeConfig.auth.phoneEnabled) {
-    phoneSection.hidden = true;
-    return;
-  }
-
-  const sendButton = phoneSection.querySelector("[data-auth-phone-send]");
-  const verifyButton = phoneSection.querySelector("[data-auth-phone-verify]");
-  const phoneInput = phoneSection.querySelector("[name='phoneNumber']");
-  const codeInput = phoneSection.querySelector("[name='verificationCode']");
-  const defaultCountryCode = phoneSection.dataset.authDefaultCountryCode || "+91";
-
-  if (!sendButton || !verifyButton || !phoneInput || !codeInput) {
-    return;
-  }
-
-  sendButton.addEventListener("click", async () => {
-    const normalizedPhone = normalizePhoneNumber(phoneInput.value, defaultCountryCode);
-    if (!normalizedPhone.ok) {
-      showToastMessage(
-        "Enter a valid mobile number. Use +919876543210 or a 10-digit Indian mobile number.",
-        "error"
-      );
-      return;
-    }
-
-    const phoneNumber = normalizedPhone.value;
-    phoneInput.value = phoneNumber;
-    codeInput.value = "";
-    codeInput.disabled = true;
-    verifyButton.disabled = true;
-    phoneConfirmationResult = null;
-
-    const resetButton = setBusyState(sendButton, "Sending code...");
-
-    try {
-      await waitForPersistence(auth);
-      const verifier = await ensureRecaptcha(auth);
-      phoneConfirmationResult = await signInWithPhoneNumber(auth, phoneNumber, verifier);
-      codeInput.disabled = false;
-      verifyButton.disabled = false;
-      setAuthNotice("Verification code sent. Enter the SMS code to finish sign-in.", "success");
-      showToastMessage("Verification code sent.", "success");
-    } catch (error) {
-      if (recaptchaVerifier) {
-        recaptchaVerifier.clear();
-        recaptchaVerifier = null;
-      }
-      showToastMessage(formatAuthError(error), "error");
-    } finally {
-      resetButton();
-    }
-  });
-
-  verifyButton.addEventListener("click", async () => {
-    if (!phoneConfirmationResult) {
-      showToastMessage("Request an SMS code before verifying.", "error");
-      return;
-    }
-
-    const verificationCode = codeInput.value.trim();
-    if (!verificationCode) {
-      showToastMessage("Enter the SMS verification code.", "error");
-      return;
-    }
-
-    const resetButton = setBusyState(verifyButton, "Verifying...");
-
-    try {
-      await phoneConfirmationResult.confirm(verificationCode);
-      showToastMessage("Phone sign-in successful.");
-    } catch (error) {
-      showToastMessage(formatAuthError(error), "error");
-    } finally {
-      resetButton();
-    }
-  });
-}
-
-function applyProviderAvailability(runtimeConfig) {
-  const googleEnabled = runtimeConfig.auth.googleEnabled && !shouldDisableGoogleAuthOnThisDevice();
-  setAuthMethodAvailability("[data-auth-google-control]", googleEnabled);
-  setAuthMethodAvailability("[data-auth-email-control]", runtimeConfig.auth.emailPasswordEnabled);
-  setAuthMethodAvailability("[data-auth-phone-control]", runtimeConfig.auth.phoneEnabled);
-}
-
-function lockProtectedPage(message) {
-  renderBlockingSetupState(
-    "Sign-in setup is incomplete",
-    `${message} Start the preview with npm run ui:preview and complete the sign-in configuration in .env.`
-  );
-}
-
-async function bootstrapAuth() {
-  const publicPage = isPublicPage();
-  setAuthDebugState({ step: "bootstrap start", publicPage });
-  const gateMessage = publicPage ? "Connecting secure sign-in..." : "Checking your signed-in session...";
-  let gateMounted = false;
-  let gateTimerId = 0;
-  let mountedReleaseGate = () => {};
-  const ensureGate = (blocking) => {
-    if (gateMounted) {
-      return;
-    }
-
-    gateMounted = true;
-    mountedReleaseGate = mountAuthGate(gateMessage, blocking);
-  };
-  const releaseGate = () => {
-    window.clearTimeout(gateTimerId);
-    if (!gateMounted) {
-      return;
-    }
-
-    mountedReleaseGate();
-    gateMounted = false;
-  };
-
-  if (window.location.protocol === "file:") {
-    setAuthNotice("Run the site from http://localhost:4173 to use real authentication.", "warn");
-    if (!publicPage) {
-      lockProtectedPage("This page is protected, but the app was opened directly from disk.");
-    } else {
-      releaseGate();
-    }
-    return;
-  }
-
-  let runtimeConfig;
-  try {
-    runtimeConfig = await loadRuntimeConfig();
-    setAuthDebugState({ step: "runtime config loaded" });
-  } catch (error) {
-    setAuthNotice("Could not load the sign-in configuration from the preview server.", "error");
-    if (!publicPage) {
-      lockProtectedPage("The preview server could not provide sign-in configuration.");
-    } else {
-      releaseGate();
-    }
-    console.error(error);
-    return;
-  }
-
-  const preferredHostedDomain = `${runtimeConfig.firebase.projectId}.firebaseapp.com`;
-  const currentHost = window.location.hostname;
-  const isLocalHost = currentHost === "localhost" || currentHost === "127.0.0.1";
-
-  if (
-    currentHost &&
-    !isLocalHost &&
-    !isGitHubPagesProjectSite() &&
-    currentHost !== preferredHostedDomain
-  ) {
-    const redirectUrl = new URL(window.location.href);
-    redirectUrl.hostname = preferredHostedDomain;
-    setAuthDebugState({ step: "redirecting to firebaseapp host" });
-    window.location.replace(redirectUrl.toString());
-    return;
-  }
-
-  applyProviderAvailability(runtimeConfig);
-
-  if (runtimeConfig.auth.googleEnabled && shouldDisableGoogleAuthOnThisDevice()) {
-    setAuthNotice(getMobileGoogleAuthWarning(), "warn");
-  } else if (isGoogleRedirectPending()) {
-    setAuthNotice("Finishing Google sign-in...", "info");
-    setAuthDebugState({ step: "google redirect pending on load" });
-  }
-
-  if (!runtimeConfig.hasFirebaseConfig) {
-    setAuthNotice("Sign-in is not configured yet. Add the required values to .env and restart the preview server.", "warn");
-    if (!publicPage) {
-      lockProtectedPage("Sign-in configuration is missing.");
-    } else {
-      releaseGate();
-    }
-    return;
-  }
-
-  try {
-    const auth = await initializeFirebaseAuth(runtimeConfig);
-    window.__TIMENEST_REAL_AUTH__ = true;
-    setAuthDebugState({ step: "firebase auth initialized", currentUser: auth.currentUser?.uid || null });
-
-    let publicRedirectStarted = false;
-    const finishPublicSignIn = async (user) => {
-      if (!user || publicRedirectStarted || !isPublicPage()) {
-        return;
-      }
-
-      setAuthDebugState({ step: "finalizing public sign-in", currentUser: user.uid });
-      publicRedirectStarted = true;
-      setGoogleRedirectPending(false);
-      setRecentSigninMarker(user);
-      const settledUser = await waitForAuthenticatedUser(auth, user.uid, 7000);
-      if (!settledUser) {
-        clearRecentSigninMarker();
-        setAuthNotice("Google sign-in finished, but TimeNest could not restore the session yet. Please try once more.", "warn");
-        setAuthDebugState({ step: "public sign-in did not settle", currentUser: null });
-        publicRedirectStarted = false;
-        return;
-      }
-
-      syncUserScope(settledUser);
-      syncAuthenticatedUi(settledUser);
-      setAuthNotice(`Signed in as ${getDisplayName(settledUser)}.`, "success");
-      setAuthDebugState({ step: "redirecting into app", currentUser: settledUser.uid });
-      window.setTimeout(() => {
-        redirectAfterAuth();
-      }, 120);
-    };
-
-    bindLogout(auth);
-    bindGoogleButtons(auth, finishPublicSignIn);
-    bindLoginForm(auth);
-    bindSignupForm(auth);
-    bindResetForm(auth);
-    bindPhoneAuth(auth, runtimeConfig);
-
-    if (publicPage) {
-      void resolveGoogleRedirectResult(auth).then((redirectResultUser) => {
-        if (redirectResultUser) {
-          return finishPublicSignIn(redirectResultUser);
-        }
-        return null;
-      });
-    }
-
-    const applyResolvedAuthState = (user) => {
-      setAuthDebugState({
-        step: user ? "auth state resolved with user" : "auth state resolved without user",
-        currentUser: user?.uid || null
-      });
-      syncUserScope(user);
-      syncAuthenticatedUi(user);
-
-      if (user) {
-        clearRecentSigninMarker();
-        if (publicPage) {
-          void finishPublicSignIn(user);
-          return "redirected";
-        }
-        setGoogleRedirectPending(false);
-        setAuthNotice(`Signed in as ${getDisplayName(user)}.`, "success");
-      } else if (!publicPage) {
-        const recentSignin = getRecentSigninMarker();
-        if (isGoogleRedirectPending() || recentSignin) {
-          window.setTimeout(() => {
-            if (auth.currentUser) {
-              return;
-            }
-
-            clearRecentSigninMarker();
-            handleIncompleteGoogleRedirect(auth);
-          }, recentSignin ? 4200 : 2200);
-          setAuthDebugState({ step: "waiting for protected session restore" });
-          return "pending";
-        }
-        window.location.replace(buildLoginUrl());
-        return "redirected";
-      } else if (isGoogleRedirectPending()) {
-        window.setTimeout(() => {
-          if (!auth.currentUser && isGoogleRedirectPending()) {
-            handleIncompleteGoogleRedirect(auth);
-          }
-        }, 2200);
-      }
-      return "ready";
-    };
-
-    const initialUser = await waitForInitialAuthState(auth, getRecentSigninMarker() ? 9000 : 4500);
-    const initialState = applyResolvedAuthState(initialUser);
-
-    if (initialState === "ready") {
-      setAuthDebugState({ step: "auth gate released" });
-      releaseGate();
-    }
-
-    onAuthStateChanged(auth, (user) => {
-      const state = applyResolvedAuthState(user);
-      if (state === "ready" && document.querySelector("[data-auth-gate]")) {
-        setAuthDebugState({ step: "auth listener released gate" });
-        releaseGate();
-      }
-    });
-  } catch (error) {
-    console.error("TimeNest auth bootstrap failed", error);
-    setGoogleRedirectPending(false);
-    clearRecentSigninMarker();
-    setAuthDebugState({ step: `bootstrap error: ${error.code || error.message || "unknown"}` });
-    if (publicPage) {
-      releaseGate();
-      setAuthNotice(formatAuthError(error), "error");
-      return;
-    }
-
-    renderBlockingSetupState(
-      "Sign-in could not finish",
-      "TimeNest hit an authentication startup problem. Returning to the login page so you can try again."
-    );
-    window.setTimeout(() => {
-      window.location.replace(buildLoginUrl());
-    }, 1800);
-  }
-}
-
-export function initAuth() {
-  if (!authBootstrapPromise) {
-    authBootstrapPromise = bootstrapAuth();
-  }
-
-  return authBootstrapPromise;
-}
+   

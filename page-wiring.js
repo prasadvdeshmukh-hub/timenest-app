@@ -1,4 +1,4 @@
-// ─── TimeNest Page Wiring ───
+// ─── TIMENEST Page Wiring ───
 // Auto-detects the current page from location.pathname and wires up
 // every button/soft-pill/form to the data.js Firestore layer.
 //
