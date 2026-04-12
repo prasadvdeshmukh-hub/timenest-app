@@ -4,6 +4,7 @@ import {
   RecaptchaVerifier,
   GoogleAuthProvider,
   browserLocalPersistence,
+  browserSessionPersistence,
   connectAuthEmulator,
   createUserWithEmailAndPassword,
   getAuth,
@@ -32,6 +33,16 @@ let authBootstrapPromise = null;
 let logoutInProgress = false;
 let phoneConfirmationResult = null;
 let recaptchaVerifier = null;
+
+async function waitForPersistence(auth) {
+  try {
+    if (auth.__timenestPersistenceReadyPromise) {
+      await auth.__timenestPersistenceReadyPromise;
+    }
+  } catch (error) {
+    console.warn("TimeNest auth persistence setup did not complete cleanly", error);
+  }
+}
 
 function setGoogleRedirectPending(pending) {
   if (pending) {
@@ -422,7 +433,14 @@ async function initializeFirebaseAuth(runtimeConfig) {
   }
 
   useDeviceLanguage(auth);
-  await setPersistence(auth, browserLocalPersistence);
+  auth.__timenestPersistenceReadyPromise = setPersistence(auth, browserLocalPersistence).catch(async (error) => {
+    console.warn("Falling back to session persistence for TimeNest auth", error);
+    try {
+      await setPersistence(auth, browserSessionPersistence);
+    } catch (fallbackError) {
+      console.warn("Session persistence fallback also failed", fallbackError);
+    }
+  });
   window._fb = {
     ...(window._fb || {}),
     app,
@@ -532,6 +550,8 @@ function bindGoogleButtons(auth) {
       setAuthNotice("Opening Google sign-in...", "info");
 
       try {
+        await waitForPersistence(auth);
+
         if (isMobileBrowser() && canUseRedirectFallback()) {
           setGoogleRedirectPending(true);
           await signInWithRedirect(auth, provider);
@@ -601,6 +621,7 @@ function bindLoginForm(auth) {
     const resetButton = setBusyState(submitButton, "Signing in...");
 
     try {
+      await waitForPersistence(auth);
       await signInWithEmailAndPassword(auth, email, password);
       showToastMessage("Signed in successfully.");
     } catch (error) {
@@ -639,6 +660,7 @@ function bindSignupForm(auth) {
     const resetButton = setBusyState(submitButton, "Creating account...");
 
     try {
+      await waitForPersistence(auth);
       const credential = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(credential.user, { displayName });
       showToastMessage("Account created successfully.");
@@ -719,9 +741,10 @@ function bindPhoneAuth(auth, runtimeConfig) {
     verifyButton.disabled = true;
     phoneConfirmationResult = null;
 
-      const resetButton = setBusyState(sendButton, "Sending code...");
+    const resetButton = setBusyState(sendButton, "Sending code...");
 
     try {
+      await waitForPersistence(auth);
       const verifier = await ensureRecaptcha(auth);
       phoneConfirmationResult = await signInWithPhoneNumber(auth, phoneNumber, verifier);
       codeInput.disabled = false;
