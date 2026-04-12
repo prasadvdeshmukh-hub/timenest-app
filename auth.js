@@ -380,7 +380,20 @@ async function loadRuntimeConfig() {
     throw new Error(`Could not load auth config (${response.status})`);
   }
 
-  return response.json();
+  const runtimeConfig = await response.json();
+  const currentHost = window.location.hostname;
+  const isLocalHost = currentHost === "localhost" || currentHost === "127.0.0.1";
+
+  if (
+    currentHost &&
+    !isLocalHost &&
+    !isGitHubPagesProjectSite() &&
+    window.location.protocol.startsWith("http")
+  ) {
+    runtimeConfig.firebase.authDomain = currentHost;
+  }
+
+  return runtimeConfig;
 }
 
 async function initializeFirebaseAuth(runtimeConfig) {
@@ -517,16 +530,13 @@ function bindGoogleButtons(auth) {
       setAuthNotice("Opening Google sign-in...", "info");
 
       try {
-        if (canUseRedirectFallback()) {
+        if (isMobileBrowser() && canUseRedirectFallback()) {
           setGoogleRedirectPending(true);
           await signInWithRedirect(auth, provider);
           return;
         }
 
-        // Prefer popup for desktop browsers, but fall back to redirect
-        // on environments where popup auth is unreliable. Redirect auth
-        // stays disabled on GitHub Pages project URLs because Firebase
-        // returns to a different origin there.
+        // Use popup on desktop for a faster flow, and redirect on mobile.
         await signInWithPopup(auth, provider);
         setGoogleRedirectPending(false);
         showToastMessage("Google sign-in successful.");
