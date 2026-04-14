@@ -8417,6 +8417,18 @@ body.dashboard-home .dashboard-summary-card strong {
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* Column header label swap: full labels on desktop, short on mobile */
+.dashboard-status-matrix .ds-label-short { display: none; }
+@media (max-width: 560px) {
+  .dashboard-status-matrix .ds-cell-head {
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    padding: 8px 4px;
+  }
+  .dashboard-status-matrix .ds-label-long { display: none; }
+  .dashboard-status-matrix .ds-label-short { display: inline; }
+}
+
 .dashboard-status-matrix .ds-cell-head.ds-row-label {
   background: transparent;
   border: none;
@@ -8583,4 +8595,144 @@ body.dashboard-home .dashboard-summary-card strong {
 [data-theme="light"] .dashboard-task-link:hover {
   background: rgba(92, 232, 255, 0.08);
   border-color: rgba(92, 232, 255, 0.4);
+}
+
+/* ─── Goals page: stacked metric rows ───────────────────────────────── */
+.goal-metric-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 20px;
+  margin-bottom: 14px;
+}
+
+.goal-metric-row-label {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted, #9fb3d1);
+}
+
+.goal-metric-row .goal-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.goal-metric-row .goal-metric-grid .mini-metric {
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid rgba(92, 232, 255, 0.18);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.goal-metric-row .goal-metric-grid .mini-metric:hover {
+  transform: translateY(-1px);
+  border-color: rgba(92, 232, 255, 0.5);
+}
+
+.goal-metric-row .goal-metric-grid .mini-metric strong {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+@media (max-width: 560px) {
+  .goal-metric-row {
+    padding: 12px 14px;
+  }
+  .goal-metric-row .goal-metric-grid {
+    gap: 6px;
+  }
+  .goal-metric-row .goal-metric-grid .mini-metric {
+    padding: 10px 6px;
+  }
+  .goal-metric-row .goal-metric-grid .mini-metric .mini-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+  }
+  .goal-metric-row .goal-metric-grid .mini-metric strong {
+    font-size: 1.05rem;
+  }
+}
+
+/* ─── Goals page: view-toggle buttons + range filter ─────────────────── */
+.goal-filter-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 20px;
+  margin-bottom: 14px;
+}
+
+.goal-view-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.goal-view-buttons .goal-view-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(92, 232, 255, 0.22);
+  background: rgba(15, 22, 40, 0.45);
+  color: var(--text-primary, #eaf2ff);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.goal-view-buttons .goal-view-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.goal-view-buttons .goal-view-option:hover {
+  border-color: rgba(92, 232, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.goal-view-buttons .goal-view-option:has(input:checked) {
+  background: rgba(92, 232, 255, 0.14);
+  border-color: rgba(92, 232, 255, 0.65);
+  box-shadow: 0 0 0 1px rgba(92, 232, 255, 0.35) inset;
+}
+
+@media (max-width: 560px) {
+  .goal-view-buttons {
+    grid-template-columns: 1fr;
+  }
+  .goal-view-buttons .goal-view-option {
+    padding: 12px 14px;
+    font-size: 0.92rem;
+  }
+  .goal-filter-panel {
+    padding: 14px;
+  }
+}
+
+/* Goal list panel head */
+.goal-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 10px;
+}
+
+.goal-list-head .mini-label {
+  margin: 0;
 }

@@ -36,27 +36,41 @@
         </nav>
       </aside>
       <section class="app-main">
-        <article class="page-card panel goal-toggle-panel">
-          <div class="goal-toggle-head">
-            <div class="goal-toggle-copy">
-              <p class="mini-label">Goal View</p>
-              <h2 class="section-title" id="goal-toggle-title">Select the dashboard you want to view</h2>
-            </div>
-          </div>
-          <div class="goal-view-toggle" role="radiogroup" aria-label="Goal dashboard view">
+        <!-- ─── Metrics (both types always visible, one per row) ───────── -->
+        <article class="page-card panel goal-metric-row">
+          <p class="mini-label goal-metric-row-label">Short-Term Goals</p>
+          <section class="metric-grid goal-metric-grid" data-goal-metrics="short">
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="completed" href="./goal-detail.html?view=short&metric=completed"><p class="mini-label" data-goal-metric-label>Completed</p><strong data-goal-metric-value>00</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="active" href="./goal-detail.html?view=short&metric=active"><p class="mini-label" data-goal-metric-label>Active</p><strong data-goal-metric-value>00</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="delayed" href="./goal-detail.html?view=short&metric=delayed"><p class="mini-label" data-goal-metric-label>Delayed</p><strong data-goal-metric-value>00</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="on-time" href="./goal-detail.html?view=short&metric=on-time"><p class="mini-label" data-goal-metric-label>On Time</p><strong data-goal-metric-value>0%</strong></a>
+          </section>
+        </article>
+
+        <article class="page-card panel goal-metric-row">
+          <p class="mini-label goal-metric-row-label">Long-Term Goals</p>
+          <section class="metric-grid goal-metric-grid" data-goal-metrics="long">
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="completed" href="./goal-detail.html?view=long&metric=completed"><p class="mini-label" data-goal-metric-label>Completed</p><strong data-goal-metric-value>00</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="active" href="./goal-detail.html?view=long&metric=active"><p class="mini-label" data-goal-metric-label>Active</p><strong data-goal-metric-value>00</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="delayed" href="./goal-detail.html?view=long&metric=delayed"><p class="mini-label" data-goal-metric-label>Delayed</p><strong data-goal-metric-value>00</strong></a>
+            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="on-time" href="./goal-detail.html?view=long&metric=on-time"><p class="mini-label" data-goal-metric-label>On Time</p><strong data-goal-metric-value>0%</strong></a>
+          </section>
+        </article>
+
+        <!-- ─── View toggle + range filter ─────────────────────────────── -->
+        <article class="page-card panel goal-filter-panel">
+          <div class="goal-view-toggle goal-view-buttons" role="radiogroup" aria-label="Goal list view">
             <label class="goal-view-option">
               <input type="radio" name="goal-view" value="short" checked />
-              <span>Short-Term Goals</span>
+              <span>View Short-Term Goals</span>
             </label>
             <label class="goal-view-option">
               <input type="radio" name="goal-view" value="long" />
-              <span>Long-Term Goals</span>
+              <span>View Long-Term Goals</span>
             </label>
           </div>
-        </article>
 
-        <article class="page-card panel goal-range-panel">
-          <div class="goal-range-toggle" role="radiogroup" aria-label="Goal metric date range">
+          <div class="goal-range-toggle" role="radiogroup" aria-label="Goal list date range">
             <label class="goal-range-option">
               <input type="radio" name="goal-range" value="all" checked />
               <span>All</span>
@@ -68,86 +82,35 @@
           </div>
         </article>
 
-        <section class="goal-dashboard-panel" data-goal-view="short">
-          <section class="metric-grid goal-metric-grid" data-goal-metrics="short">
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="completed" href="./goal-detail.html?view=short&metric=completed"><p class="mini-label" data-goal-metric-label>Completed</p><strong data-goal-metric-value>00</strong></a>
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="active" href="./goal-detail.html?view=short&metric=active"><p class="mini-label" data-goal-metric-label>Active</p><strong data-goal-metric-value>00</strong></a>
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="delayed" href="./goal-detail.html?view=short&metric=delayed"><p class="mini-label" data-goal-metric-label>Delayed</p><strong data-goal-metric-value>00</strong></a>
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="on-time" href="./goal-detail.html?view=short&metric=on-time"><p class="mini-label" data-goal-metric-label>On Time</p><strong data-goal-metric-value>0%</strong></a>
-          </section>
-
-          <section class="page-hero goal-page-hero goal-page-hero-long">
-            <article class="hero-panel-large panel">
-              <h1 class="section-title goal-hero-title goal-hero-title-long" data-goal-hero-title>Short-term goals shaping the next quarter</h1>
-              <div class="chip-row goal-hero-actions-single">
+        <!-- ─── Goal list (swaps by selected view) ─────────────────────── -->
+        <section class="goal-dashboard-panel goal-list-panel" data-goal-view="short">
+          <article class="page-card panel">
+            <div class="goal-list-head">
+              <p class="mini-label">Short-Term Goals</p>
+              <a class="soft-pill" href="./goal-editor.html?goalType=short-term">Add Goal</a>
+            </div>
+            <div class="surface-list goal-portfolio-list" data-goal-portfolio-list>
+              <div class="surface-item">
+                <div><strong>No goals yet</strong><small>Create a short-term goal to build your first plan.</small></div>
                 <a class="soft-pill" href="./goal-editor.html?goalType=short-term">Add Goal</a>
               </div>
-            </article>
-            <article class="hero-panel-side panel">
-              <p class="mini-label" data-goal-health-label>Sprint Health</p>
-              <strong class="value-big" data-goal-health-value>0%</strong>
-              <p data-goal-health-copy>Add a short-term goal to start tracking progress here.</p>
-            </article>
-          </section>
-
-          <section class="content-split">
-            <article class="page-card panel">
-              <p class="mini-label">Portfolio</p>
-              <div class="surface-list goal-portfolio-list" data-goal-portfolio-list>
-                <div class="surface-item">
-                  <div><strong>No goals yet</strong><small>Create a short-term goal to build your first plan.</small></div>
-                  <a class="soft-pill" href="./goal-editor.html?goalType=short-term">Add Goal</a>
-                </div>
-              </div>
-            </article>
-            <article class="page-card panel">
-              <p class="mini-label" data-goal-timeline-label>Sprint Milestones</p>
-              <div class="timeline-stack" data-goal-timeline-list>
-                <div class="timeline-item"><span class="timeline-time">Next</span><div><strong>No milestones yet</strong><small>Save a goal to start planning milestones and checkpoints.</small></div></div>
-              </div>
-            </article>
-          </section>
+            </div>
+          </article>
         </section>
 
-        <section class="goal-dashboard-panel" data-goal-view="long" hidden>
-          <section class="metric-grid goal-metric-grid" data-goal-metrics="long">
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="completed" href="./goal-detail.html?view=long&metric=completed"><p class="mini-label" data-goal-metric-label>Completed</p><strong data-goal-metric-value>00</strong></a>
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="active" href="./goal-detail.html?view=long&metric=active"><p class="mini-label" data-goal-metric-label>Active</p><strong data-goal-metric-value>00</strong></a>
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="delayed" href="./goal-detail.html?view=long&metric=delayed"><p class="mini-label" data-goal-metric-label>Delayed</p><strong data-goal-metric-value>00</strong></a>
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="on-time" href="./goal-detail.html?view=long&metric=on-time"><p class="mini-label" data-goal-metric-label>On Time</p><strong data-goal-metric-value>0%</strong></a>
-          </section>
-
-          <section class="page-hero goal-page-hero goal-page-hero-long">
-            <article class="hero-panel-large panel">
-              <h1 class="section-title goal-hero-title goal-hero-title-long" data-goal-hero-title>Long-term goals shaping the next year</h1>
-              <div class="chip-row goal-hero-actions-single">
+        <section class="goal-dashboard-panel goal-list-panel" data-goal-view="long" hidden>
+          <article class="page-card panel">
+            <div class="goal-list-head">
+              <p class="mini-label">Long-Term Goals</p>
+              <a class="soft-pill" href="./goal-editor.html?goalType=long-term">Add Goal</a>
+            </div>
+            <div class="surface-list goal-portfolio-list" data-goal-portfolio-list>
+              <div class="surface-item">
+                <div><strong>No goals yet</strong><small>Create a long-term goal to build your roadmap.</small></div>
                 <a class="soft-pill" href="./goal-editor.html?goalType=long-term">Add Goal</a>
               </div>
-            </article>
-            <article class="hero-panel-side panel">
-              <p class="mini-label" data-goal-health-label>Annual Health</p>
-              <strong class="value-big" data-goal-health-value>0%</strong>
-              <p data-goal-health-copy>Add a long-term goal to start tracking progress here.</p>
-            </article>
-          </section>
-
-          <section class="content-split">
-            <article class="page-card panel">
-              <p class="mini-label">Portfolio</p>
-              <div class="surface-list goal-portfolio-list" data-goal-portfolio-list>
-                <div class="surface-item">
-                  <div><strong>No goals yet</strong><small>Create a long-term goal to build your roadmap.</small></div>
-                  <a class="soft-pill" href="./goal-editor.html?goalType=long-term">Add Goal</a>
-                </div>
-              </div>
-            </article>
-            <article class="page-card panel">
-              <p class="mini-label" data-goal-timeline-label>Quarter Milestones</p>
-              <div class="timeline-stack" data-goal-timeline-list>
-                <div class="timeline-item"><span class="timeline-time">Next</span><div><strong>No milestones yet</strong><small>Save a goal to start planning long-term milestones.</small></div></div>
-              </div>
-            </article>
-          </section>
+            </div>
+          </article>
         </section>
       </section>
     </main>

@@ -346,8 +346,15 @@
       </span>
     `;
     if (inline) {
-      // Insert as the first child so the bell sits before theme/profile/logout.
-      topActions.insertBefore(bell, topActions.firstChild);
+      // Sit immediately before the Logout button so the bell is adjacent to
+      // Logout (the user's preferred placement). If there is no Logout
+      // button on this page, append to the end of the nav.
+      const logoutBtn = topActions.querySelector(".logout-button, [data-auth-logout]");
+      if (logoutBtn) {
+        topActions.insertBefore(bell, logoutBtn);
+      } else {
+        topActions.appendChild(bell);
+      }
     } else {
       document.body.appendChild(bell);
     }
