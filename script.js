@@ -3157,6 +3157,44 @@ function generateId() {
   const editId = params.get("id");
   const parentTaskId = params.get("taskId");
 
+  // Helper: lookup the parent task once so we can reject subtask work when the
+  // parent doesn't exist or is already closed (completed/cancelled/skipped).
+  function findParentTask() {
+    const id = parentTaskId || (editId
+      ? readStore(STORE_KEYS.subtasks).find((s) => s.id === editId)?.parentTaskId
+      : null);
+    if (!id) return null;
+    return readStore(STORE_KEYS.tasks).find((t) => t.id === id) || null;
+  }
+
+  function isParentClosed(task) {
+    if (!task) return false;
+    if (task.isComplete) return true;
+    const status = String(task.status || "").toLowerCase();
+    return status === "completed" || status === "closed" || status === "cancelled";
+  }
+
+  // Gate 1 — subtask creation requires a main task. If the user opens this
+  // editor without a parent taskId (and isn't editing an existing subtask),
+  // redirect to the task list with a clear message.
+  const parentTask = findParentTask();
+  if (!editId && !parentTask) {
+    showToast("Create a main task first before adding subtasks", "error");
+    setTimeout(() => { window.location.href = "./daily-tasks.html"; }, 900);
+    return;
+  }
+
+  // Gate 2 — block subtask creation when the parent task is closed/completed.
+  // Editing an existing subtask is also blocked so users can't retroactively
+  // attach work to a finished task.
+  if (parentTask && isParentClosed(parentTask)) {
+    showToast("Main task is closed — subtasks can't be added or edited", "error");
+    setTimeout(() => {
+      window.location.href = `./task-detail.html?id=${encodeURIComponent(parentTask.id)}`;
+    }, 1100);
+    return;
+  }
+
   if (editId) {
     const subtasks = readStore(STORE_KEYS.subtasks);
     const subtask = subtasks.find((s) => s.id === editId);
@@ -3174,6 +3212,14 @@ function generateId() {
     if (!action) return;
     const act = action.dataset.action;
 
+    // Re-check parent task state at action time — the parent may have been
+    // closed in another tab while this editor was open.
+    const currentParent = findParentTask();
+    if ((act === "save-subtask" || act === "mark-subtask-complete") && isParentClosed(currentParent)) {
+      showToast("Main task is closed — no further changes allowed", "error");
+      return;
+    }
+
     if (act === "save-subtask") {
       const data = {
         name: nameField.value.trim(),
@@ -3181,9 +3227,13 @@ function generateId() {
         date: dateField.value,
         priority: priorityField.value.trim(),
         notes: notesField.value.trim(),
-        parentTaskId: parentTaskId || null,
+        parentTaskId: parentTaskId || currentParent?.id || null,
       };
       if (!data.name) { showToast("Subtask name is required", "error"); return; }
+      if (!data.parentTaskId) {
+        showToast("A main task must exist before saving a subtask", "error");
+        return;
+      }
       const subtasks = readStore(STORE_KEYS.subtasks);
 
       if (editId) {
@@ -3203,6 +3253,7 @@ function generateId() {
 
     if (act === "mark-subtask-complete") {
       if (!nameField.value.trim()) { showToast("Enter a subtask name first", "error"); return; }
+      if (!confirm("Mark this subtask as complete?")) return;
       statusField.value = "Completed";
 
       if (editId) {
@@ -3210,6 +3261,7 @@ function generateId() {
         const idx = subtasks.findIndex((s) => s.id === editId);
         if (idx !== -1) {
           subtasks[idx].status = "Completed";
+          subtasks[idx].isComplete = true;
           subtasks[idx].updatedAt = new Date().toISOString();
           writeStore(STORE_KEYS.subtasks, subtasks);
         }

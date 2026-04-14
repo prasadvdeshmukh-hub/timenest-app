@@ -928,7 +928,9 @@
                 <span class="task-complete-dot" aria-hidden="true"></span>
                 <span data-complete-text>${isTaskComplete(task) ? "Completed" : "Done"}</span>
               </button>
-              <a class="soft-pill task-action-pill" href="./subtask-editor.html?taskId=${encodeURIComponent(task.id)}">Subtask</a>
+              ${isTaskComplete(task)
+                ? ''
+                : `<a class="soft-pill task-action-pill" href="./subtask-editor.html?taskId=${encodeURIComponent(task.id)}">Subtask</a>`}
               <a class="soft-pill task-action-pill" href="./task-detail.html?id=${encodeURIComponent(task.id)}">View</a>
               <a class="soft-pill task-action-pill" href="./task-editor.html?id=${encodeURIComponent(task.id)}">Edit</a>
               <button class="soft-pill task-action-pill" type="button" data-store-task-delete="${escapeHtml(task.id)}">Delete</button>
@@ -1064,11 +1066,15 @@
         <div class="surface-item">
           <div>
             <strong>No subtasks yet</strong>
-            <small>Add a task first to unlock subtasks.</small>
+            <small>Create a main task first before adding subtasks.</small>
           </div>
-          <a class="soft-pill" href="./subtask-editor.html">Add Subtask</a>
         </div>
       `;
+      // No parent task — hide the top-level "Add Subtask" CTA entirely.
+      if (addSubtaskLink) {
+        addSubtaskLink.hidden = true;
+        addSubtaskLink.removeAttribute("href");
+      }
       return;
     }
 
@@ -1095,7 +1101,17 @@
       cadencePill.textContent = `Recurrence: ${getTaskCadenceLabel(task)}`;
     }
     editLink.href = `./task-editor.html?id=${encodeURIComponent(task.id)}`;
-    addSubtaskLink.href = `./subtask-editor.html?taskId=${encodeURIComponent(task.id)}`;
+    // Hide the "Add Subtask" CTA when the parent task is already closed —
+    // users shouldn't be able to attach new work to a completed task.
+    const parentClosed = isTaskComplete(task);
+    if (addSubtaskLink) {
+      addSubtaskLink.hidden = parentClosed;
+      if (parentClosed) {
+        addSubtaskLink.removeAttribute("href");
+      } else {
+        addSubtaskLink.href = `./subtask-editor.html?taskId=${encodeURIComponent(task.id)}`;
+      }
+    }
 
     const detailDelete = actionList.querySelector('[data-task-detail-action="delete"]');
     if (!detailDelete) {
@@ -1168,9 +1184,13 @@
           <div class="surface-item">
             <div>
               <strong>No subtasks yet</strong>
-              <small>Break this task into smaller steps when you are ready.</small>
+              <small>${parentClosed
+                ? "This task is closed — reopen it to add subtasks."
+                : "Break this task into smaller steps when you are ready."}</small>
             </div>
-            <a class="soft-pill" href="./subtask-editor.html?taskId=${encodeURIComponent(task.id)}">Add Subtask</a>
+            ${parentClosed
+              ? ''
+              : `<a class="soft-pill" href="./subtask-editor.html?taskId=${encodeURIComponent(task.id)}">Add Subtask</a>`}
           </div>
         `;
 
@@ -2029,6 +2049,14 @@
             event.stopImmediatePropagation();
             const subtaskId = subtaskToggle.getAttribute("data-store-subtask-toggle") || "";
             if (subtaskId) {
+              // Confirm before toggling — distinguish complete vs. reopen so
+              // the prompt matches the user's intent.
+              const existing = readStore(STORE_KEYS.subtasks).find((s) => s.id === subtaskId);
+              const willComplete = !isSubtaskComplete(existing || {});
+              const prompt = willComplete
+                ? "Mark this subtask as complete?"
+                : "Reopen this completed subtask?";
+              if (!window.confirm(prompt)) return;
               toggleSubtask(subtaskId);
               refreshAll();
             }
@@ -2041,6 +2069,12 @@
             event.stopImmediatePropagation();
             const taskId = taskToggle.getAttribute("data-store-task-toggle") || "";
             if (taskId) {
+              const existing = readStore(STORE_KEYS.tasks).find((t) => t.id === taskId);
+              const willComplete = !isTaskComplete(existing || {});
+              const prompt = willComplete
+                ? "Mark this task as complete?"
+                : "Reopen this completed task?";
+              if (!window.confirm(prompt)) return;
               toggleTask(taskId);
               const task = readStore(STORE_KEYS.tasks).find((t) => t.id === taskId);
               const isDone = isTaskComplete(task || {});
@@ -2066,6 +2100,12 @@
           event.stopImmediatePropagation();
           const goalId = goalToggleButton.getAttribute("data-store-goal-toggle") || "";
           if (goalId) {
+            const existing = readStore(STORE_KEYS.goals).find((g) => g.id === goalId);
+            const willComplete = String(existing?.status || "").toLowerCase() !== "completed";
+            const prompt = willComplete
+              ? "Mark this goal as complete?"
+              : "Reopen this completed goal?";
+            if (!window.confirm(prompt)) return;
             const nextStatus = toggleGoal(goalId);
             showToast(nextStatus === "completed" ? "Goal marked complete" : "Goal reopened", "success");
             refreshAll();
@@ -2117,6 +2157,12 @@
           }
 
           if (action === "complete") {
+            const existing = readStore(STORE_KEYS.tasks).find((t) => t.id === taskId);
+            const willComplete = !isTaskComplete(existing || {});
+            const prompt = willComplete
+              ? "Mark this task as complete?"
+              : "Reopen this completed task?";
+            if (!window.confirm(prompt)) return;
             toggleTask(taskId);
             showToast("Task updated");
             refreshAll();
