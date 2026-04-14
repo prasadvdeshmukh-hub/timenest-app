@@ -330,17 +330,11 @@
       document.body.classList.contains("dashboard-home");
     if (!isHome) return null;
 
-    // Prefer inline placement inside the page's top-actions nav so we
-    // don't overlap Logout / Profile / Theme buttons. If no top-actions
-    // nav exists on this page, fall back to a floating fixed bell.
-    const topActions = document.querySelector(".top-actions");
-    const inline = Boolean(topActions);
-
+    // Floating bell pinned to the top-left corner of the viewport.
     bell = document.createElement("a");
     bell.id = "timenest-bell";
     bell.href = "./notifications.html";
     bell.setAttribute("aria-label", "Notifications");
-    if (inline) bell.classList.add("is-inline");
     bell.innerHTML = `
       <span class="tn-bell-btn" role="presentation">
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
@@ -349,28 +343,18 @@
         <span class="tn-bell-badge" hidden>0</span>
       </span>
     `;
-    if (inline) {
-      // Sit immediately before the Logout button so the bell is adjacent to
-      // Logout (the user's preferred placement). If there is no Logout
-      // button on this page, append to the end of the nav.
-      const logoutBtn = topActions.querySelector(".logout-button, [data-auth-logout]");
-      if (logoutBtn) {
-        topActions.insertBefore(bell, logoutBtn);
-      } else {
-        topActions.appendChild(bell);
-      }
-    } else {
-      document.body.appendChild(bell);
-    }
+    document.body.appendChild(bell);
 
     const style = document.createElement("style");
     style.textContent = `
-      /* Floating fallback on pages that have no .top-actions nav */
-      #timenest-bell:not(.is-inline) { position: fixed; top: 18px; right: 18px; z-index: 9998; }
-      #timenest-bell { font-family: 'Space Grotesk', system-ui, sans-serif; text-decoration: none; }
-      /* Inline sizing that matches the topbar's ghost-chip buttons */
-      #timenest-bell.is-inline { display: inline-flex; align-items: center; }
-      #timenest-bell.is-inline .tn-bell-btn { width: 40px; height: 40px; border-radius: 12px; }
+      #timenest-bell {
+        position: fixed;
+        top: max(14px, env(safe-area-inset-top, 0px));
+        left: max(14px, env(safe-area-inset-left, 0px));
+        z-index: 9998;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        text-decoration: none;
+      }
       #timenest-bell .tn-bell-btn {
         position: relative; width: 44px; height: 44px; border-radius: 14px;
         background: rgba(15,20,40,0.72); color: #b6d4ff;
@@ -388,7 +372,8 @@
         border: 1.5px solid rgba(15,20,40,0.85);
       }
       @media (max-width: 500px) {
-        #timenest-bell:not(.is-inline) { top: 14px; right: 14px; }
+        #timenest-bell { top: 10px; left: 10px; }
+        #timenest-bell .tn-bell-btn { width: 40px; height: 40px; border-radius: 12px; }
       }
     `;
     document.head.appendChild(style);

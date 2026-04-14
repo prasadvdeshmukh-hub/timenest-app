@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>TIMENEST · Today's Tasks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="task-focus-page">
+    <div class="aurora aurora-left" aria-hidden="true"></div>
+    <div class="aurora aurora-right" aria-hidden="true"></div>
+    <main class="app-page-shell">
+      <aside class="app-sidebar">
+        <div class="sidebar-card panel">
+          <a class="brand-link" href="./index.html">
+            <div class="brand-cluster">
+              <div class="brand-mark"><span class="brand-core"></span></div>
+              <div>
+                <p class="mini-label">Today's Focus</p>
+                <h2>TIMENEST</h2>
+                <p class="brand-subline">Master Your Time. Achieve Your Goals.</p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <nav class="sidebar-nav">
+          <a class="sidebar-link" href="./index.html">Dashboard</a>
+          <a class="sidebar-link is-active" href="./today-tasks.html">Today's Tasks</a>
+          <a class="sidebar-link" href="./upcoming-tasks.html">Upcoming Tasks</a>
+          <a class="sidebar-link" href="./daily-tasks.html">All Tasks</a>
+          <a class="sidebar-link" href="./calendar.html">Calendar</a>
+        </nav>
+      </aside>
+      <section class="app-main">
+        <article class="page-card panel">
+          <div class="goal-list-head">
+            <div>
+              <p class="mini-label">Today</p>
+              <h2 class="section-title" id="today-heading" data-today-heading>Today's Tasks</h2>
+            </div>
+            <a class="soft-pill" href="./task-editor.html?entry=today">Add Task</a>
+          </div>
+          <div class="task-focus-list" id="today-list" data-today-list>
+            <div class="surface-item"><div><strong>Loading…</strong></div></div>
+          </div>
+        </article>
+      </section>
+    </main>
+    <nav class="bottom-tabbar" aria-label="Primary mobile navigation">
+      <a class="tab-link" href="./index.html">Home</a>
+      <a class="tab-link" href="./goals.html">Goals</a>
+      <a class="tab-link is-active" href="./daily-tasks.html">Tasks</a>
+      <a class="tab-link" href="./habits.html">Habits</a>
+    </nav>
+
+    <script>
+      (function renderTodayTasks() {
+        function scope() {
+          try { return localStorage.getItem("timenest-user-scope") || "guest"; } catch (e) { return "guest"; }
+        }
+        function readJSON(key, fallback) {
+          try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; } catch (e) { return fallback; }
+        }
+        function readTasks() {
+          const scoped = readJSON("timenest-tasks-v1::" + scope(), null);
+          if (Array.isArray(scoped)) return scoped;
+          const legacy = readJSON("timenest-tasks-v1", null);
+          return Array.isArray(legacy) ? legacy : [];
+        }
+        function escapeHtml(s) {
+          return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+          });
+        }
+        function pad(n) { return n < 10 ? "0" + n : "" + n; }
+        function todayISO() {
+          const d = new Date();
+          return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+        }
+        function formatNiceDate(d) {
+          return d.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+        }
+        function priorityClass(p) {
+          const v = (p || "").toLowerCase();
+          if (v === "high") return "is-high";
+          if (v === "medium") return "is-medium";
+          if (v === "low") return "is-low";
+          return "";
+        }
+
+        const list = document.getElementById("today-list");
+        const heading = document.querySelector("[data-today-heading]");
+        const today = todayISO();
+        if (heading) heading.textContent = "Today · " + formatNiceDate(new Date());
+
+        const tasks = readTasks()
+          .filter(function (t) { return t && t.date === today; })
+          .sort(function (a, b) {
+            const at = (a.time || "23:59"); const bt = (b.time || "23:59");
+            return at.localeCompare(bt);
+          });
+
+        if (!tasks.length) {
+          list.innerHTML =
+            '<div class="surface-item empty-state"><div><strong>No tasks for today</strong>' +
+            '<small>Use Add Task to plan your day.</small></div>' +
+            '<a class="soft-pill" href="./task-editor.html?entry=today">Add Task</a></div>';
+          return;
+        }
+
+        list.innerHTML = tasks
+          .map(function (t) {
+            const id = encodeURIComponent(t.id);
+            const name = escapeHtml(t.name || "Untitled task");
+            const time = t.time ? escapeHtml(t.time) : "—";
+            const pri = priorityClass(t.priority);
+            const priLabel = t.priority ? escapeHtml(t.priority) : "";
+            const done = t.isComplete || t.status === "completed";
+            return (
+              '<a class="task-focus-row ' + (done ? "is-done" : "") + '" href="./task-detail.html?id=' + id + '">' +
+                '<span class="task-focus-time">' + time + '</span>' +
+                '<span class="task-focus-name">' + name + '</span>' +
+                (priLabel ? '<span class="task-focus-pri ' + pri + '">' + priLabel + '</span>' : '') +
+                '<span class="task-focus-arrow" aria-hidden="true">&rsaquo;</span>' +
+              '</a>'
+            );
+          })
+          .join("");
+      })();
+    </script>
+    <script src="./script.js"></script>
+    <script src="./store-ui.js"></script>
+  </body>
+</html>
