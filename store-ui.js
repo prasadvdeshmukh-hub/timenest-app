@@ -1185,6 +1185,14 @@
     const params = new URLSearchParams(window.location.search);
     const selectedView = document.querySelector('input[name="goal-view"]:checked')?.value === "long" ? "long" : "short";
     const selectedRange = document.querySelector('input[name="goal-range"]:checked')?.value === "month" ? "month" : "all";
+    // Active metric tab — drives which goals are shown in the grid below.
+    // Default is "active" (open goals). Other valid values: completed,
+    // delayed, on-time. Falls back to URL ?metric= when present.
+    const activeMetricEl = document.querySelector("[data-goal-status-filter].is-active");
+    const requestedMetric = (params.get("metric") || activeMetricEl?.dataset.goalStatusFilter || "active").toLowerCase();
+    const metricFilter = ["completed", "active", "delayed", "on-time"].includes(requestedMetric)
+      ? requestedMetric
+      : "active";
     const statusFilter = normalizeName(params.get("status"));
     const pageTitle = document.getElementById("goal-toggle-title");
     const panels = Array.from(document.querySelectorAll("[data-goal-view]"));
@@ -1261,9 +1269,37 @@
           : "No goals have been saved for this view yet.";
       }
 
+      // Apply the selected metric tab filter to the portfolio list.
+      // - completed: status === completed
+      // - active   : status === open (default)
+      // - delayed  : status === delayed
+      // - on-time  : status !== delayed (active + completed within target)
+      const filteredGoalRecords = goalRecords.filter((goalRecord) => {
+        const status = goalRecord.status;
+        if (metricFilter === "completed") return status === "completed";
+        if (metricFilter === "delayed") return status === "delayed";
+        if (metricFilter === "on-time") return status !== "delayed";
+        return status === "open"; // active (default)
+      });
+
+      // Reflect the active tab visually inside this panel.
+      if (metricsRoot) {
+        Array.from(metricsRoot.querySelectorAll("[data-goal-status-filter]")).forEach((card) => {
+          const isActive = card.getAttribute("data-goal-status-filter") === metricFilter;
+          card.classList.toggle("is-active", isActive);
+          card.setAttribute("aria-pressed", isActive ? "true" : "false");
+        });
+      }
+
       if (portfolioList) {
-        portfolioList.innerHTML = goalRecords.length
-          ? goalRecords
+        const filterLabel = ({
+          completed: "completed",
+          active: "active",
+          delayed: "delayed",
+          "on-time": "on-time",
+        })[metricFilter] || "matching";
+        portfolioList.innerHTML = filteredGoalRecords.length
+          ? filteredGoalRecords
               .map((goalRecord) => {
                 const goalName = escapeHtml(goalRecord.goal.name || "Untitled goal");
                 const goalId = encodeURIComponent(goalRecord.goal.id);
@@ -1271,14 +1307,15 @@
                 const tone = escapeHtml(goalRecord.tone);
                 const pct = clampPercent(goalRecord.progress);
                 const completed = goalRecord.goal.status === "completed";
+                const detailHref = `./goal-detail.html?id=${goalId}`;
                 return `
                   <div class="goal-portfolio-card">
-                    <div class="goal-portfolio-row">
+                    <a class="goal-portfolio-row goal-portfolio-link" href="${detailHref}" aria-label="Open goal: ${goalName}">
                       <strong class="goal-portfolio-title" title="${goalName}">${goalName}</strong>
                       <span class="status-pill ${tone}">${pct}%</span>
-                    </div>
+                    </a>
                     <div class="goal-portfolio-actions">
-                      <a class="goal-action-btn" href="./goal-detail.html?id=${goalId}">Open</a>
+                      <a class="goal-action-btn" href="${detailHref}">Open</a>
                       <a class="goal-action-btn" href="./goal-editor.html?id=${goalId}">Edit</a>
                       <button class="goal-action-btn" type="button" data-store-goal-toggle="${goalIdAttr}">${completed ? "Reopen" : "Mark Done"}</button>
                       <button class="goal-action-btn is-danger" type="button" data-store-goal-delete="${goalIdAttr}">Delete</button>
@@ -2217,6 +2254,22 @@
       input?.addEventListener("change", () => {
         refreshAll();
       });
+    });
+
+    // Metric tab clicks (Completed / Active / Delayed / On Time) on the Goals page
+    // — toggle the active tab on BOTH short-term & long-term metric grids so the
+    // selection stays in sync, then re-render the portfolio grid below.
+    document.addEventListener("click", (event) => {
+      const tab = event.target.closest("[data-goal-status-filter]");
+      if (!tab || !document.body.classList.contains("goals-page")) return;
+      event.preventDefault();
+      const filter = tab.getAttribute("data-goal-status-filter") || "active";
+      document.querySelectorAll("[data-goal-status-filter]").forEach((el) => {
+        const isMatch = el.getAttribute("data-goal-status-filter") === filter;
+        el.classList.toggle("is-active", isMatch);
+        el.setAttribute("aria-pressed", isMatch ? "true" : "false");
+      });
+      refreshAll();
     });
   }
 

@@ -36,28 +36,21 @@
         </nav>
       </aside>
       <section class="app-main">
-        <!-- ─── Metrics (both types always visible, one per row) ───────── -->
-        <article class="page-card panel goal-metric-row">
-          <p class="mini-label goal-metric-row-label">Short-Term Goals</p>
-          <section class="metric-grid goal-metric-grid" data-goal-metrics="short">
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="completed" href="./goal-detail.html?view=short&metric=completed"><p class="mini-label" data-goal-metric-label>Completed</p><strong data-goal-metric-value>00</strong></a>
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="active" href="./goal-detail.html?view=short&metric=active"><p class="mini-label" data-goal-metric-label>Active</p><strong data-goal-metric-value>00</strong></a>
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="delayed" href="./goal-detail.html?view=short&metric=delayed"><p class="mini-label" data-goal-metric-label>Delayed</p><strong data-goal-metric-value>00</strong></a>
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="on-time" href="./goal-detail.html?view=short&metric=on-time"><p class="mini-label" data-goal-metric-label>On Time</p><strong data-goal-metric-value>0%</strong></a>
-          </section>
+        <!-- ─── Range filter (TOP of page) ─────────────────────────────── -->
+        <article class="page-card panel goal-range-panel">
+          <div class="goal-range-toggle goal-range-buttons" role="radiogroup" aria-label="Goal list date range">
+            <label class="goal-range-option">
+              <input type="radio" name="goal-range" value="all" checked />
+              <span>All</span>
+            </label>
+            <label class="goal-range-option">
+              <input type="radio" name="goal-range" value="month" />
+              <span>This Month</span>
+            </label>
+          </div>
         </article>
 
-        <article class="page-card panel goal-metric-row">
-          <p class="mini-label goal-metric-row-label">Long-Term Goals</p>
-          <section class="metric-grid goal-metric-grid" data-goal-metrics="long">
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="completed" href="./goal-detail.html?view=long&metric=completed"><p class="mini-label" data-goal-metric-label>Completed</p><strong data-goal-metric-value>00</strong></a>
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="active" href="./goal-detail.html?view=long&metric=active"><p class="mini-label" data-goal-metric-label>Active</p><strong data-goal-metric-value>00</strong></a>
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="delayed" href="./goal-detail.html?view=long&metric=delayed"><p class="mini-label" data-goal-metric-label>Delayed</p><strong data-goal-metric-value>00</strong></a>
-            <a class="mini-metric panel goal-metric-link" data-goal-metric-card data-goal-metric-key="on-time" href="./goal-detail.html?view=long&metric=on-time"><p class="mini-label" data-goal-metric-label>On Time</p><strong data-goal-metric-value>0%</strong></a>
-          </section>
-        </article>
-
-        <!-- ─── View toggle + range filter ─────────────────────────────── -->
+        <!-- ─── View toggle (Short-Term / Long-Term) ───────────────────── -->
         <article class="page-card panel goal-filter-panel">
           <div class="goal-view-toggle goal-view-buttons" role="radiogroup" aria-label="Goal list view">
             <label class="goal-view-option">
@@ -69,17 +62,27 @@
               <span>View Long-Term Goals</span>
             </label>
           </div>
+        </article>
 
-          <div class="goal-range-toggle" role="radiogroup" aria-label="Goal list date range">
-            <label class="goal-range-option">
-              <input type="radio" name="goal-range" value="all" checked />
-              <span>All</span>
-            </label>
-            <label class="goal-range-option">
-              <input type="radio" name="goal-range" value="month" />
-              <span>This Month</span>
-            </label>
-          </div>
+        <!-- ─── Metric tabs (Completed / Active / Delayed / On Time) ───── -->
+        <article class="page-card panel goal-metric-row">
+          <p class="mini-label goal-metric-row-label">Short-Term Goals</p>
+          <section class="metric-grid goal-metric-grid" data-goal-metrics="short">
+            <button class="mini-metric panel goal-metric-link" type="button" data-goal-metric-card data-goal-status-filter="completed" data-goal-metric-key="completed"><p class="mini-label" data-goal-metric-label>Completed</p><strong data-goal-metric-value>00</strong></button>
+            <button class="mini-metric panel goal-metric-link is-active" type="button" data-goal-metric-card data-goal-status-filter="active" data-goal-metric-key="active"><p class="mini-label" data-goal-metric-label>Active</p><strong data-goal-metric-value>00</strong></button>
+            <button class="mini-metric panel goal-metric-link" type="button" data-goal-metric-card data-goal-status-filter="delayed" data-goal-metric-key="delayed"><p class="mini-label" data-goal-metric-label>Delayed</p><strong data-goal-metric-value>00</strong></button>
+            <button class="mini-metric panel goal-metric-link" type="button" data-goal-metric-card data-goal-status-filter="on-time" data-goal-metric-key="on-time"><p class="mini-label" data-goal-metric-label>On Time</p><strong data-goal-metric-value>0%</strong></button>
+          </section>
+        </article>
+
+        <article class="page-card panel goal-metric-row">
+          <p class="mini-label goal-metric-row-label">Long-Term Goals</p>
+          <section class="metric-grid goal-metric-grid" data-goal-metrics="long">
+            <button class="mini-metric panel goal-metric-link" type="button" data-goal-metric-card data-goal-status-filter="completed" data-goal-metric-key="completed"><p class="mini-label" data-goal-metric-label>Completed</p><strong data-goal-metric-value>00</strong></button>
+            <button class="mini-metric panel goal-metric-link is-active" type="button" data-goal-metric-card data-goal-status-filter="active" data-goal-metric-key="active"><p class="mini-label" data-goal-metric-label>Active</p><strong data-goal-metric-value>00</strong></button>
+            <button class="mini-metric panel goal-metric-link" type="button" data-goal-metric-card data-goal-status-filter="delayed" data-goal-metric-key="delayed"><p class="mini-label" data-goal-metric-label>Delayed</p><strong data-goal-metric-value>00</strong></button>
+            <button class="mini-metric panel goal-metric-link" type="button" data-goal-metric-card data-goal-status-filter="on-time" data-goal-metric-key="on-time"><p class="mini-label" data-goal-metric-label>On Time</p><strong data-goal-metric-value>0%</strong></button>
+          </section>
         </article>
 
         <!-- ─── Goal list (swaps by selected view) ─────────────────────── -->
