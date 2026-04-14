@@ -1217,6 +1217,12 @@
     const pageTitle = document.getElementById("goal-toggle-title");
     const panels = Array.from(document.querySelectorAll("[data-goal-view]"));
 
+    // Only show the metric row matching the selected view (short vs long).
+    document.querySelectorAll("[data-goal-metrics-row]").forEach((rowEl) => {
+      const rowView = rowEl.getAttribute("data-goal-metrics-row") === "long" ? "long" : "short";
+      rowEl.hidden = rowView !== selectedView;
+    });
+
     panels.forEach((panel) => {
       const panelView = panel.getAttribute("data-goal-view") === "long" ? "long" : "short";
       const goalRecords = getGoalRecordsForView(state, panelView, selectedRange, statusFilter);

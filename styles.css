@@ -8783,7 +8783,7 @@ body.dashboard-home .dashboard-summary-card strong {
 .goal-view-buttons {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: clamp(6px, 1.6vw, 10px);
 }
 
 .goal-view-buttons .goal-view-option {
@@ -8791,15 +8791,18 @@ body.dashboard-home .dashboard-summary-card strong {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 14px 16px;
+  padding: clamp(10px, 2.4vw, 14px) clamp(8px, 2vw, 16px);
   border-radius: 12px;
   border: 1px solid rgba(92, 232, 255, 0.22);
   background: rgba(15, 22, 40, 0.45);
   color: var(--text-primary, #eaf2ff);
   font-weight: 600;
+  font-size: clamp(0.82rem, 2.6vw, 1rem);
   letter-spacing: 0.01em;
   cursor: pointer;
   text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
@@ -8822,14 +8825,23 @@ body.dashboard-home .dashboard-summary-card strong {
 
 @media (max-width: 560px) {
   .goal-view-buttons {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
   }
   .goal-view-buttons .goal-view-option {
-    padding: 12px 14px;
-    font-size: 0.92rem;
+    padding: 10px 8px;
+    font-size: clamp(0.72rem, 3.1vw, 0.9rem);
+    white-space: nowrap;
   }
   .goal-filter-panel {
-    padding: 14px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .goal-view-buttons .goal-view-option {
+    font-size: 0.7rem;
+    padding: 9px 6px;
   }
 }
 
