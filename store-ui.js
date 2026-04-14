@@ -1733,7 +1733,10 @@
             `;
           })
           .join("")
-      : '<span class="soft-pill habit-selector is-active">Add a habit to begin tracking</span>';
+      // No habits saved yet — render a real link so tapping this pill takes
+      // the user straight to the habit editor. The static HTML ships as a
+      // <span>, which was non-interactive.
+      : '<a class="soft-pill habit-selector is-active" href="./habit-editor.html">Add a habit to begin tracking</a>';
 
     if (!activeHabit) {
       eyebrow.textContent = "Habit Calendar";
