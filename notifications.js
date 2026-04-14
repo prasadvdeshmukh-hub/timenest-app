@@ -321,7 +321,7 @@
     if (!document.body) return null;
     // The bell is allowed only on the home/dashboard page. The
     // Goals, Daily Tasks, Habits, and Notifications pages should
-    // not show the floating/inline bell per product requirements.
+    // not show the inline bell per product requirements.
     const path = (window.location.pathname || "").toLowerCase();
     const last = path.split("/").pop() || "";
     const isHome =
@@ -330,53 +330,54 @@
       document.body.classList.contains("dashboard-home");
     if (!isHome) return null;
 
-    // Floating bell pinned to the top-left corner of the viewport.
+    // The bell should sit inside .top-actions next to the Logout button,
+    // at the very end (banner/panel end). If .top-actions isn't on the
+    // page yet, bail out quietly — renderBell() will retry on the next
+    // refreshNotifications() tick.
+    const topActions = document.querySelector(".top-actions");
+    if (!topActions) return null;
+
     bell = document.createElement("a");
     bell.id = "timenest-bell";
+    bell.className = "ghost-chip tn-bell-chip";
     bell.href = "./notifications.html";
     bell.setAttribute("aria-label", "Notifications");
     bell.innerHTML = `
-      <span class="tn-bell-btn" role="presentation">
-        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <span class="action-icon tn-bell-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
           <path fill="currentColor" d="M12 22a2.25 2.25 0 0 0 2.2-1.8h-4.4A2.25 2.25 0 0 0 12 22Zm7.5-5.5V11a7.5 7.5 0 0 0-6-7.35V3a1.5 1.5 0 1 0-3 0v.65A7.5 7.5 0 0 0 4.5 11v5.5L3 18v1h18v-1l-1.5-1.5Z"/>
         </svg>
         <span class="tn-bell-badge" hidden>0</span>
       </span>
+      <span class="action-label">Alerts</span>
     `;
-    document.body.appendChild(bell);
+    // Append after the Logout button so the order becomes
+    // Theme | Profile | Logout | Alerts (bell at the end).
+    topActions.appendChild(bell);
 
-    const style = document.createElement("style");
-    style.textContent = `
-      #timenest-bell {
-        position: fixed;
-        top: max(14px, env(safe-area-inset-top, 0px));
-        left: max(14px, env(safe-area-inset-left, 0px));
-        z-index: 9998;
-        font-family: 'Space Grotesk', system-ui, sans-serif;
-        text-decoration: none;
-      }
-      #timenest-bell .tn-bell-btn {
-        position: relative; width: 44px; height: 44px; border-radius: 14px;
-        background: rgba(15,20,40,0.72); color: #b6d4ff;
-        border: 1px solid rgba(92,232,255,0.35);
-        backdrop-filter: blur(12px);
-        display: grid; place-items: center; cursor: pointer;
-        box-shadow: 0 4px 18px rgba(15,22,40,0.45);
-        transition: transform .15s ease, border-color .2s ease;
-      }
-      #timenest-bell:hover .tn-bell-btn { transform: translateY(-1px); border-color: rgba(122,242,156,0.45); }
-      #timenest-bell .tn-bell-badge {
-        position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px;
-        border-radius: 999px; background: #ff6b6b; color: white; font-size: 11px; font-weight: 700;
-        display: inline-flex; align-items: center; justify-content: center;
-        border: 1.5px solid rgba(15,20,40,0.85);
-      }
-      @media (max-width: 500px) {
-        #timenest-bell { top: 10px; left: 10px; }
-        #timenest-bell .tn-bell-btn { width: 40px; height: 40px; border-radius: 12px; }
-      }
-    `;
-    document.head.appendChild(style);
+    if (!document.getElementById("timenest-bell-style")) {
+      const style = document.createElement("style");
+      style.id = "timenest-bell-style";
+      style.textContent = `
+        .top-actions #timenest-bell {
+          text-decoration: none;
+          order: 99; /* push to the far end of the flex row */
+          margin-left: auto;
+        }
+        .top-actions #timenest-bell .tn-bell-icon {
+          position: relative;
+        }
+        .top-actions #timenest-bell .tn-bell-badge {
+          position: absolute; top: -6px; right: -6px;
+          min-width: 18px; height: 18px; padding: 0 5px;
+          border-radius: 999px; background: #ff6b6b; color: #fff;
+          font-size: 10px; font-weight: 700; line-height: 18px;
+          display: inline-flex; align-items: center; justify-content: center;
+          border: 1.5px solid rgba(15,20,40,0.85);
+        }
+      `;
+      document.head.appendChild(style);
+    }
     return bell;
   }
 
