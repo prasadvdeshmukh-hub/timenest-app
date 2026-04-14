@@ -26,37 +26,32 @@
         <section class="page-hero">
           <article class="hero-panel-large panel">
             <p class="mini-label" id="goal-detail-eyebrow">Goal Detail</p>
-            <h1 class="section-title" id="goal-detail-title">Launch TIMENEST MVP</h1>
-            <p id="goal-detail-summary">Responsive Flutter app with dashboard, goals, tasks, habits, calendar, and multi-channel reminders.</p>
+            <h1 class="section-title" id="goal-detail-title">Goal detail</h1>
+            <p id="goal-detail-summary">Open a saved goal to review progress, linked tasks, and milestone timing.</p>
             <div class="chip-row">
-              <span class="status-pill good" id="goal-detail-status">In Progress</span>
-              <span class="soft-pill" id="goal-detail-start">Start: 01 Apr 2026</span>
-              <span class="soft-pill" id="goal-detail-target">Target: 30 Jun 2026</span>
+              <span class="status-pill warn" id="goal-detail-status">Empty</span>
+              <span class="soft-pill" id="goal-detail-start">Start: Not set</span>
+              <span class="soft-pill" id="goal-detail-target">Target: Not set</span>
               <a class="soft-pill" href="./task-editor.html">Add Task</a>
             </div>
           </article>
           <article class="hero-panel-side panel">
             <p class="mini-label">Progress</p>
-            <strong class="value-big" id="goal-detail-progress-value">81%</strong>
-            <div class="progress-bar"><span id="goal-detail-progress-bar" style="width:81%"></span></div>
+            <strong class="value-big" id="goal-detail-progress-value">0%</strong>
+            <div class="progress-bar"><span id="goal-detail-progress-bar" style="width:0%"></span></div>
           </article>
         </section>
         <section class="content-split">
           <article class="page-card panel">
             <p class="mini-label">Tasks Under Goal</p>
             <div class="surface-list" id="goal-detail-task-list">
-              <a class="surface-item surface-item-status-good" href="./task-detail.html"><div><strong>Finalize dashboard UI</strong><small>Today · 07:30 PM</small></div><span class="status-pill good">Done</span></a>
-              <a class="surface-item" href="./task-detail.html"><div><strong>Build auth screens</strong><small>Tomorrow · 10:00 AM</small></div><span class="status-pill warn">Pending</span></a>
-              <a class="surface-item" href="./task-detail.html"><div><strong>Connect recurring task engine</strong><small>02 Apr · 06:00 PM</small></div><span class="status-pill warn">Planned</span></a>
-              <a class="surface-item" href="./task-detail.html"><div><strong>Set up notification matrix</strong><small>03 Apr · 08:15 PM</small></div><span class="status-pill alert">Risk</span></a>
+              <div class="surface-item"><div><strong>No linked tasks</strong><small>Create a goal first, then attach tasks from the task editor.</small></div><a class="soft-pill" href="./goal-editor.html">Add Goal</a></div>
             </div>
           </article>
           <article class="page-card panel">
             <p class="mini-label" id="goal-detail-timeline-label">Drill-Down</p>
             <div class="timeline-stack" id="goal-detail-timeline">
-              <div class="timeline-item"><span class="timeline-time">Phase 1</span><div><strong>UI review screens</strong><small>Login, dashboard, goals, and tasks ready.</small></div></div>
-              <div class="timeline-item"><span class="timeline-time">Phase 2</span><div><strong>Auth and data setup</strong><small>Google login and Firestore schema connection.</small></div></div>
-              <div class="timeline-item"><span class="timeline-time">Phase 3</span><div><strong>Reminder system</strong><small>Push, in-app, email, SMS, and WhatsApp hooks.</small></div></div>
+              <div class="timeline-item"><span class="timeline-time">Next</span><div><strong>No milestones yet</strong><small>Save a goal to start planning milestones and checkpoints.</small></div></div>
             </div>
           </article>
         </section>
@@ -68,6 +63,18 @@
       <a class="tab-link" href="./daily-tasks.html">Tasks</a>
       <a class="tab-link" href="./calendar.html?view=habits">Habits</a>
     </nav>
+    <script>
+      (() => {
+        const taskList = document.getElementById("goal-detail-task-list");
+        const timeline = document.getElementById("goal-detail-timeline");
+        if (taskList) {
+          taskList.innerHTML = '<div class="surface-item"><div><strong>No linked tasks</strong><small>Create a goal first, then attach tasks from the task editor.</small></div><a class="soft-pill" href="./goal-editor.html">Add Goal</a></div>';
+        }
+        if (timeline) {
+          timeline.innerHTML = '<div class="timeline-item"><span class="timeline-time">Next</span><div><strong>No milestones yet</strong><small>Save a goal to start planning milestones and checkpoints.</small></div></div>';
+        }
+      })();
+    </script>
     <script src="./script.js"></script>
     <script src="./store-ui.js"></script>
   </body>

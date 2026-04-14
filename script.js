@@ -1534,44 +1534,7 @@ if (goalViewRadios.length && goalDashboardPanels.length && goalMetricGroups.leng
   });
 }
 
-const habitCalendarData = {
-  "workout-habit": {
-    name: "Workout Habit",
-    summary:
-      "Daily at 06:30 AM. Green dots show finished workouts, red dots show missed sessions, and gray dots mark future days.",
-    streak: 14,
-    reliability: 88,
-    completedDays: [1, 2],
-    history: {
-      "2026-03": [1, 2, 3, 5, 7, 8, 10, 11, 12, 14, 15, 17, 18, 19, 21, 22, 24, 25, 26, 28, 29, 31],
-      "2026-02": [1, 2, 4, 5, 6, 8, 9, 11, 12, 13, 15, 16, 18, 19, 20, 22, 23, 25, 26, 27]
-    }
-  },
-  "marathi-practice": {
-    name: "Marathi Practice",
-    summary:
-      "Daily at 08:00 PM. This tracker helps you keep the language streak visible for every day of the month.",
-    streak: 11,
-    reliability: 76,
-    completedDays: [1],
-    history: {
-      "2026-03": [1, 2, 4, 5, 6, 8, 10, 11, 13, 14, 15, 17, 18, 20, 21, 23, 24, 26, 27, 29, 30],
-      "2026-02": [1, 3, 4, 6, 7, 9, 10, 12, 13, 15, 16, 18, 19, 21, 22, 24, 25, 27]
-    }
-  },
-  "sleep-routine": {
-    name: "Sleep Routine",
-    summary:
-      "Night routine at 10:30 PM. Review the month to see where the habit stayed consistent and where recovery is needed.",
-    streak: 7,
-    reliability: 61,
-    completedDays: [2],
-    history: {
-      "2026-03": [2, 3, 4, 6, 7, 9, 10, 13, 14, 16, 17, 20, 21, 23, 24, 27, 28, 30],
-      "2026-02": [1, 2, 5, 6, 8, 9, 12, 13, 15, 16, 19, 20, 22, 23, 26, 27]
-    }
-  }
-};
+const habitCalendarData = {};
 
 function parseHabitMonthParam(value) {
   if (!value || !/^\d{4}-\d{2}$/.test(value)) {
@@ -1782,7 +1745,8 @@ if (
   habitCalendarNextMonth &&
   habitCompletedCount &&
   habitMissedCount &&
-  habitFutureCount
+  habitFutureCount &&
+  Object.keys(habitCalendarData).length
 ) {
   const params = new URLSearchParams(window.location.search);
   const requestedHabit = slugifyHabitName(params.get("habit"));

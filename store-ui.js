@@ -1,5 +1,5 @@
 (() => {
-  const demoPurgeKey = "timenest-demo-purge-v1";
+  const demoPurgeKey = "timenest-demo-purge-v2";
   const demoRecords = {
     goals: new Set([
       "finish 30-day strength cycle",
@@ -14,6 +14,7 @@
     tasks: new Set([
       "submit investor-ready roadmap",
       "practice marathi lesson",
+      "practice spoken marathi lesson",
       "review monthly budget targets",
       "renew hosting and production services",
       "prepare q2 learning sprint plan",
@@ -34,7 +35,11 @@
       "complete guided speaking session",
       "review new vocabulary",
       "compare actual spend to target",
-      "send review copy"
+      "send review copy",
+      "adjust savings buffer",
+      "warm up and mobility",
+      "verify invoice amount",
+      "confirm payment receipt"
     ])
   };
 
@@ -1280,7 +1285,7 @@
               <div class="surface-item">
                 <div>
                   <strong>No goals yet</strong>
-                  <small>Create a ${panelView === "long" ? "long-term" : "short-term"} goal to replace the prototype samples.</small>
+                  <small>Create a ${panelView === "long" ? "long-term" : "short-term"} goal to start planning.</small>
                 </div>
                 <a class="soft-pill" href="./goal-editor.html?goalType=${panelView === "long" ? "long-term" : "short-term"}">Add Goal</a>
               </div>
@@ -1591,7 +1596,7 @@
           <article class="habit-card">
             <p class="mini-label">Habit Tracking</p>
             <h2 class="section-title">No habits yet</h2>
-            <p>Create a recurring habit to replace the sample routines and start building real streaks.</p>
+            <p>Create a recurring habit and start building streaks.</p>
             <div class="chip-row">
               <a class="soft-pill" href="./habit-editor.html">Add Habit</a>
               <a class="soft-pill" href="./calendar.html">Open Calendar</a>
@@ -1678,7 +1683,7 @@
       calendarGrid.innerHTML = `
         <div class="task-empty-state" style="grid-column: 1 / -1;">
           <h3>No habits yet</h3>
-          <p>Create a habit to replace the sample calendar and start tracking real streaks.</p>
+          <p>Create a habit to start tracking progress on the calendar.</p>
         </div>
       `;
       return;

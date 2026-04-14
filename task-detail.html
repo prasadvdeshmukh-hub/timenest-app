@@ -29,8 +29,8 @@
             <h1 class="section-title" id="task-detail-title">Task detail</h1>
             <p id="task-detail-summary">Open a saved task to review the latest details, reminders, and subtasks.</p>
             <div class="chip-row" id="task-detail-meta">
-              <span class="status-pill warn" id="task-detail-priority">Priority</span>
-              <span class="soft-pill">Today · 07:30 PM</span>
+              <span class="status-pill warn" id="task-detail-priority">No task</span>
+              <span class="soft-pill">No due date</span>
               <span class="soft-pill">Recurrence: None</span>
               <a class="soft-pill" id="task-detail-edit-link" href="./task-editor.html">Edit Task</a>
               <a class="soft-pill" id="task-detail-add-subtask-link" href="./subtask-editor.html">Add Subtask</a>
@@ -38,7 +38,7 @@
           </article>
           <article class="hero-panel-side panel">
             <p class="mini-label">Status</p>
-            <strong class="value-big" id="task-detail-status-value">Pending</strong>
+            <strong class="value-big" id="task-detail-status-value">Empty</strong>
             <p id="task-detail-status-copy">Reminder channels and follow-up actions update from the saved task record.</p>
           </article>
         </section>
@@ -46,10 +46,7 @@
           <article class="task-detail-panel panel">
             <p class="mini-label">Execution Details</p>
             <div class="surface-list" id="task-detail-execution-list">
-              <div class="surface-item"><div><strong>Goal</strong><small>Launch TIMENEST MVP</small></div><span class="soft-pill">Parent Goal</span></div>
-              <div class="surface-item"><div><strong>Time</strong><small>07:30 PM with optional seconds support</small></div><span class="soft-pill">HH MM SS</span></div>
-              <div class="surface-item"><div><strong>Reminder Channels</strong><small>Push, in-app, email, WhatsApp</small></div><span class="soft-pill">4 active</span></div>
-              <div class="surface-item"><div><strong>Notes</strong><small>Finalize slide flow, milestone summary, and product roadmap priorities.</small></div><a class="soft-pill" href="./task-editor.html">Edit</a></div>
+              <div class="surface-item"><div><strong>No task selected</strong><small>Create a task first, then return here for details.</small></div><a class="soft-pill" href="./task-editor.html">Add Task</a></div>
             </div>
           </article>
           <article class="task-detail-panel panel">
@@ -61,9 +58,7 @@
               <span class="soft-pill" data-task-detail-action="snooze">Snooze</span>
             </div>
             <div class="timeline-stack" id="task-detail-reminder-list">
-              <div class="timeline-item"><span class="timeline-time">-60m</span><div><strong>Email reminder</strong><small>Sent one hour before due time.</small></div></div>
-              <div class="timeline-item"><span class="timeline-time">-10m</span><div><strong>Push reminder</strong><small>Active with in-app popup.</small></div></div>
-              <div class="timeline-item"><span class="timeline-time">+15m</span><div><strong>Escalation</strong><small>WhatsApp trigger if ignored.</small></div></div>
+              <div class="timeline-item"><span class="timeline-time">--</span><div><strong>No reminders configured</strong><small>Saved reminder channels will appear here.</small></div></div>
             </div>
           </article>
         </section>
@@ -71,9 +66,7 @@
           <article class="task-detail-panel panel">
             <p class="mini-label">Subtasks</p>
             <div class="surface-list" id="task-detail-subtask-list">
-              <a class="surface-item" href="./subtask-editor.html"><div><strong>Update milestone slide</strong><small>Subtask 1</small></div><span class="soft-pill">Edit</span></a>
-              <a class="surface-item" href="./subtask-editor.html"><div><strong>Validate financial numbers</strong><small>Subtask 2</small></div><span class="soft-pill">Edit</span></a>
-              <a class="surface-item" href="./subtask-editor.html"><div><strong>Send review copy</strong><small>Subtask 3</small></div><span class="soft-pill">Edit</span></a>
+              <div class="surface-item"><div><strong>No subtasks yet</strong><small>Add a task first to unlock subtasks.</small></div><a class="soft-pill" href="./subtask-editor.html">Add Subtask</a></div>
             </div>
           </article>
         </section>
@@ -85,6 +78,26 @@
       <a class="tab-link is-active" href="./daily-tasks.html">Tasks</a>
       <a class="tab-link" href="./calendar.html?view=habits">Habits</a>
     </nav>
+    <script>
+      (() => {
+        const metaPills = document.querySelectorAll("#task-detail-meta .soft-pill");
+        const executionList = document.getElementById("task-detail-execution-list");
+        const reminderList = document.getElementById("task-detail-reminder-list");
+        const subtaskList = document.getElementById("task-detail-subtask-list");
+        if (metaPills[0]) {
+          metaPills[0].textContent = "No due date";
+        }
+        if (executionList) {
+          executionList.innerHTML = '<div class="surface-item"><div><strong>No task selected</strong><small>Create a task first, then return here for details.</small></div><a class="soft-pill" href="./task-editor.html">Add Task</a></div>';
+        }
+        if (reminderList) {
+          reminderList.innerHTML = '<div class="timeline-item"><span class="timeline-time">--</span><div><strong>No reminders configured</strong><small>Saved reminder channels will appear here.</small></div></div>';
+        }
+        if (subtaskList) {
+          subtaskList.innerHTML = '<div class="surface-item"><div><strong>No subtasks yet</strong><small>Add a task first to unlock subtasks.</small></div><a class="soft-pill" href="./subtask-editor.html">Add Subtask</a></div>';
+        }
+      })();
+    </script>
     <script src="./script.js"></script>
     <script src="./store-ui.js"></script>
   </body>
