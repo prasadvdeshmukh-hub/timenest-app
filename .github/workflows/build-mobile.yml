@@ -1,0 +1,243 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# TimeNest mobile build workflow
+#
+# Runs on:
+#   - every push / PR touching apps/timenest_flutter/**
+#   - manual dispatch (Actions tab → "Run workflow") — use this to pull APK/IPA
+#
+# Outputs (downloadable from the run summary under "Artifacts"):
+#   - timenest-android-debug.apk
+#   - timenest-android-release.apk      (only if a signing keystore is present)
+#   - timenest-android-release.aab      (Play Store bundle, same condition)
+#   - timenest-ios-unsigned.ipa         (installs only with re-signing; good
+#                                        for quick inspection or to hand off to
+#                                        someone with an Apple Dev account)
+#
+# Android signing (optional but required for Play Store / Intune LOB):
+#   Add these repository secrets (Settings → Secrets and variables → Actions):
+#     ANDROID_KEYSTORE_BASE64   — base64 of your upload-keystore.jks
+#     ANDROID_KEYSTORE_PASSWORD — keystore password
+#     ANDROID_KEY_ALIAS         — key alias  (usually "upload")
+#     ANDROID_KEY_PASSWORD      — key password
+#   See docs/mobile-build-guide.md for keystore generation.
+#
+# iOS signing is intentionally skipped — without an Apple Developer account the
+# .ipa is built unsigned, which is fine for inspection but will NOT install on
+# a device until it's re-signed. See the guide for options.
+# ─────────────────────────────────────────────────────────────────────────────
+name: Build mobile binaries
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/timenest_flutter/**"
+      - ".github/workflows/build-mobile.yml"
+  pull_request:
+    paths:
+      - "apps/timenest_flutter/**"
+      - ".github/workflows/build-mobile.yml"
+  workflow_dispatch:
+    inputs:
+      build_release_apk:
+        description: "Attempt signed release APK/AAB (needs keystore secrets)"
+        type: boolean
+        default: true
+      build_ios:
+        description: "Build iOS .ipa (slow, runs on macOS)"
+        type: boolean
+        default: true
+
+env:
+  FLUTTER_VERSION: "3.24.3"
+  FLUTTER_APP_DIR: apps/timenest_flutter
+  APPLICATION_ID: com.timenest.app
+  IOS_BUNDLE_ID: com.timenest.app
+
+jobs:
+  # ───────────────────────────── Android ──────────────────────────────
+  android:
+    name: Android APK / AAB
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Generate android/ios scaffolding if missing
+        working-directory: ${{ env.FLUTTER_APP_DIR }}
+        run: |
+          if [ ! -d android ]; then
+            echo "::group::flutter create (android/ios platforms)"
+            flutter create --platforms=android,ios --org=com.timenest .
+            echo "::endgroup::"
+          else
+            echo "android/ already exists, skipping flutter create"
+          fi
+
+      - name: Apply Android patches (applicationId, FCM, firebase)
+        working-directory: ${{ env.FLUTTER_APP_DIR }}
+        run: bash scripts/patch-android.sh "${APPLICATION_ID}"
+
+      - name: Drop Firebase google-services.json
+        working-directory: ${{ env.FLUTTER_APP_DIR }}
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -n "${GOOGLE_SERVICES_JSON}" ]; then
+            echo "${GOOGLE_SERVICES_JSON}" | base64 -d > android/app/google-services.json
+            echo "✓ google-services.json installed from secret"
+          else
+            echo "⚠ GOOGLE_SERVICES_JSON secret not set — using placeholder."
+            echo "  Firebase native features will fail at runtime until you add it."
+            cp patches/google-services.placeholder.json android/app/google-services.json
+          fi
+
+      - name: Flutter pub get
+        working-directory: ${{ env.FLUTTER_APP_DIR }}
+        run: flutter pub get
+
+      - name: Build debug APK
+        working-directory: ${{ env.FLUTTER_APP_DIR }}
+        run: flutter build apk --debug
+
+      - name: Decode signing keystore (if provided)
+        id: keystore
+        if: ${{ github.event_name != 'pull_request' }}
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        working-directory: ${{ env.FLUTTER_APP_DIR }}
+        run: |
+          if [ -z "${ANDROID_KEYSTORE_BASE64}" ]; then
+            echo "has_keystore=false" >> "$GITHUB_OUTPUT"
+            echo "No ANDROID_KEYSTORE_BASE64 secret — skipping release build."
+            exit 0
+          fi
+          mkdir -p android
+          echo "${ANDROID_KEYSTORE_BASE64}" | base64 -d > android/upload-keystore.jks
+          cat > android/key.properties <<EOF
+          storePassword=${ANDROID_KEYSTORE_PASSWORD}
+          keyPassword=${ANDROID_KEY_PASSWORD}
+          keyAlias=${ANDROID_KEY_ALIAS}
+          storeFile=../upload-keystore.jks
+          EOF
+          echo "has_keystore=true" >> "$GITHUB_OUTPUT"
+          echo "✓ keystore decoded"
+
+      - name: Build signed release APK
+        if: steps.keystore.outputs.has_keystore == 'true'
+        working-directory: ${{ env.FLUTTER_APP_DIR }}
+        run: flutter build apk --release
+
+      - name: Build signed release AAB (Play Store bundle)
+        if: steps.keystore.outputs.has_keystore == 'true'
+        working-directory: ${{ env.FLUTTER_APP_DIR }}
+        run: flutter build appbundle --release
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: timenest-android-debug
+          path: ${{ env.FLUTTER_APP_DIR }}/build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error
+
+      - name: Upload release APK
+        if: steps.keystore.outputs.has_keystore == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: timenest-android-release
+          path: ${{ env.FLUTTER_APP_DIR }}/build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload Play Store AAB
+        if: steps.keystore.outputs.has_keystore == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: timenest-android-playstore-aab
+          path: ${{ env.FLUTTER_APP_DIR }}/build/app/outputs/bundle/release/app-release.aab
+
+      - name: Clean up keystore
+        if: always()
+        working-directory: ${{ env.FLUTTER_APP_DIR }}
+        run: |
+          rm -f android/upload-keystore.jks android/key.properties || true
+
+  # ─────────────────────────────── iOS ────────────────────────────────
+  ios:
+    name: iOS unsigned IPA
+    runs-on: macos-14
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.build_ios }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Generate android/ios scaffolding if missing
+        working-directory: ${{ env.FLUTTER_APP_DIR }}
+        run: |
+          if [ ! -d ios ]; then
+            flutter create --platforms=android,ios --org=com.timenest .
+          fi
+
+      - name: Apply iOS patches (bundle id, Info.plist)
+        working-directory: ${{ env.FLUTTER_APP_DIR }}
+        run: bash scripts/patch-ios.sh "${IOS_BUNDLE_ID}"
+
+      - name: Drop Firebase GoogleService-Info.plist
+        working-directory: ${{ env.FLUTTER_APP_DIR }}
+        env:
+          GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
+        run: |
+          if [ -n "${GOOGLE_SERVICE_INFO_PLIST}" ]; then
+            echo "${GOOGLE_SERVICE_INFO_PLIST}" | base64 -d > ios/Runner/GoogleService-Info.plist
+            echo "✓ GoogleService-Info.plist installed from secret"
+          else
+            cp patches/GoogleService-Info.placeholder.plist ios/Runner/GoogleService-Info.plist
+            echo "⚠ GOOGLE_SERVICE_INFO_PLIST secret not set — using placeholder."
+          fi
+
+      - name: Flutter pub get
+        working-directory: ${{ env.FLUTTER_APP_DIR }}
+        run: flutter pub get
+
+      - name: Pod install
+        working-directory: ${{ env.FLUTTER_APP_DIR }}/ios
+        run: pod install --repo-update
+
+      - name: Build iOS (no codesign)
+        working-directory: ${{ env.FLUTTER_APP_DIR }}
+        run: flutter build ios --release --no-codesign
+
+      - name: Package unsigned .ipa
+        working-directory: ${{ env.FLUTTER_APP_DIR }}
+        run: |
+          mkdir -p build/ios/ipa-unsigned/Payload
+          cp -R build/ios/iphoneos/Runner.app build/ios/ipa-unsigned/Payload/
+          cd build/ios/ipa-unsigned
+          zip -qr ../../timenest-ios-unsigned.ipa Payload
+          echo "✓ unsigned .ipa at build/timenest-ios-unsigned.ipa"
+
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: timenest-ios-unsigned
+          path: ${{ env.FLUTTER_APP_DIR }}/build/timenest-ios-unsigned.ipa
+          if-no-files-found: error

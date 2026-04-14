@@ -1,0 +1,44 @@
+# ─── Flutter / Dart ───────────────────────────────────────────
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+pubspec.lock
+
+# ─── IDEs ─────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# ─── Android ──────────────────────────────────────────────────
+android/.gradle/
+android/captures/
+android/local.properties
+android/gradlew
+android/gradlew.bat
+android/gradle.properties
+# SECRETS — never commit these:
+android/upload-keystore.jks
+android/*.keystore
+android/key.properties
+android/app/google-services.json
+
+# ─── iOS ──────────────────────────────────────────────────────
+ios/.symlinks/
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Pods/
+ios/Podfile.lock
+# SECRETS:
+ios/Runner/GoogleService-Info.plist
+
+# ─── CI artifacts ─────────────────────────────────────────────
+*.apk
+*.aab
+*.ipa
