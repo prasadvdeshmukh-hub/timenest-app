@@ -2498,10 +2498,12 @@ html[data-theme="light"] body.dashboard-home .task-tag {
 
   .bottom-tabbar {
     width: auto;
-    left: max(0.5rem, var(--safe-left));
-    right: max(0.5rem, var(--safe-right));
+    left: max(1rem, var(--safe-left));
+    right: max(1rem, var(--safe-right));
     bottom: 0;
     transform: none;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    justify-content: stretch;
     gap: 0.22rem;
     padding: 0.5rem 0.5rem calc(0.58rem + var(--safe-bottom));
     border-radius: 20px 20px 0 0;
@@ -2523,6 +2525,7 @@ html[data-theme="light"] body.dashboard-home .task-tag {
     border-radius: 11px;
     overflow-wrap: anywhere;
     word-break: normal;
+    justify-self: stretch;
   }
 }
 
@@ -2764,11 +2767,13 @@ html[data-theme="light"] body.dashboard-home .task-tag {
   }
 
   .bottom-tabbar {
-    left: max(0.3rem, var(--safe-left));
-    right: max(0.3rem, var(--safe-right));
+    left: max(0.5rem, var(--safe-left));
+    right: max(0.5rem, var(--safe-right));
     gap: 0.22rem;
     padding: 0.5rem 0.5rem calc(0.58rem + var(--safe-bottom));
     border-radius: 18px 18px 0 0;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    justify-content: stretch;
   }
 
   .tab-link {
@@ -2780,6 +2785,7 @@ html[data-theme="light"] body.dashboard-home .task-tag {
     border-radius: 10px;
     overflow-wrap: anywhere;
     word-break: normal;
+    justify-self: stretch;
   }
 }
 
@@ -6725,10 +6731,12 @@ html[data-theme="light"] .field input[type="time"]::-webkit-calendar-picker-indi
 @media (max-width: 780px) {
   .bottom-tabbar {
     width: auto;
-    left: max(0.5rem, var(--safe-left));
-    right: max(0.5rem, var(--safe-right));
+    left: max(1rem, var(--safe-left));
+    right: max(1rem, var(--safe-right));
     bottom: 0;
     transform: none;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    justify-content: stretch;
     gap: 0.2rem;
     padding: 0.38rem 0.38rem calc(0.44rem + var(--safe-bottom));
     border-radius: 20px 20px 0 0;
@@ -6756,11 +6764,13 @@ html[data-theme="light"] .field input[type="time"]::-webkit-calendar-picker-indi
 
 @media (max-width: 560px) {
   .bottom-tabbar {
-    left: max(0.3rem, var(--safe-left));
-    right: max(0.3rem, var(--safe-right));
+    left: max(0.5rem, var(--safe-left));
+    right: max(0.5rem, var(--safe-right));
     gap: 0.16rem;
     padding: 0.32rem 0.32rem calc(0.36rem + var(--safe-bottom));
     border-radius: 18px 18px 0 0;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    justify-content: stretch;
   }
 
   .tab-link {
@@ -6769,6 +6779,7 @@ html[data-theme="light"] .field input[type="time"]::-webkit-calendar-picker-indi
     border-radius: 10px;
     font-size: 0.74rem;
     line-height: 1.06;
+    justify-self: stretch;
   }
 
 }
