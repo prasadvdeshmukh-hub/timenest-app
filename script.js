@@ -2870,12 +2870,14 @@ function generateId() {
           goals[idx] = { ...goals[idx], ...data, updatedAt: new Date().toISOString() };
           writeStore(STORE_KEYS.goals, goals);
           showToast("Goal updated successfully");
+          window.timenestNotify?.confirm("Goal updated", data.name, { goalId: editId, linkUrl: `./goal-detail.html?id=${encodeURIComponent(editId)}` });
         }
       } else {
         const newGoal = { id: generateId(), ...data, status: "active", createdAt: new Date().toISOString() };
         goals.push(newGoal);
         writeStore(STORE_KEYS.goals, goals);
         showToast("Goal saved successfully");
+        window.timenestNotify?.confirm("Goal created", data.name, { goalId: newGoal.id, linkUrl: `./goal-detail.html?id=${encodeURIComponent(newGoal.id)}` });
       }
       setTimeout(() => { window.location.href = "./goals.html"; }, 800);
     }
@@ -2894,9 +2896,11 @@ function generateId() {
     if (act === "delete-goal") {
       if (!editId) { showToast("No saved goal to delete", "warn"); return; }
       if (!confirm("Delete this goal permanently?")) return;
+      const goalName = readStore(STORE_KEYS.goals).find((g) => g.id === editId)?.name || "(goal)";
       const goals = readStore(STORE_KEYS.goals).filter((g) => g.id !== editId);
       writeStore(STORE_KEYS.goals, goals);
       showToast("Goal deleted");
+      window.timenestNotify?.confirm("Goal deleted", goalName, {});
       setTimeout(() => { window.location.href = "./goals.html"; }, 800);
     }
   });
@@ -2979,18 +2983,24 @@ function generateId() {
       if (!data.name) { showToast("Task name is required", "error"); return; }
       const tasks = readStore(STORE_KEYS.tasks);
 
+      let savedId = editId;
       if (editId) {
         const idx = tasks.findIndex((t) => t.id === editId);
         if (idx !== -1) {
           tasks[idx] = { ...tasks[idx], ...data, updatedAt: new Date().toISOString() };
           writeStore(STORE_KEYS.tasks, tasks);
           showToast("Task updated successfully");
+          window.timenestNotify?.confirm("Task updated", data.name, { taskId: savedId, linkUrl: `./task-detail.html?id=${encodeURIComponent(savedId)}` });
         }
       } else {
-        tasks.push({ id: generateId(), ...data, status: "pending", isComplete: false, createdAt: new Date().toISOString() });
+        savedId = generateId();
+        tasks.push({ id: savedId, ...data, status: "pending", isComplete: false, createdAt: new Date().toISOString() });
         writeStore(STORE_KEYS.tasks, tasks);
         showToast("Task saved successfully");
+        window.timenestNotify?.confirm("Task created", data.name, { taskId: savedId, linkUrl: `./task-detail.html?id=${encodeURIComponent(savedId)}` });
       }
+      // Kick off a scan so the due-soon notification fires immediately if applicable.
+      setTimeout(() => window.timenestNotify?.scan(), 150);
       setTimeout(() => { window.location.href = "./daily-tasks.html"; }, 800);
     }
 
@@ -3019,6 +3029,7 @@ function generateId() {
     if (act === "delete-task") {
       if (!editId) { showToast("No saved task to delete", "warn"); return; }
       if (!confirm("Delete this task permanently?")) return;
+      const deletedTask = readStore(STORE_KEYS.tasks).find((t) => t.id === editId);
       writeStore(
         STORE_KEYS.tasks,
         readStore(STORE_KEYS.tasks).filter((task) => task.id !== editId)
@@ -3028,6 +3039,7 @@ function generateId() {
         readStore(STORE_KEYS.subtasks).filter((subtask) => subtask.parentTaskId !== editId)
       );
       showToast("Task deleted");
+      window.timenestNotify?.confirm("Task deleted", deletedTask?.name || "(task)", {});
       setTimeout(() => { window.location.href = "./daily-tasks.html"; }, 800);
     }
   });
@@ -3081,29 +3093,36 @@ function generateId() {
       if (!data.name) { showToast("Habit name is required", "error"); return; }
       const habits = readStore(STORE_KEYS.habits);
 
+      let savedHabitId = editId;
       if (editId) {
         const idx = habits.findIndex((h) => h.id === editId);
         if (idx !== -1) {
           habits[idx] = { ...habits[idx], ...data, updatedAt: new Date().toISOString() };
           writeStore(STORE_KEYS.habits, habits);
           showToast("Habit updated successfully");
+          window.timenestNotify?.confirm("Habit updated", data.name, { habitId: savedHabitId, linkUrl: "./habits.html" });
         }
       } else {
-        habits.push({ id: generateId(), ...data, history: {}, createdAt: new Date().toISOString() });
+        savedHabitId = generateId();
+        habits.push({ id: savedHabitId, ...data, history: {}, createdAt: new Date().toISOString() });
         writeStore(STORE_KEYS.habits, habits);
         showToast("Habit saved successfully");
+        window.timenestNotify?.confirm("Habit created", data.name, { habitId: savedHabitId, linkUrl: "./habits.html" });
       }
+      setTimeout(() => window.timenestNotify?.scan(), 150);
       setTimeout(() => { window.location.href = "./habits.html"; }, 800);
     }
 
     if (action.dataset.action === "delete-habit") {
       if (!editId) { showToast("No saved habit to delete", "warn"); return; }
       if (!confirm("Delete this habit permanently?")) return;
+      const habitName = readStore(STORE_KEYS.habits).find((h) => h.id === editId)?.name || "(habit)";
       writeStore(
         STORE_KEYS.habits,
         readStore(STORE_KEYS.habits).filter((habit) => habit.id !== editId)
       );
       showToast("Habit deleted");
+      window.timenestNotify?.confirm("Habit deleted", habitName, {});
       setTimeout(() => { window.location.href = "./habits.html"; }, 800);
     }
   });
@@ -3423,3 +3442,16 @@ import("./auth.js")
       authBanner.textContent = "TIMENEST could not initialize Firebase Authentication. Open the browser console to see the exact error.";
     }
   });
+
+// ──────────── In-app notification engine bootstrap ────────────
+// Loaded once per page via dynamic <script> injection so individual HTML
+// pages don't need a separate <script src="./notifications.js"> include.
+(function bootstrapTimenestNotifications() {
+  if (window.__timenestNotificationsBooted) return;
+  if (document.getElementById("timenest-notifications-script")) return;
+  const s = document.createElement("script");
+  s.id = "timenest-notifications-script";
+  s.src = "./notifications.js";
+  s.defer = true;
+  document.head.appendChild(s);
+})();

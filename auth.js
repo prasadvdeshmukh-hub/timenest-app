@@ -1,5 +1,5 @@
 import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 import {
   RecaptchaVerifier,
   GoogleAuthProvider,
@@ -695,6 +695,10 @@ async function initializeFirebaseAuth(runtimeConfig) {
     app,
     auth,
     db,
+    firestore: db,
+    collection,
+    addDoc,
+    serverTimestamp,
     onAuthStateChanged,
     signOut
   };

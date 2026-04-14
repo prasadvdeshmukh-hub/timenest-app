@@ -1275,6 +1275,7 @@
                       <span class="status-pill ${escapeHtml(goalRecord.tone)}">${clampPercent(goalRecord.progress)}%</span>
                       <a class="soft-pill" href="./goal-detail.html?id=${encodeURIComponent(goalRecord.goal.id)}">Open</a>
                       <a class="soft-pill" href="./goal-editor.html?id=${encodeURIComponent(goalRecord.goal.id)}">Edit</a>
+                      <button class="soft-pill" type="button" data-store-goal-toggle="${escapeHtml(goalRecord.goal.id)}">${goalRecord.goal.status === "completed" ? "Reopen" : "Mark Complete"}</button>
                       <button class="soft-pill" type="button" data-store-goal-delete="${escapeHtml(goalRecord.goal.id)}">Delete</button>
                     </div>
                   </div>
@@ -1393,6 +1394,10 @@
         chipRow.insertAdjacentHTML(
           "beforeend",
           `<a class="soft-pill" data-store-goal-detail-action href="./goal-editor.html?id=${encodeURIComponent(goalRecord.goal.id)}">Edit Goal</a>`
+        );
+        chipRow.insertAdjacentHTML(
+          "beforeend",
+          `<button class="soft-pill" data-store-goal-detail-action type="button" data-store-goal-toggle="${escapeHtml(goalRecord.goal.id)}">${goalRecord.goal.status === "completed" ? "Reopen Goal" : "Mark Goal Complete"}</button>`
         );
         chipRow.insertAdjacentHTML(
           "beforeend",
@@ -1848,6 +1853,24 @@
     );
   }
 
+  function toggleGoal(goalId) {
+    const goals = readStore(STORE_KEYS.goals);
+    const goalIndex = goals.findIndex((goal) => goal.id === goalId);
+    if (goalIndex === -1) {
+      return null;
+    }
+    const currentStatus = normalizeName(goals[goalIndex].status);
+    const nextStatus = currentStatus === "completed" ? "active" : "completed";
+    goals[goalIndex] = {
+      ...goals[goalIndex],
+      status: nextStatus,
+      completedAt: nextStatus === "completed" ? new Date().toISOString() : null,
+      updatedAt: new Date().toISOString(),
+    };
+    writeStore(STORE_KEYS.goals, goals);
+    return nextStatus;
+  }
+
   function deleteGoal(goalId) {
     writeStore(
       STORE_KEYS.goals,
@@ -1949,8 +1972,10 @@
             event.stopImmediatePropagation();
             const taskId = taskDelete.getAttribute("data-store-task-delete") || "";
             if (taskId && window.confirm("Delete this task permanently?")) {
+              const taskName = readStore(STORE_KEYS.tasks).find((t) => t.id === taskId)?.name || "(task)";
               deleteTask(taskId);
               showToast("Task deleted");
+              window.timenestNotify?.confirm("Task deleted", taskName, { taskId });
               refreshAll();
             }
             return;
@@ -1975,6 +2000,13 @@
             const taskId = taskToggle.getAttribute("data-store-task-toggle") || "";
             if (taskId) {
               toggleTask(taskId);
+              const task = readStore(STORE_KEYS.tasks).find((t) => t.id === taskId);
+              const isDone = isTaskComplete(task || {});
+              window.timenestNotify?.confirm(
+                isDone ? "Task completed" : "Task reopened",
+                task?.name || "",
+                { taskId, linkUrl: `./task-detail.html?id=${encodeURIComponent(taskId)}` }
+              );
               refreshAll();
             }
           }
@@ -1986,6 +2018,19 @@
     document.addEventListener(
       "click",
       (event) => {
+        const goalToggleButton = event.target.closest("[data-store-goal-toggle]");
+        if (goalToggleButton) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          const goalId = goalToggleButton.getAttribute("data-store-goal-toggle") || "";
+          if (goalId) {
+            const nextStatus = toggleGoal(goalId);
+            showToast(nextStatus === "completed" ? "Goal marked complete" : "Goal reopened", "success");
+            refreshAll();
+          }
+          return;
+        }
+
         const goalDeleteButton = event.target.closest("[data-store-goal-delete]");
         if (goalDeleteButton) {
           event.preventDefault();
