@@ -202,35 +202,16 @@
                   </div>
                 </div>
 
-                <div class="dashboard-focus-insights" aria-label="Weekly execution highlights">
-                  <span class="focus-chip">
-                    <strong>Best Day</strong>
-                    Fri - 91%
-                  </span>
-                  <span class="focus-chip">
-                    <strong>On Target</strong>
-                    5 of 7 days
-                  </span>
-                  <span class="focus-chip">
-                    <strong>Trend</strong>
-                    +19 pts
-                  </span>
-                </div>
               </div>
-              <p class="dashboard-focus-footnote">
-                The chart stays compact on mobile while keeping the week-over-week
-                execution trend easy to scan at a glance.
-              </p>
             </article>
           </section>
 
-          <section class="stats-grid dashboard-status-board" aria-label="Dashboard status board">
-            <article class="dashboard-status-overview panel">
-              <h3 class="dashboard-status-board-title">Status Board</h3>
-
-              <div class="dashboard-status-overview-tools">
+          <section class="dashboard-status-board" aria-label="Dashboard status board">
+            <article class="panel dashboard-status-matrix-panel">
+              <div class="dashboard-status-matrix-head">
+                <h3 class="dashboard-status-board-title">Status Board</h3>
                 <fieldset class="dashboard-range-toggle" aria-label="Dashboard time range">
-                  <legend>View Range</legend>
+                  <legend class="sr-only">View Range</legend>
                   <div class="task-filter-chip-grid">
                     <label class="task-filter-option">
                       <input type="radio" name="dashboard-range" value="all" checked />
@@ -243,132 +224,86 @@
                   </div>
                 </fieldset>
               </div>
-            </article>
 
-            <article class="dashboard-status-group panel" data-dashboard-group="tasks">
-              <h3 class="dashboard-status-title">Tasks</h3>
+              <div class="dashboard-status-matrix" role="table" aria-label="Counts by entity and status">
+                <div class="ds-row ds-head" role="row">
+                  <span class="ds-cell ds-cell-head ds-row-label" role="columnheader" aria-label="Entity"></span>
+                  <a class="ds-cell ds-cell-head ds-col-open" role="columnheader" href="./daily-tasks.html?status=open&range=all">Open</a>
+                  <a class="ds-cell ds-cell-head ds-col-delayed" role="columnheader" href="./daily-tasks.html?status=delayed&range=all">Delayed</a>
+                  <a class="ds-cell ds-cell-head ds-col-complete" role="columnheader" href="./daily-tasks.html?status=completed&range=all">Completed</a>
+                </div>
 
-              <div class="task-summary-grid dashboard-summary-grid">
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-open" data-dashboard-card data-dashboard-entity="tasks" data-dashboard-status="open" href="./daily-tasks.html?status=open&range=all">
-                  <p class="mini-label">Open</p>
-                  <strong data-dashboard-count>00</strong>
-                </a>
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" data-dashboard-card data-dashboard-entity="tasks" data-dashboard-status="completed" href="./daily-tasks.html?status=completed&range=all">
-                  <p class="mini-label">Completed</p>
-                  <strong data-dashboard-count>00</strong>
-                </a>
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-delayed" data-dashboard-card data-dashboard-entity="tasks" data-dashboard-status="delayed" href="./daily-tasks.html?status=delayed&range=all">
-                  <p class="mini-label">Delayed</p>
-                  <strong data-dashboard-count>00</strong>
-                </a>
-              </div>
-            </article>
+                <div class="ds-row" role="row" data-dashboard-group="tasks">
+                  <span class="ds-cell ds-row-label" role="rowheader">Tasks</span>
+                  <a class="ds-cell ds-cell-count is-open" role="cell" data-dashboard-card data-dashboard-entity="tasks" data-dashboard-status="open" href="./daily-tasks.html?status=open&range=all">
+                    <strong data-dashboard-count>00</strong>
+                  </a>
+                  <a class="ds-cell ds-cell-count is-delayed" role="cell" data-dashboard-card data-dashboard-entity="tasks" data-dashboard-status="delayed" href="./daily-tasks.html?status=delayed&range=all">
+                    <strong data-dashboard-count>00</strong>
+                  </a>
+                  <a class="ds-cell ds-cell-count is-complete" role="cell" data-dashboard-card data-dashboard-entity="tasks" data-dashboard-status="completed" href="./daily-tasks.html?status=completed&range=all">
+                    <strong data-dashboard-count>00</strong>
+                  </a>
+                </div>
 
-            <article class="dashboard-status-group panel" data-dashboard-group="short-goals">
-              <h3 class="dashboard-status-title">Short-Term Goals</h3>
+                <div class="ds-row" role="row" data-dashboard-group="short-goals">
+                  <span class="ds-cell ds-row-label" role="rowheader">Short-Term Goals</span>
+                  <a class="ds-cell ds-cell-count is-open" role="cell" data-dashboard-card data-dashboard-entity="short-goals" data-dashboard-status="open" href="./goals.html?view=short&status=open&range=all">
+                    <strong data-dashboard-count>00</strong>
+                  </a>
+                  <a class="ds-cell ds-cell-count is-delayed" role="cell" data-dashboard-card data-dashboard-entity="short-goals" data-dashboard-status="delayed" href="./goals.html?view=short&status=delayed&range=all">
+                    <strong data-dashboard-count>00</strong>
+                  </a>
+                  <a class="ds-cell ds-cell-count is-complete" role="cell" data-dashboard-card data-dashboard-entity="short-goals" data-dashboard-status="completed" href="./goals.html?view=short&status=completed&range=all">
+                    <strong data-dashboard-count>00</strong>
+                  </a>
+                </div>
 
-              <div class="task-summary-grid dashboard-summary-grid">
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-open" data-dashboard-card data-dashboard-entity="short-goals" data-dashboard-status="open" href="./goals.html?view=short&status=open&range=all">
-                  <p class="mini-label">Open</p>
-                  <strong data-dashboard-count>00</strong>
-                </a>
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" data-dashboard-card data-dashboard-entity="short-goals" data-dashboard-status="completed" href="./goals.html?view=short&status=completed&range=all">
-                  <p class="mini-label">Completed</p>
-                  <strong data-dashboard-count>00</strong>
-                </a>
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-delayed" data-dashboard-card data-dashboard-entity="short-goals" data-dashboard-status="delayed" href="./goals.html?view=short&status=delayed&range=all">
-                  <p class="mini-label">Delayed</p>
-                  <strong data-dashboard-count>00</strong>
-                </a>
-              </div>
-            </article>
+                <div class="ds-row" role="row" data-dashboard-group="long-goals">
+                  <span class="ds-cell ds-row-label" role="rowheader">Long-Term Goals</span>
+                  <a class="ds-cell ds-cell-count is-open" role="cell" data-dashboard-card data-dashboard-entity="long-goals" data-dashboard-status="open" href="./goals.html?view=long&status=open&range=all">
+                    <strong data-dashboard-count>00</strong>
+                  </a>
+                  <a class="ds-cell ds-cell-count is-delayed" role="cell" data-dashboard-card data-dashboard-entity="long-goals" data-dashboard-status="delayed" href="./goals.html?view=long&status=delayed&range=all">
+                    <strong data-dashboard-count>00</strong>
+                  </a>
+                  <a class="ds-cell ds-cell-count is-complete" role="cell" data-dashboard-card data-dashboard-entity="long-goals" data-dashboard-status="completed" href="./goals.html?view=long&status=completed&range=all">
+                    <strong data-dashboard-count>00</strong>
+                  </a>
+                </div>
 
-            <article class="dashboard-status-group panel" data-dashboard-group="long-goals">
-              <h3 class="dashboard-status-title">Long-Term Goals</h3>
-
-              <div class="task-summary-grid dashboard-summary-grid">
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-open" data-dashboard-card data-dashboard-entity="long-goals" data-dashboard-status="open" href="./goals.html?view=long&status=open&range=all">
-                  <p class="mini-label">Open</p>
-                  <strong data-dashboard-count>00</strong>
-                </a>
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" data-dashboard-card data-dashboard-entity="long-goals" data-dashboard-status="completed" href="./goals.html?view=long&status=completed&range=all">
-                  <p class="mini-label">Completed</p>
-                  <strong data-dashboard-count>00</strong>
-                </a>
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-delayed" data-dashboard-card data-dashboard-entity="long-goals" data-dashboard-status="delayed" href="./goals.html?view=long&status=delayed&range=all">
-                  <p class="mini-label">Delayed</p>
-                  <strong data-dashboard-count>00</strong>
-                </a>
-              </div>
-            </article>
-
-            <article class="dashboard-status-group panel" data-dashboard-group="habits">
-              <h3 class="dashboard-status-title">Habits</h3>
-
-              <div class="task-summary-grid dashboard-summary-grid is-duo">
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-complete" data-dashboard-card data-dashboard-entity="habits" data-dashboard-status="completed" href="./habits.html?status=completed&range=all">
-                  <p class="mini-label">Completed</p>
-                  <strong data-dashboard-count>00</strong>
-                </a>
-                <a class="mini-metric panel task-summary-card dashboard-summary-card is-skipped" data-dashboard-card data-dashboard-entity="habits" data-dashboard-status="skipped" href="./habits.html?status=skipped&range=all">
-                  <p class="mini-label">Skipped</p>
-                  <strong data-dashboard-count>00</strong>
-                </a>
-              </div>
-            </article>
-          </section>
-
-          <section class="tool-panel-grid" aria-label="Task and habit shortcuts">
-            <article class="task-tools-card panel">
-              <div class="task-tools-head">
-                <h3>Task Add / Edit</h3>
-              </div>
-
-              <div class="task-tool-tabs" aria-label="Quick links">
-                <a class="task-tool-tab is-active" href="./daily-tasks.html">Daily Task</a>
-                <a class="task-tool-tab" href="./goals.html">Goals</a>
-                <a class="task-tool-tab" href="./calendar.html?view=habits">Habits</a>
-              </div>
-            </article>
-          </section>
-
-          <section class="content-grid">
-            <article class="tasks-card panel">
-              <div class="section-head">
-                <h3>Today's Tasks</h3>
-                <a class="inline-button" href="./daily-tasks.html">View All</a>
-              </div>
-
-              <div class="task-list" id="dashboard-today-list">
-                <div class="task-row">
-                  <span class="task-status" aria-hidden="true"></span>
-                  <span class="task-main">
-                    <strong>No tasks yet</strong>
-                    <small class="task-meta">Add a task to see today&apos;s plan here.</small>
-                  </span>
-                  <span class="task-tag">0</span>
+                <div class="ds-row" role="row" data-dashboard-group="habits">
+                  <span class="ds-cell ds-row-label" role="rowheader">Habits</span>
+                  <span class="ds-cell ds-cell-count is-muted" role="cell" aria-label="Not applicable">&mdash;</span>
+                  <a class="ds-cell ds-cell-count is-skipped" role="cell" data-dashboard-card data-dashboard-entity="habits" data-dashboard-status="skipped" href="./habits.html?status=skipped&range=all" title="Skipped check-ins">
+                    <strong data-dashboard-count>00</strong>
+                  </a>
+                  <a class="ds-cell ds-cell-count is-complete" role="cell" data-dashboard-card data-dashboard-entity="habits" data-dashboard-status="completed" href="./habits.html?status=completed&range=all">
+                    <strong data-dashboard-count>00</strong>
+                  </a>
                 </div>
               </div>
             </article>
+          </section>
 
-            <article class="tasks-card panel">
-              <div class="section-head">
+          <section class="content-grid dashboard-task-links">
+            <a class="tasks-card panel dashboard-task-link" href="./daily-tasks.html?view=today">
+              <div class="dashboard-task-link-body">
+                <p class="mini-label">Today</p>
+                <h3>Today&apos;s Tasks</h3>
+                <p class="dashboard-task-link-sub">Jump to everything on your plate for today.</p>
+              </div>
+              <span class="dashboard-task-link-arrow" aria-hidden="true">&rarr;</span>
+            </a>
+
+            <a class="tasks-card panel dashboard-task-link" href="./daily-tasks.html?view=upcoming">
+              <div class="dashboard-task-link-body">
+                <p class="mini-label">Upcoming</p>
                 <h3>Upcoming Tasks</h3>
-                <a class="inline-button" href="./calendar.html">Calendar</a>
+                <p class="dashboard-task-link-sub">See what&apos;s scheduled for the days ahead.</p>
               </div>
-
-              <div class="task-list" id="dashboard-upcoming-list">
-                <div class="task-row">
-                  <span class="task-status" aria-hidden="true"></span>
-                  <span class="task-main">
-                    <strong>No upcoming tasks</strong>
-                    <small class="task-meta">Scheduled items will appear here once you add them.</small>
-                  </span>
-                  <span class="task-tag">0</span>
-                </div>
-              </div>
-            </article>
-
+              <span class="dashboard-task-link-arrow" aria-hidden="true">&rarr;</span>
+            </a>
           </section>
         </div>
       </section>

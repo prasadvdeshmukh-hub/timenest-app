@@ -319,16 +319,24 @@
     let bell = document.getElementById("timenest-bell");
     if (bell) return bell;
     if (!document.body) return null;
-    // On the notifications page itself we don't need the floating bell —
+    // On the notifications page itself we don't need the bell —
     // the page already lists everything.
     const path = (window.location.pathname || "").toLowerCase();
     if (path.endsWith("/notifications.html") || path.endsWith("notifications.html")) {
       return null;
     }
+
+    // Prefer inline placement inside the page's top-actions nav so we
+    // don't overlap Logout / Profile / Theme buttons. If no top-actions
+    // nav exists on this page, fall back to a floating fixed bell.
+    const topActions = document.querySelector(".top-actions");
+    const inline = Boolean(topActions);
+
     bell = document.createElement("a");
     bell.id = "timenest-bell";
     bell.href = "./notifications.html";
     bell.setAttribute("aria-label", "Notifications");
+    if (inline) bell.classList.add("is-inline");
     bell.innerHTML = `
       <span class="tn-bell-btn" role="presentation">
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
@@ -337,11 +345,21 @@
         <span class="tn-bell-badge" hidden>0</span>
       </span>
     `;
-    document.body.appendChild(bell);
+    if (inline) {
+      // Insert as the first child so the bell sits before theme/profile/logout.
+      topActions.insertBefore(bell, topActions.firstChild);
+    } else {
+      document.body.appendChild(bell);
+    }
 
     const style = document.createElement("style");
     style.textContent = `
-      #timenest-bell { position: fixed; top: 18px; right: 18px; z-index: 9998; font-family: 'Space Grotesk', system-ui, sans-serif; text-decoration: none; }
+      /* Floating fallback on pages that have no .top-actions nav */
+      #timenest-bell:not(.is-inline) { position: fixed; top: 18px; right: 18px; z-index: 9998; }
+      #timenest-bell { font-family: 'Space Grotesk', system-ui, sans-serif; text-decoration: none; }
+      /* Inline sizing that matches the topbar's ghost-chip buttons */
+      #timenest-bell.is-inline { display: inline-flex; align-items: center; }
+      #timenest-bell.is-inline .tn-bell-btn { width: 40px; height: 40px; border-radius: 12px; }
       #timenest-bell .tn-bell-btn {
         position: relative; width: 44px; height: 44px; border-radius: 14px;
         background: rgba(15,20,40,0.72); color: #b6d4ff;
@@ -359,7 +377,7 @@
         border: 1.5px solid rgba(15,20,40,0.85);
       }
       @media (max-width: 500px) {
-        #timenest-bell { top: 14px; right: 14px; }
+        #timenest-bell:not(.is-inline) { top: 14px; right: 14px; }
       }
     `;
     document.head.appendChild(style);
