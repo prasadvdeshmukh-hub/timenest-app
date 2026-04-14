@@ -4,80 +4,16 @@ import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/widgets/glass_card.dart';
+import '../../../../shared/models/habit_model.dart';
+import '../../../../shared/providers/repository_providers.dart';
 
-/// Habit model for local state management.
-class Habit {
-  final String id;
-  final String name;
-  int streakDays;
-  DateTime lastCheckIn;
-  bool isCheckedToday;
-
-  Habit({
-    required this.id,
-    required this.name,
-    required this.streakDays,
-    required this.lastCheckIn,
-    required this.isCheckedToday,
-  });
-
-  /// Copy with for updates.
-  Habit copyWith({
-    String? id,
-    String? name,
-    int? streakDays,
-    DateTime? lastCheckIn,
-    bool? isCheckedToday,
-  }) {
-    return Habit(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      streakDays: streakDays ?? this.streakDays,
-      lastCheckIn: lastCheckIn ?? this.lastCheckIn,
-      isCheckedToday: isCheckedToday ?? this.isCheckedToday,
-    );
-  }
-}
-
-class HabitsScreen extends ConsumerStatefulWidget {
+class HabitsScreen extends ConsumerWidget {
   const HabitsScreen({super.key});
 
   @override
-  ConsumerState<HabitsScreen> createState() => _HabitsScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final habitsAsync = ref.watch(habitsStreamProvider);
 
-class _HabitsScreenState extends ConsumerState<HabitsScreen> {
-  late List<Habit> habits;
-
-  @override
-  void initState() {
-    super.initState();
-    // Default sample habits have been removed — users start with an
-    // empty list and add their own habits.
-    habits = <Habit>[];
-  }
-
-  void _checkInHabit(int index) {
-    setState(() {
-      final habit = habits[index];
-      final now = DateTime.now();
-      final isToday = habit.lastCheckIn.year == now.year &&
-          habit.lastCheckIn.month == now.month &&
-          habit.lastCheckIn.day == now.day;
-
-      if (!isToday) {
-        // Increment streak if not checked in today
-        habits[index] = habit.copyWith(
-          streakDays: habit.streakDays + 1,
-          lastCheckIn: now,
-          isCheckedToday: true,
-        );
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -121,9 +57,7 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            onPressed: () {
-                              // TODO: Add habit action
-                            },
+                            onPressed: () => _showAddHabitDialog(context, ref),
                             child: const Text(
                               'Add Habit',
                               style: TextStyle(
@@ -139,28 +73,82 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                 ),
               ),
 
-              const SliverToBoxAdapter(
-                  child: SizedBox(height: AppSpacing.lg)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
 
               // ── Habits List ──
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg),
-                  child: Column(
-                    children: List.generate(
-                      habits.length,
-                      (index) => Padding(
-                        padding: const EdgeInsets.only(
-                            bottom: AppSpacing.md),
-                        child: _HabitCard(
-                          habit: habits[index],
-                          onCheckIn: () => _checkInHabit(index),
-                        ),
-                      ),
-                    ),
+              habitsAsync.when(
+                loading: () => const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.all(AppSpacing.lg),
+                    child:
+                        Center(child: CircularProgressIndicator()),
                   ),
                 ),
+                error: (err, _) => SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    child: Text('Error loading habits: $err',
+                        style:
+                            const TextStyle(color: AppColors.error)),
+                  ),
+                ),
+                data: (habits) {
+                  if (habits.isEmpty) {
+                    return const SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.all(AppSpacing.lg),
+                        child: Center(
+                          child: Text(
+                            'No habits yet.\nTap "Add Habit" to start building one.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: AppColors.textSecondaryDark,
+                              fontSize: 14,
+                              height: 1.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  return SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.lg),
+                      child: Column(
+                        children: habits
+                            .map((h) => Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: AppSpacing.md),
+                                  child: _HabitCard(
+                                    habit: h,
+                                    onCheckIn: () async {
+                                      await ref
+                                          .read(habitRepositoryProvider)
+                                          .checkIn(h.id);
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content:
+                                                Text('Checked in: ${h.name}'),
+                                            duration:
+                                                const Duration(seconds: 2),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    onDelete: () =>
+                                        _confirmDelete(context, ref, h),
+                                    onRename: () =>
+                                        _showRenameDialog(context, ref, h),
+                                  ),
+                                ))
+                            .toList(),
+                      ),
+                    ),
+                  );
+                },
               ),
 
               const SliverToBoxAdapter(child: SizedBox(height: 100)),
@@ -170,21 +158,134 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
       ),
     );
   }
+
+  Future<void> _showAddHabitDialog(BuildContext context, WidgetRef ref) async {
+    final controller = TextEditingController();
+    final name = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('New Habit'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: const InputDecoration(
+            hintText: 'e.g. Morning meditation',
+          ),
+          onSubmitted: (v) => Navigator.pop(ctx, v.trim()),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel')),
+          TextButton(
+              onPressed: () =>
+                  Navigator.pop(ctx, controller.text.trim()),
+              child: const Text('Create')),
+        ],
+      ),
+    );
+    if (name == null || name.isEmpty) return;
+
+    final now = DateTime.now();
+    final habit = HabitModel(
+      id: '', // Firestore assigns on add
+      name: name,
+      createdAt: now,
+      updatedAt: now,
+    );
+    try {
+      await ref.read(habitRepositoryProvider).createHabit(habit);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Habit created: $name')),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _showRenameDialog(
+      BuildContext context, WidgetRef ref, HabitModel habit) async {
+    final controller = TextEditingController(text: habit.name);
+    final name = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Rename Habit'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          onSubmitted: (v) => Navigator.pop(ctx, v.trim()),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel')),
+          TextButton(
+              onPressed: () =>
+                  Navigator.pop(ctx, controller.text.trim()),
+              child: const Text('Save')),
+        ],
+      ),
+    );
+    if (name == null || name.isEmpty || name == habit.name) return;
+    await ref
+        .read(habitRepositoryProvider)
+        .updateHabit(habit.copyWith(name: name));
+  }
+
+  Future<void> _confirmDelete(
+      BuildContext context, WidgetRef ref, HabitModel habit) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Habit'),
+        content: Text(
+            'Delete "${habit.name}" and its check-in history? This cannot be undone.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Delete',
+                  style: TextStyle(color: Colors.red))),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await ref.read(habitRepositoryProvider).deleteHabit(habit.id);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Deleted: ${habit.name}')),
+      );
+    }
+  }
 }
 
 class _HabitCard extends StatelessWidget {
-  final Habit habit;
+  final HabitModel habit;
   final VoidCallback onCheckIn;
+  final VoidCallback onDelete;
+  final VoidCallback onRename;
 
   const _HabitCard({
     required this.habit,
     required this.onCheckIn,
+    required this.onDelete,
+    required this.onRename,
   });
 
   @override
   Widget build(BuildContext context) {
-    final lastCheckInStr =
-        DateFormat('MMM d, yyyy').format(habit.lastCheckIn);
+    final lastCheckInStr = habit.lastCheckIn != null
+        ? DateFormat('MMM d, yyyy').format(habit.lastCheckIn!)
+        : '—';
+    final isCheckedToday = habit.isCheckedToday;
 
     return GlassCard(
       child: Column(
@@ -199,12 +300,14 @@ class _HabitCard extends StatelessWidget {
                   children: [
                     Text(
                       habit.name,
-                      style: Theme.of(context).textTheme.titleLarge
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
                           ?.copyWith(color: Colors.white),
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      'Streak: ${habit.streakDays} days • Last: $lastCheckInStr',
+                      'Streak: ${habit.streakDays} days • Best: ${habit.bestStreakDays} • Last: $lastCheckInStr',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
@@ -217,26 +320,48 @@ class _HabitCard extends StatelessWidget {
                   vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: habit.isCheckedToday
+                  color: isCheckedToday
                       ? AppColors.cyan.withOpacity(0.2)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(4),
                   border: Border.all(
-                    color: habit.isCheckedToday
+                    color: isCheckedToday
                         ? AppColors.cyan
                         : AppColors.darkBorder,
                   ),
                 ),
                 child: Text(
-                  habit.isCheckedToday ? '✓ Done' : 'Pending',
+                  isCheckedToday ? '✓ Done' : 'Pending',
                   style: TextStyle(
-                    color: habit.isCheckedToday
+                    color: isCheckedToday
                         ? AppColors.cyan
                         : Colors.white70,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
+              ),
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.more_vert,
+                    color: AppColors.textMutedDark, size: 20),
+                color: AppColors.darkCard,
+                onSelected: (value) {
+                  switch (value) {
+                    case 'rename':
+                      onRename();
+                      break;
+                    case 'delete':
+                      onDelete();
+                      break;
+                  }
+                },
+                itemBuilder: (_) => const [
+                  PopupMenuItem(value: 'rename', child: Text('Rename')),
+                  PopupMenuItem(
+                      value: 'delete',
+                      child: Text('Delete',
+                          style: TextStyle(color: Colors.red))),
+                ],
               ),
             ],
           ),
@@ -245,7 +370,7 @@ class _HabitCard extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: habit.isCheckedToday
+                backgroundColor: isCheckedToday
                     ? AppColors.cyan.withOpacity(0.2)
                     : AppColors.cyan,
                 padding: const EdgeInsets.symmetric(
@@ -255,13 +380,12 @@ class _HabitCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
               ),
-              onPressed: habit.isCheckedToday ? null : onCheckIn,
+              onPressed: isCheckedToday ? null : onCheckIn,
               child: Text(
-                habit.isCheckedToday ? 'Checked In Today' : 'Check In',
+                isCheckedToday ? 'Checked In Today' : 'Check In',
                 style: TextStyle(
-                  color: habit.isCheckedToday
-                      ? Colors.black54
-                      : Colors.black,
+                  color:
+                      isCheckedToday ? Colors.black54 : Colors.black,
                   fontWeight: FontWeight.w600,
                 ),
               ),

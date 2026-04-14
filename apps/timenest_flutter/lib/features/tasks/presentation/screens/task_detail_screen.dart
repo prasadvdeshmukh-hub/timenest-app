@@ -232,12 +232,51 @@ class TaskDetailScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Subtasks',
-                              style: Theme.of(context).textTheme.bodySmall),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Subtasks',
+                                  style:
+                                      Theme.of(context).textTheme.bodySmall),
+                              Text(
+                                '${task.completedSubtaskCount}/${task.subtasks.length} · ${task.progressFromSubtasks.toInt()}%',
+                                style: const TextStyle(
+                                    color: AppColors.cyan,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: LinearProgressIndicator(
+                              value: task.progressFromSubtasks / 100,
+                              minHeight: 6,
+                              backgroundColor: AppColors.darkBorder,
+                              valueColor:
+                                  const AlwaysStoppedAnimation<Color>(
+                                      AppColors.cyan),
+                            ),
+                          ),
                           const SizedBox(height: AppSpacing.md),
-                          ...task.subtasks.map((s) => Padding(
-                                padding: const EdgeInsets.only(
-                                    bottom: AppSpacing.sm),
+                          ...task.subtasks.asMap().entries.map((entry) {
+                            final i = entry.key;
+                            final s = entry.value;
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: AppSpacing.sm),
+                              child: InkWell(
+                                onTap: () async {
+                                  final updated = List<Subtask>.from(
+                                      task.subtasks);
+                                  updated[i] = s.copyWith(
+                                      isCompleted: !s.isCompleted);
+                                  await ref
+                                      .read(taskRepositoryProvider)
+                                      .updateSubtasks(
+                                          goalId, taskId, updated);
+                                },
                                 child: Row(
                                   children: [
                                     Icon(
@@ -250,12 +289,23 @@ class TaskDetailScreen extends ConsumerWidget {
                                       size: 20,
                                     ),
                                     const SizedBox(width: AppSpacing.sm),
-                                    Text(s.name,
-                                        style: const TextStyle(
-                                            color: Colors.white, fontSize: 14)),
+                                    Expanded(
+                                      child: Text(
+                                        s.name,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          decoration: s.isCompleted
+                                              ? TextDecoration.lineThrough
+                                              : null,
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
-                              )),
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     ),
@@ -334,6 +384,43 @@ class TaskDetailScreen extends ConsumerWidget {
                                 }
                               },
                               child: _actionChip('Snooze', AppColors.textSecondaryDark),
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                final confirmed = await showDialog<bool>(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: const Text('Delete Task'),
+                                    content: const Text(
+                                        'This will permanently delete the task and its subtasks. Continue?'),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(ctx, false),
+                                          child: const Text('Cancel')),
+                                      TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(ctx, true),
+                                          child: const Text('Delete',
+                                              style: TextStyle(
+                                                  color: Colors.red))),
+                                    ],
+                                  ),
+                                );
+                                if (confirmed == true) {
+                                  await ref
+                                      .read(taskRepositoryProvider)
+                                      .deleteTask(goalId, taskId);
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text('Task deleted')),
+                                    );
+                                    context.pop();
+                                  }
+                                }
+                              },
+                              child: _actionChip('Delete', AppColors.error),
                             ),
                           ],
                         ),

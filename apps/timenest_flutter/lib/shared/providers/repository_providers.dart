@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../repositories/goal_repository.dart';
 import '../repositories/task_repository.dart';
+import '../repositories/habit_repository.dart';
 import '../models/goal_model.dart';
 import '../models/task_model.dart';
+import '../models/habit_model.dart';
 
 /// Singleton providers for repositories.
 final goalRepositoryProvider = Provider<GoalRepository>((ref) {
@@ -11,6 +13,15 @@ final goalRepositoryProvider = Provider<GoalRepository>((ref) {
 
 final taskRepositoryProvider = Provider<TaskRepository>((ref) {
   return TaskRepository();
+});
+
+final habitRepositoryProvider = Provider<HabitRepository>((ref) {
+  return HabitRepository();
+});
+
+/// Stream of all habits for the current user.
+final habitsStreamProvider = StreamProvider<List<HabitModel>>((ref) {
+  return ref.watch(habitRepositoryProvider).watchHabits();
 });
 
 /// Stream of all goals.

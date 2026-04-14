@@ -226,16 +226,70 @@ class GoalDetailScreen extends ConsumerWidget {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                  child: Row(
+                  child: Column(
                     children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => context.push('/goal-editor?id=$goalId'),
-                          child: const Text('Edit Goal'),
-                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () =>
+                                  context.push('/goal-editor?id=$goalId'),
+                              child: const Text('Edit Goal'),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () async {
+                                final isCompleted =
+                                    goal.status == GoalStatus.completed;
+                                final updated = goal.copyWith(
+                                  status: isCompleted
+                                      ? GoalStatus.inProgress
+                                      : GoalStatus.completed,
+                                  completedAt:
+                                      isCompleted ? null : DateTime.now(),
+                                  completedOnTime: !isCompleted &&
+                                      DateTime.now()
+                                          .isBefore(goal.targetDate),
+                                  progressPercent:
+                                      isCompleted ? goal.progressPercent : 100,
+                                );
+                                await ref
+                                    .read(goalRepositoryProvider)
+                                    .updateGoal(updated);
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(isCompleted
+                                          ? 'Goal reopened'
+                                          : 'Goal marked complete'),
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+                                }
+                              },
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor:
+                                    goal.status == GoalStatus.completed
+                                        ? AppColors.warning
+                                        : AppColors.success,
+                                side: BorderSide(
+                                  color: goal.status == GoalStatus.completed
+                                      ? AppColors.warning
+                                      : AppColors.success,
+                                ),
+                              ),
+                              child: Text(goal.status == GoalStatus.completed
+                                  ? 'Reopen'
+                                  : 'Mark Complete'),
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(
+                      const SizedBox(height: AppSpacing.md),
+                      SizedBox(
+                        width: double.infinity,
                         child: OutlinedButton(
                           onPressed: () async {
                             final confirmed = await showDialog<bool>(
@@ -256,7 +310,9 @@ class GoalDetailScreen extends ConsumerWidget {
                               ),
                             );
                             if (confirmed == true) {
-                              await ref.read(goalRepositoryProvider).deleteGoal(goalId);
+                              await ref
+                                  .read(goalRepositoryProvider)
+                                  .deleteGoal(goalId);
                               if (context.mounted) context.pop();
                             }
                           },

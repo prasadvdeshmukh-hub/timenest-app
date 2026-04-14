@@ -262,6 +262,19 @@ class TaskModel extends Equatable {
     return '$h:$m';
   }
 
+  /// Progress derived from subtask completion (0-100). Returns 100 if the
+  /// task itself is completed, 0 if there are no subtasks yet.
+  double get progressFromSubtasks {
+    if (status == TaskStatus.completed) return 100;
+    if (subtasks.isEmpty) return 0;
+    final done = subtasks.where((s) => s.isCompleted).length;
+    return (done / subtasks.length) * 100;
+  }
+
+  /// Count of completed subtasks.
+  int get completedSubtaskCount =>
+      subtasks.where((s) => s.isCompleted).length;
+
   /// Recurrence label for display.
   String get recurrenceLabel {
     switch (recurrenceType) {

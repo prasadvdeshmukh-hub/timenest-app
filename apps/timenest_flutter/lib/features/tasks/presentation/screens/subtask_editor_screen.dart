@@ -28,8 +28,8 @@ class _SubtaskEditorScreenState extends ConsumerState<SubtaskEditorScreen> {
   final _nameController = TextEditingController();
   final _uuid = const Uuid();
 
-  // Start with mock subtasks if editing an existing task.
-  late List<Subtask> _subtasks;
+  // Populated from Firestore on mount.
+  List<Subtask> _subtasks = <Subtask>[];
 
   bool _loading = true;
 
