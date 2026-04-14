@@ -42,13 +42,29 @@
           <div class="form-grid">
             <label class="field"><span>Habit Name</span><input type="text" id="habit-field-name" placeholder="Enter habit name" /></label>
             <label class="field"><span>Category</span><input type="text" id="habit-field-category" placeholder="Health / Learning / Focus" /></label>
-            <label class="field"><span>Schedule</span><input type="text" id="habit-field-schedule" placeholder="Daily / Weekdays / Custom Days" /></label>
-            <label class="field"><span>Preferred Time</span><input type="time" id="habit-field-time" /></label>
-            <label class="field"><span>Reminder Channel</span><input type="text" id="habit-field-channel" placeholder="Push / In-App / Email" /></label>
+            <label class="field field-half"><span>Schedule</span><input type="text" id="habit-field-schedule" placeholder="Daily / Weekdays / Custom Days" /></label>
+            <label class="field field-half"><span>Preferred Time</span><input type="time" id="habit-field-time" /></label>
             <label class="field"><span>Linked Goal</span><input type="text" id="habit-field-goal" placeholder="Optional linked goal" /></label>
             <label class="field full"><span>Success Rule</span><input type="text" id="habit-field-rule" placeholder="Describe what counts as a completed check-in." /></label>
             <label class="field full"><span>Notes</span><input type="text" id="habit-field-notes" placeholder="Add cues, rewards, or tracking notes." /></label>
           </div>
+          <fieldset class="compact-check-group" data-notification-group>
+            <legend>Notifications</legend>
+            <div class="compact-check-row" aria-label="Notification options">
+              <label class="compact-check-chip">
+                <input type="checkbox" checked data-channel="in-app" id="habit-channel-in-app" />
+                <span>In-App</span>
+              </label>
+              <label class="compact-check-chip">
+                <input type="checkbox" checked data-channel="push" id="habit-channel-push" />
+                <span>Push</span>
+              </label>
+              <label class="compact-check-chip">
+                <input type="checkbox" data-channel="set-alarm" id="habit-channel-set-alarm" />
+                <span>Set Alarm</span>
+              </label>
+            </div>
+          </fieldset>
           <div class="form-actions">
             <span class="soft-pill" data-action="save-habit">Save Habit</span>
             <a class="soft-pill" href="./calendar.html?view=habits">Preview Calendar</a>

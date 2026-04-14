@@ -5719,6 +5719,13 @@ body.login-page .bottom-tabbar {
   grid-column: 1 / -1;
 }
 
+/* Pair fields that must always share one row (e.g. Date + Time pickers).
+   Overrides the single-column mobile fallback so the pair stays side-by-side. */
+.form-grid .field.field-half {
+  grid-column: span 1;
+  min-width: 0;
+}
+
 .form-actions {
   display: flex;
   flex-wrap: wrap;
@@ -7195,6 +7202,17 @@ html[data-theme="light"] body.dashboard-home .quick-add-close {
 
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  /* Date/Time and other half-width pairs must still share one row. */
+  .form-grid:has(.field-half) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .form-grid:has(.field-half) > .field:not(.field-half) {
+    grid-column: 1 / -1;
+  }
+  .form-grid .field.field-half {
+    grid-column: span 1;
   }
 
   .plus-cta-button {

@@ -28,8 +28,8 @@
           <div class="form-grid">
             <label class="field"><span>Task Name</span><input type="text" id="task-field-name" placeholder="Enter task name" /></label>
             <label class="field"><span>Priority</span><input type="text" id="task-field-priority" placeholder="Low / Medium / High" /></label>
-            <label class="field"><span>Deadline Date</span><input type="date" id="task-field-date" /></label>
-            <label class="field"><span>Time</span><input type="time" id="task-field-time" /></label>
+            <label class="field field-half"><span>Deadline Date</span><input type="date" id="task-field-date" /></label>
+            <label class="field field-half"><span>Time</span><input type="time" id="task-field-time" /></label>
             <label class="field full"><span>Notes</span><input type="text" id="task-field-notes" placeholder="Add notes, context, or a checklist" /></label>
           </div>
           <div class="task-editor-compact-stack">
@@ -62,28 +62,20 @@
                 </label>
               </div>
             </fieldset>
-            <fieldset class="compact-check-group">
-              <legend>Preferred Notification</legend>
-              <div class="compact-check-row" aria-label="Preferred notification options">
+            <fieldset class="compact-check-group" data-notification-group>
+              <legend>Notifications</legend>
+              <div class="compact-check-row" aria-label="Notification options">
                 <label class="compact-check-chip">
-                  <input type="checkbox" checked />
-                  <span>Push</span>
-                </label>
-                <label class="compact-check-chip">
-                  <input type="checkbox" checked />
+                  <input type="checkbox" checked data-channel="in-app" />
                   <span>In-App</span>
                 </label>
                 <label class="compact-check-chip">
-                  <input type="checkbox" />
-                  <span>Email</span>
+                  <input type="checkbox" checked data-channel="push" />
+                  <span>Push</span>
                 </label>
                 <label class="compact-check-chip">
-                  <input type="checkbox" />
-                  <span>SMS</span>
-                </label>
-                <label class="compact-check-chip">
-                  <input type="checkbox" />
-                  <span>WhatsApp</span>
+                  <input type="checkbox" data-channel="set-alarm" />
+                  <span>Set Alarm</span>
                 </label>
               </div>
             </fieldset>

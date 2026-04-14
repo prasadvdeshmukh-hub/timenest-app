@@ -302,6 +302,262 @@
     });
   }
 
+  // ── Set Alarm backend ───────────────────────────────────────────────
+  // Public entry: window.timenestNotify.setAlarm(item)
+  //
+  // item = {
+  //   id, name, date (YYYY-MM-DD), time (HH:MM),  // task-shaped
+  // }  -- OR --
+  // { id, name, time (HH:MM), schedule }           // habit-shaped
+  //
+  // Behaviour by platform:
+  //  • Android (Chrome) — fires the AlarmClock.ACTION_SET_ALARM intent,
+  //    which opens the native Clock app with the hour/minute prefilled.
+  //    This is the only way a web page can actually create a device alarm.
+  //  • iOS / any other mobile — generates and downloads an .ics file with
+  //    a VALARM VEVENT. The user taps it and Calendar imports the alert,
+  //    which rings at the set time (default iOS behaviour, works offline).
+  //  • Desktop — registers an in-page scheduler that shows a modal +
+  //    plays a beep when the moment arrives, and also records the alarm
+  //    in localStorage so future page loads can re-hydrate pending ones.
+  const ALARMS_KEY = "timenest-alarms-v1";
+
+  function readAlarms() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(scopedKey(ALARMS_KEY)) || "[]");
+      return Array.isArray(raw) ? raw : [];
+    } catch (_e) {
+      return [];
+    }
+  }
+  function writeAlarms(list) {
+    try { localStorage.setItem(scopedKey(ALARMS_KEY), JSON.stringify(list || [])); } catch (_e) {}
+  }
+
+  function parseAlarmTarget(item) {
+    if (!item || !item.time) return null;
+    const [hRaw, mRaw] = String(item.time).split(":");
+    const hh = Number(hRaw);
+    const mm = Number(mRaw);
+    if (Number.isNaN(hh)) return null;
+    const target = new Date();
+    if (item.date) {
+      // Respect the calendar date for tasks.
+      const [y, mo, d] = String(item.date).split("-").map(Number);
+      if (y && mo && d) target.setFullYear(y, mo - 1, d);
+    }
+    target.setHours(hh, Number.isNaN(mm) ? 0 : mm, 0, 0);
+    // If the computed time is already past (no date given), roll to tomorrow
+    // so the alarm still fires — same behaviour as a phone alarm clock.
+    if (!item.date && target.getTime() <= Date.now()) {
+      target.setDate(target.getDate() + 1);
+    }
+    return { hh, mm: Number.isNaN(mm) ? 0 : mm, when: target };
+  }
+
+  function detectPlatform() {
+    const ua = (navigator.userAgent || "") + " " + (navigator.platform || "");
+    if (/Android/i.test(ua)) return "android";
+    if (/iPad|iPhone|iPod/i.test(ua)) return "ios";
+    return "desktop";
+  }
+
+  function fireAndroidSetAlarmIntent(label, hh, mm) {
+    // Chrome on Android honours the Intent URI syntax. The clock app
+    // receives ACTION_SET_ALARM with EXTRA_HOUR / EXTRA_MINUTES /
+    // EXTRA_MESSAGE and opens its alarm editor prefilled.
+    const extraMsg = encodeURIComponent(label || "TIMENEST alarm");
+    const url =
+      "intent://alarm" +
+      "#Intent" +
+      ";scheme=alarm" +
+      ";action=android.intent.action.SET_ALARM" +
+      ";S.android.intent.extra.alarm.MESSAGE=" + extraMsg +
+      ";i.android.intent.extra.alarm.HOUR=" + hh +
+      ";i.android.intent.extra.alarm.MINUTES=" + mm +
+      ";B.android.intent.extra.alarm.SKIP_UI=false" +
+      ";end";
+    // Navigation in a new tab keeps the TIMENEST tab alive in case the
+    // intent is rejected (user has no handler); if it succeeds the Clock
+    // app steals focus, which is exactly what we want.
+    try {
+      window.location.href = url;
+    } catch (_e) {
+      const a = document.createElement("a");
+      a.href = url;
+      a.rel = "noopener";
+      a.click();
+    }
+  }
+
+  function pad2(n) { return String(n).padStart(2, "0"); }
+  function icsDate(d) {
+    // UTC stamp, no punctuation — RFC 5545 "floating" local would also work
+    // but Calendar apps import UTC consistently.
+    return (
+      d.getUTCFullYear().toString() +
+      pad2(d.getUTCMonth() + 1) +
+      pad2(d.getUTCDate()) +
+      "T" +
+      pad2(d.getUTCHours()) +
+      pad2(d.getUTCMinutes()) +
+      pad2(d.getUTCSeconds()) +
+      "Z"
+    );
+  }
+
+  function downloadIcsAlarm(label, when) {
+    const uid = "timenest-" + Math.random().toString(36).slice(2) + "-" + Date.now();
+    const dtStart = icsDate(when);
+    const dtEnd = icsDate(new Date(when.getTime() + 60 * 1000));
+    const dtStamp = icsDate(new Date());
+    const summary = String(label || "TIMENEST alarm").replace(/[\r\n]+/g, " ");
+    const lines = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//TIMENEST//Alarm//EN",
+      "CALSCALE:GREGORIAN",
+      "METHOD:PUBLISH",
+      "BEGIN:VEVENT",
+      "UID:" + uid,
+      "DTSTAMP:" + dtStamp,
+      "DTSTART:" + dtStart,
+      "DTEND:" + dtEnd,
+      "SUMMARY:" + summary,
+      "DESCRIPTION:Alarm scheduled from TIMENEST.",
+      "BEGIN:VALARM",
+      "ACTION:DISPLAY",
+      "DESCRIPTION:" + summary,
+      "TRIGGER:-PT0M",
+      "END:VALARM",
+      "END:VEVENT",
+      "END:VCALENDAR",
+    ];
+    const blob = new Blob([lines.join("\r\n")], { type: "text/calendar" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "timenest-alarm.ics";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 15000);
+  }
+
+  function ringInPageAlarm(entry) {
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (Ctx) {
+        const ctx = new Ctx();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.value = 880;
+        g.gain.value = 0.15;
+        o.connect(g); g.connect(ctx.destination);
+        o.start();
+        // Short triple-beep pattern
+        [0.15, 0.3, 0.45, 0.6, 0.75].forEach((t, i) => {
+          g.gain.setValueAtTime(i % 2 === 0 ? 0.15 : 0, ctx.currentTime + t);
+        });
+        setTimeout(() => { try { o.stop(); ctx.close(); } catch (_e) {} }, 900);
+      }
+    } catch (_e) {}
+    try {
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification("⏰ TIMENEST alarm", { body: entry.label || "Time to act.", tag: entry.id });
+      }
+    } catch (_e) {}
+    pushNotif({
+      type: "alarm",
+      title: "⏰ " + (entry.label || "TIMENEST alarm"),
+      body: "Alarm reached — " + new Date(entry.when).toLocaleString(),
+      taskId: entry.taskId || null,
+      habitId: entry.habitId || null,
+      linkUrl: entry.linkUrl || null,
+    });
+  }
+
+  function scheduleInPageAlarm(entry) {
+    const delta = new Date(entry.when).getTime() - Date.now();
+    if (delta <= 0) { ringInPageAlarm(entry); return; }
+    // Cap setTimeout to int32 max so long alarms don't wrap to 0ms.
+    const SAFE = 2147483000;
+    const wait = Math.min(delta, SAFE);
+    setTimeout(() => {
+      if (Date.now() >= new Date(entry.when).getTime() - 500) {
+        ringInPageAlarm(entry);
+      } else {
+        scheduleInPageAlarm(entry);
+      }
+    }, wait);
+  }
+
+  function rehydrateAlarms() {
+    const now = Date.now();
+    const list = readAlarms();
+    const keep = [];
+    list.forEach((entry) => {
+      if (!entry || !entry.when) return;
+      const t = new Date(entry.when).getTime();
+      if (t < now - 60 * 1000) return; // prune stale
+      keep.push(entry);
+      scheduleInPageAlarm(entry);
+    });
+    writeAlarms(keep);
+  }
+
+  function requestNotificationPermission() {
+    try {
+      if ("Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission().catch(() => {});
+      }
+    } catch (_e) {}
+  }
+
+  function setAlarm(item) {
+    const parsed = parseAlarmTarget(item);
+    if (!parsed) {
+      return { ok: false, reason: "no-time", message: "Set a time before enabling the alarm." };
+    }
+    const label = item.name || item.title || "TIMENEST alarm";
+    const platform = detectPlatform();
+    const entry = {
+      id: item.id || "alarm-" + Date.now(),
+      taskId: item.taskId || (item.__kind === "task" ? item.id : null),
+      habitId: item.habitId || (item.__kind === "habit" ? item.id : null),
+      label,
+      when: parsed.when.toISOString(),
+      hour: parsed.hh,
+      minute: parsed.mm,
+      platform,
+      linkUrl: item.linkUrl || null,
+    };
+
+    // Always persist so we can ring from any page load.
+    const list = readAlarms().filter((a) => a.id !== entry.id);
+    list.push(entry);
+    writeAlarms(list);
+
+    if (platform === "android") {
+      fireAndroidSetAlarmIntent(label, parsed.hh, parsed.mm);
+      return { ok: true, platform, via: "android-intent", when: entry.when };
+    }
+    if (platform === "ios") {
+      downloadIcsAlarm(label, parsed.when);
+      return { ok: true, platform, via: "ics-calendar", when: entry.when };
+    }
+    // Desktop / unknown: in-page scheduler + Notification API if granted.
+    requestNotificationPermission();
+    scheduleInPageAlarm(entry);
+    return { ok: true, platform, via: "in-page", when: entry.when };
+  }
+
+  function cancelAlarm(id) {
+    const list = readAlarms().filter((a) => a.id !== id);
+    writeAlarms(list);
+  }
+
   // ── Bell + Inbox UI ─────────────────────────────────────────────────
   function escapeHtml(s) {
     return String(s == null ? "" : s)
@@ -546,7 +802,17 @@
       renderBell(); renderInbox();
     },
     scan: runScan,
+    setAlarm,
+    cancelAlarm,
+    listAlarms: readAlarms,
     _renderBell: renderBell,
     _renderInbox: renderInbox,
   };
+
+  // Re-hydrate any in-page alarms scheduled on previous page loads.
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", rehydrateAlarms);
+  } else {
+    rehydrateAlarms();
+  }
 })();

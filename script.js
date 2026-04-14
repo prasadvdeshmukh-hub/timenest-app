@@ -2957,10 +2957,13 @@ function generateId() {
       }
       // Restore notification checkboxes
       if (task.notifications) {
-        const notifChecks = document.querySelectorAll('.compact-check-group:last-of-type .compact-check-chip input');
+        const notifChecks = document.querySelectorAll('[data-notification-group] .compact-check-chip input, .compact-check-group:last-of-type .compact-check-chip input');
+        const savedChannels = (task.notifications || []).map((v) => String(v).toLowerCase());
         notifChecks.forEach((cb) => {
-          const label = cb.parentElement.querySelector("span").textContent.trim().toLowerCase();
-          cb.checked = task.notifications.includes(label);
+          const channel = (cb.getAttribute("data-channel") || cb.parentElement.querySelector("span").textContent || "")
+            .trim()
+            .toLowerCase();
+          cb.checked = savedChannels.includes(channel);
         });
       }
     }
@@ -2971,7 +2974,12 @@ function generateId() {
     if (!groups[fieldsetIndex]) return [];
     const checked = [];
     groups[fieldsetIndex].querySelectorAll('.compact-check-chip input:checked').forEach((cb) => {
-      checked.push(cb.parentElement.querySelector("span").textContent.trim().toLowerCase());
+      const channel = cb.getAttribute("data-channel");
+      if (channel) {
+        checked.push(channel.trim().toLowerCase());
+      } else {
+        checked.push(cb.parentElement.querySelector("span").textContent.trim().toLowerCase());
+      }
     });
     return checked;
   }
@@ -3014,6 +3022,27 @@ function generateId() {
         writeStore(STORE_KEYS.tasks, tasks);
         showToast("Task saved successfully");
         window.timenestNotify?.confirm("Task created", data.name, { taskId: savedId, linkUrl: `./task-detail.html?id=${encodeURIComponent(savedId)}` });
+      }
+      // If the user ticked "Set Alarm", schedule a device/system alarm.
+      if (data.notifications.includes("set-alarm") && data.time) {
+        const result = window.timenestNotify?.setAlarm({
+          __kind: "task",
+          id: savedId,
+          name: data.name,
+          date: data.date,
+          time: data.time,
+          linkUrl: `./task-detail.html?id=${encodeURIComponent(savedId)}`,
+        });
+        if (result && result.ok) {
+          const via = result.via === "android-intent"
+            ? "Opening clock app…"
+            : result.via === "ics-calendar"
+              ? "Downloading .ics — import to add the alarm"
+              : "Alarm scheduled in-app";
+          showToast("⏰ " + via, "info");
+        } else if (result && result.reason === "no-time") {
+          showToast("Set a time to enable the alarm", "warn");
+        }
       }
       // Kick off a scan so the due-soon notification fires immediately if applicable.
       setTimeout(() => window.timenestNotify?.scan(), 150);
@@ -3084,10 +3113,18 @@ function generateId() {
       categoryField.value = habit.category || "";
       scheduleField.value = habit.schedule || "";
       timeField.value = habit.time || "";
-      channelField.value = habit.channel || "";
+      if (channelField) channelField.value = habit.channel || "";
       goalField.value = habit.linkedGoal || "";
       ruleField.value = habit.successRule || "";
       notesField.value = habit.notes || "";
+      // Re-check the saved notification channels.
+      const saved = (habit.notifications || []).map((v) => String(v).toLowerCase());
+      document
+        .querySelectorAll('[data-notification-group] .compact-check-chip input')
+        .forEach((cb) => {
+          const channel = (cb.getAttribute("data-channel") || "").trim().toLowerCase();
+          if (channel) cb.checked = saved.includes(channel);
+        });
     }
   }
 
@@ -3096,12 +3133,22 @@ function generateId() {
     if (!action) return;
 
     if (action.dataset.action === "save-habit") {
+      // Collect selected notification channels from the new In-App / Push /
+      // Set Alarm checkbox group. Falls back to the legacy free-text
+      // channel input for backward compatibility with older saved habits.
+      const notificationChecks = document.querySelectorAll(
+        '[data-notification-group] .compact-check-chip input:checked'
+      );
+      const channels = Array.from(notificationChecks).map((cb) =>
+        (cb.getAttribute("data-channel") || "").trim().toLowerCase()
+      ).filter(Boolean);
       const data = {
         name: nameField.value.trim(),
         category: categoryField.value.trim(),
         schedule: scheduleField.value.trim(),
         time: timeField.value,
-        channel: channelField.value.trim(),
+        channel: channelField ? channelField.value.trim() : "",
+        notifications: channels,
         linkedGoal: goalField.value.trim(),
         successRule: ruleField.value.trim(),
         notes: notesField.value.trim(),
@@ -3124,6 +3171,28 @@ function generateId() {
         writeStore(STORE_KEYS.habits, habits);
         showToast("Habit saved successfully");
         window.timenestNotify?.confirm("Habit created", data.name, { habitId: savedHabitId, linkUrl: "./habits.html" });
+      }
+      // If the user ticked "Set Alarm" for this habit, trigger a device
+      // alarm for the configured Preferred Time. Habits repeat daily so
+      // the in-page fallback reschedules itself each midnight.
+      if (data.notifications.includes("set-alarm") && data.time) {
+        const result = window.timenestNotify?.setAlarm({
+          __kind: "habit",
+          id: savedHabitId,
+          name: data.name,
+          time: data.time,
+          linkUrl: "./habits.html",
+        });
+        if (result && result.ok) {
+          const via = result.via === "android-intent"
+            ? "Opening clock app…"
+            : result.via === "ics-calendar"
+              ? "Downloading .ics — import to add the alarm"
+              : "Alarm scheduled in-app";
+          showToast("⏰ " + via, "info");
+        } else if (result && result.reason === "no-time") {
+          showToast("Set a preferred time to enable the alarm", "warn");
+        }
       }
       setTimeout(() => window.timenestNotify?.scan(), 150);
       setTimeout(() => { window.location.href = "./habits.html"; }, 800);
