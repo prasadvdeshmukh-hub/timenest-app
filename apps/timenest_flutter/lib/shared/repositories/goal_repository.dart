@@ -70,47 +70,6 @@ class GoalRepository {
     await batch.commit();
   }
 
-  /// Create the three default sample goals for a new user.
-  Future<void> createDefaultGoals() async {
-    final now = DateTime.now();
-    final defaults = [
-      GoalModel(
-        id: '',
-        name: 'Fitness Goal',
-        description: 'Build a consistent 30-day workout routine.',
-        type: GoalType.shortTerm,
-        startDate: now,
-        targetDate: now.add(const Duration(days: 30)),
-        isDefaultSample: true,
-        createdAt: now,
-        updatedAt: now,
-      ),
-      GoalModel(
-        id: '',
-        name: 'Financial Goal',
-        description: 'Set up an emergency fund and monthly budget tracker.',
-        type: GoalType.shortTerm,
-        startDate: now,
-        targetDate: now.add(const Duration(days: 60)),
-        isDefaultSample: true,
-        createdAt: now,
-        updatedAt: now,
-      ),
-      GoalModel(
-        id: '',
-        name: 'Learning Goal',
-        description: 'Complete a Flutter course and build a portfolio project.',
-        type: GoalType.longTerm,
-        startDate: now,
-        targetDate: now.add(const Duration(days: 180)),
-        isDefaultSample: true,
-        createdAt: now,
-        updatedAt: now,
-      ),
-    ];
-
-    for (final goal in defaults) {
-      await createGoal(goal);
-    }
-  }
+  // Default sample goals have been intentionally removed. New users start
+  // with an empty goals collection and must create their own.
 }

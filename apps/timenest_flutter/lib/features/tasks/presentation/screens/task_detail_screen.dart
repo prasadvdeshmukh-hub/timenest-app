@@ -26,23 +26,68 @@ class TaskDetailScreen extends ConsumerWidget {
     final tasksAsync = ref.watch(tasksForGoalProvider(goalId));
     final goalsAsync = ref.watch(goalsStreamProvider);
 
+    // Default sample data has been removed — if Firestore has nothing
+    // for this id, show an empty state instead of crashing on an empty
+    // mock list.
     final allMockTasks = [...MockData.todaysTasks, ...MockData.upcomingTasks];
-    final task = tasksAsync.when(
-      data: (tasks) => tasks.where((t) => t.id == taskId).firstOrNull,
-      loading: () => null,
-      error: (_, __) => null,
-    ) ?? allMockTasks.firstWhere(
-      (t) => t.id == taskId,
-      orElse: () => allMockTasks.first,
-    );
+    final TaskModel? task = tasksAsync.when(
+          data: (tasks) => tasks.where((t) => t.id == taskId).firstOrNull,
+          loading: () => null,
+          error: (_, __) => null,
+        ) ??
+        allMockTasks.where((t) => t.id == taskId).firstOrNull;
     final goal = goalsAsync.when(
-      data: (goals) => goals.where((g) => g.id == goalId).firstOrNull,
-      loading: () => null,
-      error: (_, __) => null,
-    ) ?? MockData.goals.firstWhere(
-      (g) => g.id == goalId,
-      orElse: () => MockData.goals.first,
-    );
+          data: (goals) => goals.where((g) => g.id == goalId).firstOrNull,
+          loading: () => null,
+          error: (_, __) => null,
+        ) ??
+        MockData.goals.where((g) => g.id == goalId).firstOrNull;
+
+    if (task == null || goal == null) {
+      return Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [AppColors.darkBg, Color(0xFF0F1629), Color(0xFF121A33)],
+            ),
+          ),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: AppSpacing.md, top: AppSpacing.sm),
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios, size: 20),
+                    onPressed: () => context.pop(),
+                    color: AppColors.textSecondaryDark,
+                  ),
+                ),
+                const Expanded(
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(AppSpacing.lg),
+                      child: Text(
+                        'Task not found.\nCreate a new task to get started.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppColors.textSecondaryDark,
+                          fontSize: 15,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       body: Container(

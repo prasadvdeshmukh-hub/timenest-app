@@ -146,30 +146,16 @@ class NotificationsScreen extends ConsumerWidget {
                             ?.copyWith(color: Colors.white),
                       ),
                       const SizedBox(height: AppSpacing.md),
-                      _NotificationItem(
-                        icon: Icons.schedule,
-                        iconColor: AppColors.warning,
-                        title: 'Task deadline approaching',
-                        subtitle:
-                            'Complete "Q2 Marketing Plan" by today',
-                        time: '2 hours ago',
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      _NotificationItem(
-                        icon: Icons.trending_up,
-                        iconColor: AppColors.cyan,
-                        title: 'Goal progress update',
-                        subtitle:
-                            'You\'re 75% toward your Fitness Goal',
-                        time: '5 hours ago',
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      _NotificationItem(
-                        icon: Icons.check_circle,
-                        iconColor: Colors.greenAccent,
-                        title: 'Daily habit reminder',
-                        subtitle: 'Don\'t forget: Morning Workout',
-                        time: '1 day ago',
+                      // Default sample notifications have been removed —
+                      // real notifications will render here once they
+                      // flow in from the backend.
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.lg),
+                        child: Text(
+                          'No notifications yet.',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ),
                     ],
                   ),

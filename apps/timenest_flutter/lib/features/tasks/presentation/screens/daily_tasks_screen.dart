@@ -89,11 +89,21 @@ class DailyTasksScreen extends ConsumerWidget {
                                 .titleLarge
                                 ?.copyWith(color: Colors.white)),
                         const SizedBox(height: AppSpacing.md),
-                        ...todayTasks.map((t) => TaskRow(
-                              task: t,
-                              onTap: () =>
-                                  context.push('/task/${t.goalId}/${t.id}'),
-                            )),
+                        if (todayTasks.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: AppSpacing.sm),
+                            child: Text(
+                              'No tasks scheduled for today.',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          )
+                        else
+                          ...todayTasks.map((t) => TaskRow(
+                                task: t,
+                                onTap: () =>
+                                    context.push('/task/${t.goalId}/${t.id}'),
+                              )),
                       ],
                     ),
                   ),
@@ -116,12 +126,22 @@ class DailyTasksScreen extends ConsumerWidget {
                                 .titleLarge
                                 ?.copyWith(color: Colors.white)),
                         const SizedBox(height: AppSpacing.md),
-                        ...upcomingTasks.map((t) => TaskRow(
-                              task: t,
-                              isUpcoming: true,
-                              onTap: () =>
-                                  context.push('/task/${t.goalId}/${t.id}'),
-                            )),
+                        if (upcomingTasks.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: AppSpacing.sm),
+                            child: Text(
+                              'No upcoming tasks. Add one to plan ahead.',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          )
+                        else
+                          ...upcomingTasks.map((t) => TaskRow(
+                                task: t,
+                                isUpcoming: true,
+                                onTap: () =>
+                                    context.push('/task/${t.goalId}/${t.id}'),
+                              )),
                       ],
                     ),
                   ),

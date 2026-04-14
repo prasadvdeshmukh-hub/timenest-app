@@ -52,30 +52,9 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
   @override
   void initState() {
     super.initState();
-    // Mock data: 3 habits
-    habits = [
-      Habit(
-        id: '1',
-        name: 'Morning Workout',
-        streakDays: 12,
-        lastCheckIn: DateTime.now().subtract(const Duration(days: 1)),
-        isCheckedToday: false,
-      ),
-      Habit(
-        id: '2',
-        name: 'Read 30 mins',
-        streakDays: 28,
-        lastCheckIn: DateTime.now(),
-        isCheckedToday: true,
-      ),
-      Habit(
-        id: '3',
-        name: 'Meditation',
-        streakDays: 5,
-        lastCheckIn: DateTime.now().subtract(const Duration(days: 2)),
-        isCheckedToday: false,
-      ),
-    ];
+    // Default sample habits have been removed — users start with an
+    // empty list and add their own habits.
+    habits = <Habit>[];
   }
 
   void _checkInHabit(int index) {

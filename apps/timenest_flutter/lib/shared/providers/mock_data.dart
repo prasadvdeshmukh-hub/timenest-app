@@ -2,189 +2,35 @@ import '../models/goal_model.dart';
 import '../models/task_model.dart';
 import '../models/dashboard_summary.dart';
 
-/// Mock data used until Firebase is connected.
-/// Mirrors the prototype HTML content for visual parity.
+/// Empty data placeholders used before Firebase is connected.
+///
+/// Default sample goals, tasks, and habits have been removed so that
+/// a fresh user lands on an empty dashboard. Screens read from these
+/// lists as a safe fallback when Firestore streams are still loading
+/// or have errored — they should always be empty in production.
 class MockData {
   MockData._();
 
-  static final now = DateTime.now();
+  static final DateTime now = DateTime.now();
 
-  static const dashboardSummary = DashboardSummary(
-    completedGoals: 12,
-    inProgressGoals: 6,
-    completedOnTime: 9,
-    delayedGoals: 3,
-    activeStreak: 14,
-    snoozedReminders: 4,
-    recurringTasksToday: 11,
-    executionRhythm: 83,
+  /// Zeroed dashboard summary — no default values shown to new users.
+  static const DashboardSummary dashboardSummary = DashboardSummary(
+    completedGoals: 0,
+    inProgressGoals: 0,
+    completedOnTime: 0,
+    delayedGoals: 0,
+    activeStreak: 0,
+    snoozedReminders: 0,
+    recurringTasksToday: 0,
+    executionRhythm: 0,
   );
 
-  static final List<GoalModel> goals = [
-    GoalModel(
-      id: 'g1',
-      name: 'Fitness Goal',
-      description: 'Finish 30-day strength cycle. 4 sessions left and recovery tasks are scheduled.',
-      type: GoalType.shortTerm,
-      status: GoalStatus.inProgress,
-      startDate: now.subtract(const Duration(days: 20)),
-      targetDate: now.add(const Duration(days: 10)),
-      progressPercent: 84,
-      createdAt: now.subtract(const Duration(days: 20)),
-      updatedAt: now,
-    ),
-    GoalModel(
-      id: 'g2',
-      name: 'Financial Goal',
-      description: 'Build emergency buffer. Auto-save rules are working and 2 review tasks remain.',
-      type: GoalType.shortTerm,
-      status: GoalStatus.inProgress,
-      startDate: now.subtract(const Duration(days: 30)),
-      targetDate: now.add(const Duration(days: 30)),
-      progressPercent: 67,
-      createdAt: now.subtract(const Duration(days: 30)),
-      updatedAt: now,
-    ),
-    GoalModel(
-      id: 'g3',
-      name: 'Learning Goal',
-      description: 'Ship Flutter UI prototype. Main review screens are in progress and dashboard is complete.',
-      type: GoalType.shortTerm,
-      status: GoalStatus.inProgress,
-      startDate: now.subtract(const Duration(days: 15)),
-      targetDate: now.add(const Duration(days: 45)),
-      progressPercent: 73,
-      createdAt: now.subtract(const Duration(days: 15)),
-      updatedAt: now,
-    ),
-    GoalModel(
-      id: 'g4',
-      name: 'Health Goal',
-      description: 'Sleep before 11 PM for 21 days. Night shutdown routine has improved the streak.',
-      type: GoalType.shortTerm,
-      status: GoalStatus.delayed,
-      startDate: now.subtract(const Duration(days: 10)),
-      targetDate: now.add(const Duration(days: 11)),
-      progressPercent: 58,
-      createdAt: now.subtract(const Duration(days: 10)),
-      updatedAt: now,
-    ),
-    GoalModel(
-      id: 'g5',
-      name: 'Launch TimeNest MVP',
-      description: 'Responsive Flutter app with dashboard, goals, tasks, habits, calendar, and multi-channel reminders.',
-      type: GoalType.longTerm,
-      status: GoalStatus.inProgress,
-      startDate: now,
-      targetDate: now.add(const Duration(days: 90)),
-      progressPercent: 81,
-      createdAt: now,
-      updatedAt: now,
-    ),
-    GoalModel(
-      id: 'g6',
-      name: 'Operations Goal',
-      description: 'Streamline hosting, CI/CD, and production monitoring.',
-      type: GoalType.longTerm,
-      status: GoalStatus.inProgress,
-      startDate: now.subtract(const Duration(days: 60)),
-      targetDate: now.add(const Duration(days: 120)),
-      progressPercent: 45,
-      createdAt: now.subtract(const Duration(days: 60)),
-      updatedAt: now,
-    ),
-  ];
+  /// No default sample goals.
+  static final List<GoalModel> goals = <GoalModel>[];
 
-  static final List<TaskModel> todaysTasks = [
-    TaskModel(
-      id: 't1',
-      goalId: 'g5',
-      name: 'Submit investor-ready roadmap',
-      notes: 'Finalize the milestone slide, revise financial assumptions, and send the updated version before the evening review meeting.',
-      priority: TaskPriority.high,
-      deadlineDate: DateTime(now.year, now.month, now.day, 19, 30),
-      deadlineTimeEnabled: true,
-      deadlineHour: 19,
-      deadlineMinute: 30,
-      reminderChannels: const ReminderChannels(
-        push: true, inApp: true, email: true, whatsapp: true,
-      ),
-      subtasks: [
-        const Subtask(id: 's1', name: 'Update milestone slide'),
-        const Subtask(id: 's2', name: 'Validate financial numbers'),
-        const Subtask(id: 's3', name: 'Send review copy'),
-      ],
-      createdAt: now,
-      updatedAt: now,
-    ),
-    TaskModel(
-      id: 't2',
-      goalId: 'g1',
-      name: 'Complete 45 min workout',
-      notes: 'Full-body strength session.',
-      priority: TaskPriority.medium,
-      deadlineDate: DateTime(now.year, now.month, now.day, 6, 30),
-      deadlineTimeEnabled: true,
-      deadlineHour: 6,
-      deadlineMinute: 30,
-      isHabit: true,
-      recurrenceType: RecurrenceType.daily,
-      createdAt: now,
-      updatedAt: now,
-    ),
-    TaskModel(
-      id: 't3',
-      goalId: 'g3',
-      name: 'Practice spoken Marathi lesson',
-      notes: 'Streak day 14.',
-      priority: TaskPriority.medium,
-      deadlineDate: DateTime(now.year, now.month, now.day, 20, 0),
-      deadlineTimeEnabled: true,
-      deadlineHour: 20,
-      deadlineMinute: 0,
-      isHabit: true,
-      recurrenceType: RecurrenceType.daily,
-      createdAt: now,
-      updatedAt: now,
-    ),
-  ];
+  /// No default sample tasks for today.
+  static final List<TaskModel> todaysTasks = <TaskModel>[];
 
-  static final List<TaskModel> upcomingTasks = [
-    TaskModel(
-      id: 't4',
-      goalId: 'g2',
-      name: 'Review monthly budget targets',
-      priority: TaskPriority.low,
-      deadlineDate: now.add(const Duration(days: 1)).copyWith(hour: 9, minute: 0),
-      deadlineTimeEnabled: true,
-      deadlineHour: 9,
-      deadlineMinute: 0,
-      createdAt: now,
-      updatedAt: now,
-    ),
-    TaskModel(
-      id: 't5',
-      goalId: 'g6',
-      name: 'Renew hosting and production services',
-      priority: TaskPriority.high,
-      deadlineDate: now.add(const Duration(days: 2)).copyWith(hour: 11, minute: 45),
-      deadlineTimeEnabled: true,
-      deadlineHour: 11,
-      deadlineMinute: 45,
-      createdAt: now,
-      updatedAt: now,
-    ),
-    TaskModel(
-      id: 't6',
-      goalId: 'g3',
-      name: 'Prepare Q2 learning sprint plan',
-      priority: TaskPriority.medium,
-      deadlineDate: now.add(const Duration(days: 4)).copyWith(hour: 19, minute: 0),
-      deadlineTimeEnabled: true,
-      deadlineHour: 19,
-      deadlineMinute: 0,
-      createdAt: now,
-      updatedAt: now,
-    ),
-  ];
+  /// No default sample upcoming tasks.
+  static final List<TaskModel> upcomingTasks = <TaskModel>[];
 }

@@ -247,24 +247,29 @@ class DashboardScreen extends ConsumerWidget {
                           eyebrow: 'Goal Drill-Down',
                           title: 'Progress Radar',
                           action: 'Details',
-                          onAction: () => context.push('/goal/${goals.first.id}'),
+                          onAction: () => goals.isEmpty
+                              ? context.push('/goals')
+                              : context.push('/goal/${goals.first.id}'),
                         ),
                         const SizedBox(height: AppSpacing.md),
-                        ProgressRow(
-                          label: 'Fitness Goal',
-                          detail: '18 of 24 tasks completed',
-                          percent: 0.75,
-                        ),
-                        ProgressRow(
-                          label: 'Financial Goal',
-                          detail: '6 of 10 tasks completed',
-                          percent: 0.60,
-                        ),
-                        ProgressRow(
-                          label: 'Learning Goal',
-                          detail: '22 of 28 tasks completed',
-                          percent: 0.79,
-                        ),
+                        if (goals.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: AppSpacing.md),
+                            child: Text(
+                              'No goals yet. Add one to start tracking progress.',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          )
+                        else
+                          ...goals.take(3).map(
+                                (g) => ProgressRow(
+                                  label: g.name,
+                                  detail: g.description ?? '',
+                                  percent: (g.progressPercent / 100)
+                                      .clamp(0.0, 1.0),
+                                ),
+                              ),
                         const SizedBox(height: AppSpacing.md),
                         // Insight boxes
                         Row(
