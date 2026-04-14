@@ -2949,12 +2949,15 @@ function generateId() {
 
   const params = new URLSearchParams(window.location.search);
   const editId = params.get("id");
+  const queryGoalId = params.get("goalId");
+  let linkedGoalId = queryGoalId || "";
 
   // Load existing task for editing
   if (editId) {
     const tasks = readStore(STORE_KEYS.tasks);
     const task = tasks.find((t) => t.id === editId);
     if (task) {
+      linkedGoalId = task.goalId || queryGoalId || "";
       nameField.value = task.name || "";
       priorityField.value = task.priority || "";
       dateField.value = task.date || "";
@@ -2998,6 +3001,7 @@ function generateId() {
       notes: notesField.value.trim(),
       frequency: getCheckedValues(0),
       notifications: getCheckedValues(1),
+      goalId: linkedGoalId || null,
     };
   }
 
@@ -3039,13 +3043,28 @@ function generateId() {
     if (act === "reset-task") {
       nameField.value = "";
       priorityField.value = "";
-      dateField.value = "2026-04-01";
-      timeField.value = "19:30";
+      dateField.value = "";
+      timeField.value = "";
       notesField.value = "";
       document.querySelectorAll('.compact-check-chip input').forEach((cb) => cb.checked = false);
       const noneCheck = document.querySelector('.compact-check-group:first-of-type .compact-check-chip input');
       if (noneCheck) noneCheck.checked = true;
       showToast("Form reset", "info");
+    }
+
+    if (act === "delete-task") {
+      if (!editId) { showToast("No saved task to delete", "warn"); return; }
+      if (!confirm("Delete this task permanently?")) return;
+      writeStore(
+        STORE_KEYS.tasks,
+        readStore(STORE_KEYS.tasks).filter((task) => task.id !== editId)
+      );
+      writeStore(
+        STORE_KEYS.subtasks,
+        readStore(STORE_KEYS.subtasks).filter((subtask) => subtask.parentTaskId !== editId)
+      );
+      showToast("Task deleted");
+      setTimeout(() => { window.location.href = "./daily-tasks.html"; }, 800);
     }
   });
 })();
@@ -3106,10 +3125,21 @@ function generateId() {
           showToast("Habit updated successfully");
         }
       } else {
-        habits.push({ id: generateId(), ...data, createdAt: new Date().toISOString() });
+        habits.push({ id: generateId(), ...data, history: {}, createdAt: new Date().toISOString() });
         writeStore(STORE_KEYS.habits, habits);
         showToast("Habit saved successfully");
       }
+      setTimeout(() => { window.location.href = "./habits.html"; }, 800);
+    }
+
+    if (action.dataset.action === "delete-habit") {
+      if (!editId) { showToast("No saved habit to delete", "warn"); return; }
+      if (!confirm("Delete this habit permanently?")) return;
+      writeStore(
+        STORE_KEYS.habits,
+        readStore(STORE_KEYS.habits).filter((habit) => habit.id !== editId)
+      );
+      showToast("Habit deleted");
       setTimeout(() => { window.location.href = "./habits.html"; }, 800);
     }
   });

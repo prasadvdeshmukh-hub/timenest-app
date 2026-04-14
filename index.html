@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>TIMENEST Dashboard Preview</title>
+    <title>TIMENEST Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -339,7 +339,7 @@
                 <a class="inline-button" href="./daily-tasks.html">View All</a>
               </div>
 
-              <div class="task-list">
+              <div class="task-list" id="dashboard-today-list">
                 <a class="task-row is-priority-high" href="./task-detail.html">
                   <span class="task-status"></span>
                   <span class="task-main">
@@ -386,7 +386,7 @@
                 <a class="inline-button" href="./calendar.html">Calendar</a>
               </div>
 
-              <div class="task-list">
+              <div class="task-list" id="dashboard-upcoming-list">
                 <a class="task-row is-priority-low" href="./task-detail.html">
                   <span class="task-status is-upcoming"></span>
                   <span class="task-main">
@@ -512,5 +512,6 @@
     </section>
 
     <script src="./script.js"></script>
+    <script src="./store-ui.js"></script>
   </body>
 </html>

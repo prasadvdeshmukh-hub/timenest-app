@@ -26,11 +26,11 @@
           <p class="mini-label">Task Editor</p>
           <h2 class="section-title">Create a task with date, time, recurrence, and reminders</h2>
           <div class="form-grid">
-            <label class="field"><span>Task Name</span><input type="text" id="task-field-name" placeholder="Submit investor-ready roadmap" /></label>
+            <label class="field"><span>Task Name</span><input type="text" id="task-field-name" placeholder="Enter task name" /></label>
             <label class="field"><span>Priority</span><input type="text" id="task-field-priority" placeholder="Low / Medium / High" /></label>
-            <label class="field"><span>Deadline Date</span><input type="date" id="task-field-date" value="2026-04-01" /></label>
-            <label class="field"><span>Time</span><input type="time" id="task-field-time" value="19:30" /></label>
-            <label class="field full"><span>Notes</span><input type="text" id="task-field-notes" placeholder="Add notes, task context, or checklist" /></label>
+            <label class="field"><span>Deadline Date</span><input type="date" id="task-field-date" /></label>
+            <label class="field"><span>Time</span><input type="time" id="task-field-time" /></label>
+            <label class="field full"><span>Notes</span><input type="text" id="task-field-notes" placeholder="Add notes, context, or a checklist" /></label>
           </div>
           <div class="task-editor-compact-stack">
             <fieldset class="compact-check-group">
@@ -88,7 +88,7 @@
               </div>
             </fieldset>
           </div>
-          <div class="form-actions task-editor-actions"><span class="soft-pill" data-action="save-task">Save Task</span><span class="soft-pill" data-action="preview-reminder">Preview Reminder</span><a class="soft-pill" href="./subtask-editor.html">Add Subtask</a><span class="soft-pill" data-action="reset-task">Reset</span></div>
+          <div class="form-actions task-editor-actions"><span class="soft-pill" data-action="save-task">Save Task</span><span class="soft-pill" data-action="preview-reminder">Preview Reminder</span><a class="soft-pill" href="./subtask-editor.html">Add Subtask</a><span class="soft-pill" data-action="reset-task">Reset</span><span class="soft-pill" data-action="delete-task">Delete Task</span></div>
         </article>
       </section>
     </main>
@@ -99,5 +99,6 @@
       <a class="tab-link" href="./calendar.html?view=habits">Habits</a>
     </nav>
     <script src="./script.js"></script>
+    <script src="./store-ui.js"></script>
   </body>
 </html>
