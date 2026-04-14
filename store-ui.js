@@ -1350,7 +1350,6 @@
                   <strong>No goals yet</strong>
                   <small>Create a ${panelView === "long" ? "long-term" : "short-term"} goal to start planning.</small>
                 </div>
-                <a class="soft-pill" href="./goal-editor.html?goalType=${panelView === "long" ? "long-term" : "short-term"}">Add Goal</a>
               </div>
             `;
       }
