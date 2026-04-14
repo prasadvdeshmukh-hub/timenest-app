@@ -36,6 +36,16 @@
             <p>6 task reminders, 8 recurring reminders, 4 daily summaries.</p>
           </article>
         </section>
+        <section class="tn-inbox-panel" aria-label="All notifications">
+          <div class="tn-inbox-panel-head">
+            <strong>Inbox</strong>
+            <div class="tn-inbox-tools">
+              <button type="button" data-tn-mark-all>Mark all read</button>
+              <button type="button" data-tn-clear>Clear</button>
+            </div>
+          </div>
+          <div data-tn-inbox-list></div>
+        </section>
         <section class="channel-grid">
           <article class="channel-card" data-channel="push" data-channel-state="enabled"><p class="mini-label">Push</p><strong class="channel-status">Enabled</strong><p>Fastest primary channel for task due alerts.</p><span class="soft-pill channel-toggle" data-action="toggle-channel">Toggle</span></article>
           <article class="channel-card" data-channel="email" data-channel-state="enabled"><p class="mini-label">Email</p><strong class="channel-status">Enabled</strong><p>Morning and evening summaries plus backups.</p><span class="soft-pill channel-toggle" data-action="toggle-channel">Toggle</span></article>

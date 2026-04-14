@@ -319,31 +319,29 @@
     let bell = document.getElementById("timenest-bell");
     if (bell) return bell;
     if (!document.body) return null;
-    bell = document.createElement("div");
+    // On the notifications page itself we don't need the floating bell —
+    // the page already lists everything.
+    const path = (window.location.pathname || "").toLowerCase();
+    if (path.endsWith("/notifications.html") || path.endsWith("notifications.html")) {
+      return null;
+    }
+    bell = document.createElement("a");
     bell.id = "timenest-bell";
+    bell.href = "./notifications.html";
+    bell.setAttribute("aria-label", "Notifications");
     bell.innerHTML = `
-      <button type="button" class="tn-bell-btn" aria-label="Notifications" aria-expanded="false">
+      <span class="tn-bell-btn" role="presentation">
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
           <path fill="currentColor" d="M12 22a2.25 2.25 0 0 0 2.2-1.8h-4.4A2.25 2.25 0 0 0 12 22Zm7.5-5.5V11a7.5 7.5 0 0 0-6-7.35V3a1.5 1.5 0 1 0-3 0v.65A7.5 7.5 0 0 0 4.5 11v5.5L3 18v1h18v-1l-1.5-1.5Z"/>
         </svg>
         <span class="tn-bell-badge" hidden>0</span>
-      </button>
-      <section class="tn-inbox" role="dialog" aria-label="Notifications inbox" hidden>
-        <header class="tn-inbox-head">
-          <strong>Notifications</strong>
-          <div class="tn-inbox-tools">
-            <button type="button" class="tn-inbox-mark-all">Mark all read</button>
-            <button type="button" class="tn-inbox-clear">Clear</button>
-          </div>
-        </header>
-        <div class="tn-inbox-list" data-tn-inbox-list></div>
-      </section>
+      </span>
     `;
     document.body.appendChild(bell);
 
     const style = document.createElement("style");
     style.textContent = `
-      #timenest-bell { position: fixed; top: 18px; right: 18px; z-index: 9998; font-family: 'Space Grotesk', system-ui, sans-serif; }
+      #timenest-bell { position: fixed; top: 18px; right: 18px; z-index: 9998; font-family: 'Space Grotesk', system-ui, sans-serif; text-decoration: none; }
       #timenest-bell .tn-bell-btn {
         position: relative; width: 44px; height: 44px; border-radius: 14px;
         background: rgba(15,20,40,0.72); color: #b6d4ff;
@@ -353,96 +351,18 @@
         box-shadow: 0 4px 18px rgba(15,22,40,0.45);
         transition: transform .15s ease, border-color .2s ease;
       }
-      #timenest-bell .tn-bell-btn:hover { transform: translateY(-1px); border-color: rgba(122,242,156,0.45); }
+      #timenest-bell:hover .tn-bell-btn { transform: translateY(-1px); border-color: rgba(122,242,156,0.45); }
       #timenest-bell .tn-bell-badge {
         position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px;
         border-radius: 999px; background: #ff6b6b; color: white; font-size: 11px; font-weight: 700;
         display: inline-flex; align-items: center; justify-content: center;
         border: 1.5px solid rgba(15,20,40,0.85);
       }
-      #timenest-bell .tn-inbox {
-        position: absolute; top: 52px; right: 0; width: 360px; max-height: 70vh;
-        background: rgba(15,20,40,0.96); color: #d7e5ff;
-        border: 1px solid rgba(92,232,255,0.32); border-radius: 18px;
-        box-shadow: 0 18px 48px rgba(5,10,30,0.55);
-        padding: 12px; overflow: hidden; display: flex; flex-direction: column;
-      }
-      #timenest-bell .tn-inbox-head { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 10px; border-bottom: 1px solid rgba(122,242,156,0.15); }
-      #timenest-bell .tn-inbox-tools button {
-        background: transparent; color: #7af29c; border: 1px solid rgba(122,242,156,0.25);
-        padding: 4px 9px; border-radius: 10px; font-size: 11px; cursor: pointer; margin-left: 6px;
-      }
-      #timenest-bell .tn-inbox-list { overflow: auto; margin-top: 6px; }
-      #timenest-bell .tn-inbox-item {
-        display: block; padding: 10px 8px; border-bottom: 1px dashed rgba(92,232,255,0.15);
-        color: inherit; text-decoration: none; cursor: pointer;
-      }
-      #timenest-bell .tn-inbox-item:hover { background: rgba(92,232,255,0.06); }
-      #timenest-bell .tn-inbox-item.unread { background: rgba(122,242,156,0.06); }
-      #timenest-bell .tn-inbox-item strong { display: block; font-size: 13px; margin-bottom: 2px; color: #eaf4ff; }
-      #timenest-bell .tn-inbox-item small { display: block; font-size: 11px; color: #8aa4cc; }
-      #timenest-bell .tn-inbox-item .tn-time { font-size: 10px; color: #66809e; margin-top: 3px; }
-      #timenest-bell .tn-inbox-empty { text-align: center; padding: 24px 8px; color: #8aa4cc; font-size: 12px; }
-      #timenest-bell .tn-type-overdue strong { color: #ff9aa2; }
-      #timenest-bell .tn-type-due-soon strong { color: #5ce8ff; }
-      #timenest-bell .tn-type-habit-nudge strong { color: #b6ff9a; }
-      #timenest-bell .tn-type-confirmation strong { color: #d7e5ff; }
       @media (max-width: 500px) {
         #timenest-bell { top: 14px; right: 14px; }
-        #timenest-bell .tn-inbox { width: calc(100vw - 28px); right: 0; }
       }
     `;
     document.head.appendChild(style);
-
-    const btn = bell.querySelector(".tn-bell-btn");
-    const panel = bell.querySelector(".tn-inbox");
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const open = !panel.hasAttribute("hidden");
-      if (open) {
-        panel.setAttribute("hidden", "");
-        btn.setAttribute("aria-expanded", "false");
-      } else {
-        renderInbox();
-        panel.removeAttribute("hidden");
-        btn.setAttribute("aria-expanded", "true");
-      }
-    });
-    document.addEventListener("click", (e) => {
-      if (!bell.contains(e.target)) {
-        panel.setAttribute("hidden", "");
-        btn.setAttribute("aria-expanded", "false");
-      }
-    });
-    bell.querySelector(".tn-inbox-mark-all").addEventListener("click", (e) => {
-      e.stopPropagation();
-      const all = readNotifs().map((n) => ({ ...n, readAt: n.readAt || new Date().toISOString() }));
-      writeNotifs(all);
-      renderInbox(); renderBell();
-    });
-    bell.querySelector(".tn-inbox-clear").addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (!confirm("Clear all notifications?")) return;
-      writeNotifs([]);
-      renderInbox(); renderBell();
-    });
-    bell.querySelector(".tn-inbox-list").addEventListener("click", (e) => {
-      const item = e.target.closest("[data-tn-id]");
-      if (!item) return;
-      const id = item.getAttribute("data-tn-id");
-      const all = readNotifs();
-      const idx = all.findIndex((n) => n.id === id);
-      if (idx !== -1 && !all[idx].readAt) {
-        all[idx].readAt = new Date().toISOString();
-        writeNotifs(all);
-      }
-      const link = item.getAttribute("data-tn-link");
-      if (link && link !== "null") {
-        window.location.href = link;
-      } else {
-        renderInbox(); renderBell();
-      }
-    });
     return bell;
   }
 
@@ -471,34 +391,117 @@
   }
 
   function renderInbox() {
-    const bell = document.getElementById("timenest-bell");
-    if (!bell) return;
-    const list = bell.querySelector("[data-tn-inbox-list]");
+    // The inbox is only rendered on the dedicated notifications page.
+    const list = document.querySelector("[data-tn-inbox-list]");
     if (!list) return;
-    const items = readNotifs().slice().sort((a, b) => Date.parse(b.deliveredAt) - Date.parse(a.deliveredAt));
+    const items = readNotifs()
+      .slice()
+      .sort((a, b) => Date.parse(b.deliveredAt) - Date.parse(a.deliveredAt));
     if (items.length === 0) {
-      list.innerHTML = '<div class="tn-inbox-empty">No notifications yet. You’ll see task reminders, overdue alerts, and habit nudges here.</div>';
+      list.innerHTML =
+        '<div class="tn-inbox-empty">No notifications yet. Task reminders, overdue alerts, and habit nudges will appear here.</div>';
       return;
     }
     list.innerHTML = items
       .map(
         (n) => `
-      <div class="tn-inbox-item tn-type-${escapeAttr(n.type)} ${n.readAt ? "" : "unread"}" data-tn-id="${escapeAttr(n.id)}" data-tn-link="${escapeAttr(n.linkUrl || "")}">
+      <a class="tn-inbox-item tn-type-${escapeAttr(n.type)} ${n.readAt ? "" : "unread"}" data-tn-id="${escapeAttr(n.id)}" data-tn-link="${escapeAttr(n.linkUrl || "")}" href="${escapeAttr(n.linkUrl || "#")}">
         <strong>${escapeHtml(n.title)}</strong>
         <small>${escapeHtml(n.body || "")}</small>
         <div class="tn-time">${escapeHtml(relTime(n.deliveredAt))}</div>
-      </div>`
+      </a>`
       )
       .join("");
+  }
+
+  function mountInboxPage() {
+    const list = document.querySelector("[data-tn-inbox-list]");
+    if (!list) return;
+
+    // Inject inbox-specific styles once.
+    if (!document.getElementById("tn-inbox-page-styles")) {
+      const style = document.createElement("style");
+      style.id = "tn-inbox-page-styles";
+      style.textContent = `
+        .tn-inbox-panel { margin: 16px 0 24px; padding: 14px 14px 4px; border-radius: 18px;
+          background: rgba(15,20,40,0.7); border: 1px solid rgba(92,232,255,0.22); }
+        .tn-inbox-panel-head { display:flex; justify-content:space-between; align-items:center;
+          padding: 2px 4px 10px; border-bottom: 1px solid rgba(122,242,156,0.15); }
+        .tn-inbox-panel-head strong { color:#eaf4ff; font-size:15px; letter-spacing:0.02em; }
+        .tn-inbox-tools button { background: transparent; color: #7af29c;
+          border: 1px solid rgba(122,242,156,0.25); padding: 4px 10px; border-radius: 10px;
+          font-size: 12px; cursor: pointer; margin-left: 6px; }
+        [data-tn-inbox-list] { display:flex; flex-direction:column; }
+        .tn-inbox-item { display:block; padding: 12px 6px; border-bottom: 1px dashed rgba(92,232,255,0.15);
+          color:#d7e5ff; text-decoration:none; }
+        .tn-inbox-item:hover { background: rgba(92,232,255,0.06); }
+        .tn-inbox-item.unread { background: rgba(122,242,156,0.06); }
+        .tn-inbox-item strong { display:block; font-size:14px; margin-bottom:2px; color:#eaf4ff; }
+        .tn-inbox-item small { display:block; font-size:12px; color:#8aa4cc; }
+        .tn-inbox-item .tn-time { font-size: 10px; color:#66809e; margin-top: 4px; }
+        .tn-inbox-empty { text-align:center; padding: 24px 8px; color:#8aa4cc; font-size:13px; }
+        .tn-type-overdue strong { color:#ff9aa2; }
+        .tn-type-due-soon strong { color:#5ce8ff; }
+        .tn-type-habit-nudge strong { color:#b6ff9a; }
+        .tn-type-confirmation strong { color:#d7e5ff; }
+      `;
+      document.head.appendChild(style);
+    }
+
+    const markAll = document.querySelector("[data-tn-mark-all]");
+    const clearAll = document.querySelector("[data-tn-clear]");
+    if (markAll && !markAll.dataset.tnBound) {
+      markAll.dataset.tnBound = "1";
+      markAll.addEventListener("click", () => {
+        const all = readNotifs().map((n) => ({
+          ...n,
+          readAt: n.readAt || new Date().toISOString(),
+        }));
+        writeNotifs(all);
+        renderInbox();
+        renderBell();
+      });
+    }
+    if (clearAll && !clearAll.dataset.tnBound) {
+      clearAll.dataset.tnBound = "1";
+      clearAll.addEventListener("click", () => {
+        if (!confirm("Clear all notifications?")) return;
+        writeNotifs([]);
+        renderInbox();
+        renderBell();
+      });
+    }
+
+    list.addEventListener("click", (e) => {
+      const item = e.target.closest("[data-tn-id]");
+      if (!item) return;
+      const id = item.getAttribute("data-tn-id");
+      const all = readNotifs();
+      const idx = all.findIndex((n) => n.id === id);
+      if (idx !== -1 && !all[idx].readAt) {
+        all[idx].readAt = new Date().toISOString();
+        writeNotifs(all);
+      }
+      // The anchor href handles navigation; if no link, prevent '#' jump.
+      const link = item.getAttribute("data-tn-link");
+      if (!link || link === "null" || link === "#" || link === "") {
+        e.preventDefault();
+        renderInbox();
+        renderBell();
+      }
+    });
+
+    renderInbox();
   }
 
   // ── Boot ────────────────────────────────────────────────────────────
   function boot() {
     ensureBellEl();
     renderBell();
+    mountInboxPage();
     runScan();
     setInterval(runScan, 60 * 1000);
-    // Re-render bell every time notifications storage might change
+    // Re-render every time notifications storage might change
     window.addEventListener("storage", (ev) => {
       if (ev.key && ev.key.indexOf(NOTIF_KEY) !== -1) {
         renderBell();
