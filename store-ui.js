@@ -1265,18 +1265,23 @@
         portfolioList.innerHTML = goalRecords.length
           ? goalRecords
               .map((goalRecord) => {
+                const goalName = escapeHtml(goalRecord.goal.name || "Untitled goal");
+                const goalId = encodeURIComponent(goalRecord.goal.id);
+                const goalIdAttr = escapeHtml(goalRecord.goal.id);
+                const tone = escapeHtml(goalRecord.tone);
+                const pct = clampPercent(goalRecord.progress);
+                const completed = goalRecord.goal.status === "completed";
                 return `
-                  <div class="surface-item">
-                    <div>
-                      <strong>${escapeHtml(goalRecord.goal.name || "Untitled goal")}</strong>
-                      <small>${escapeHtml(goalRecord.goal.description || `${goalRecord.linkedTasks.length} linked task${goalRecord.linkedTasks.length === 1 ? "" : "s"} tracking this goal.`)}</small>
+                  <div class="goal-portfolio-card">
+                    <div class="goal-portfolio-row">
+                      <strong class="goal-portfolio-title" title="${goalName}">${goalName}</strong>
+                      <span class="status-pill ${tone}">${pct}%</span>
                     </div>
-                    <div class="chip-row">
-                      <span class="status-pill ${escapeHtml(goalRecord.tone)}">${clampPercent(goalRecord.progress)}%</span>
-                      <a class="soft-pill" href="./goal-detail.html?id=${encodeURIComponent(goalRecord.goal.id)}">Open</a>
-                      <a class="soft-pill" href="./goal-editor.html?id=${encodeURIComponent(goalRecord.goal.id)}">Edit</a>
-                      <button class="soft-pill" type="button" data-store-goal-toggle="${escapeHtml(goalRecord.goal.id)}">${goalRecord.goal.status === "completed" ? "Reopen" : "Mark Complete"}</button>
-                      <button class="soft-pill" type="button" data-store-goal-delete="${escapeHtml(goalRecord.goal.id)}">Delete</button>
+                    <div class="goal-portfolio-actions">
+                      <a class="goal-action-btn" href="./goal-detail.html?id=${goalId}">Open</a>
+                      <a class="goal-action-btn" href="./goal-editor.html?id=${goalId}">Edit</a>
+                      <button class="goal-action-btn" type="button" data-store-goal-toggle="${goalIdAttr}">${completed ? "Reopen" : "Mark Done"}</button>
+                      <button class="goal-action-btn is-danger" type="button" data-store-goal-delete="${goalIdAttr}">Delete</button>
                     </div>
                   </div>
                 `;

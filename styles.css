@@ -8407,26 +8407,41 @@ body.dashboard-home .dashboard-summary-card strong {
 }
 
 .dashboard-status-matrix .ds-cell-head {
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.06em;
   color: var(--text-muted, #9fb3d1);
   background: rgba(255, 255, 255, 0.03);
-  padding: 10px 8px;
+  padding: 8px 4px;
   border: 1px solid rgba(255, 255, 255, 0.05);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+.dashboard-status-matrix .ds-cell-head > span {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Column header label swap: full labels on desktop, short on mobile */
+/* Column header label swap: full labels on desktop, short on smaller widths */
 .dashboard-status-matrix .ds-label-short { display: none; }
-@media (max-width: 560px) {
+@media (max-width: 720px) {
   .dashboard-status-matrix .ds-cell-head {
-    font-size: 0.68rem;
-    letter-spacing: 0.06em;
-    padding: 8px 4px;
+    font-size: 0.6rem;
+    letter-spacing: 0.04em;
+    padding: 6px 2px;
   }
   .dashboard-status-matrix .ds-label-long { display: none; }
   .dashboard-status-matrix .ds-label-short { display: inline; }
+}
+@media (max-width: 420px) {
+  .dashboard-status-matrix .ds-cell-head {
+    font-size: 0.56rem;
+    letter-spacing: 0.02em;
+  }
 }
 
 .dashboard-status-matrix .ds-cell-head.ds-row-label {
@@ -8735,4 +8750,106 @@ body.dashboard-home .dashboard-summary-card strong {
 
 .goal-list-head .mini-label {
   margin: 0;
+}
+
+/* ─── Goal Portfolio Card (single row + actions) ─────────────────────── */
+.goal-portfolio-list .goal-portfolio-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(15, 22, 40, 0.45);
+  border: 1px solid rgba(92, 232, 255, 0.18);
+  margin-bottom: 10px;
+}
+
+.goal-portfolio-list .goal-portfolio-card:last-child {
+  margin-bottom: 0;
+}
+
+.goal-portfolio-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.goal-portfolio-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 0.98rem;
+  color: var(--text-primary, #eaf2ff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.goal-portfolio-actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+}
+
+.goal-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 4px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 9px;
+  background: rgba(92, 232, 255, 0.08);
+  border: 1px solid rgba(92, 232, 255, 0.28);
+  color: var(--text-primary, #eaf2ff);
+  text-decoration: none;
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.goal-action-btn:hover {
+  background: rgba(92, 232, 255, 0.16);
+  border-color: rgba(92, 232, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.goal-action-btn.is-danger {
+  border-color: rgba(255, 122, 122, 0.35);
+  color: #ffb3b3;
+}
+
+.goal-action-btn.is-danger:hover {
+  background: rgba(255, 122, 122, 0.12);
+  border-color: rgba(255, 122, 122, 0.6);
+}
+
+@media (max-width: 480px) {
+  .goal-action-btn {
+    font-size: 0.66rem;
+    padding: 6px 2px;
+  }
+}
+
+[data-theme="light"] .goal-portfolio-list .goal-portfolio-card {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(15, 22, 40, 0.08);
+}
+[data-theme="light"] .goal-action-btn {
+  background: rgba(15, 22, 40, 0.04);
+  border-color: rgba(15, 22, 40, 0.12);
+  color: #1e1e32;
+}
+[data-theme="light"] .goal-action-btn:hover {
+  background: rgba(92, 232, 255, 0.14);
+}
+[data-theme="light"] .goal-action-btn.is-danger {
+  color: #c0392b;
+  border-color: rgba(192, 57, 43, 0.3);
 }

@@ -319,12 +319,16 @@
     let bell = document.getElementById("timenest-bell");
     if (bell) return bell;
     if (!document.body) return null;
-    // On the notifications page itself we don't need the bell —
-    // the page already lists everything.
+    // The bell is allowed only on the home/dashboard page. The
+    // Goals, Daily Tasks, Habits, and Notifications pages should
+    // not show the floating/inline bell per product requirements.
     const path = (window.location.pathname || "").toLowerCase();
-    if (path.endsWith("/notifications.html") || path.endsWith("notifications.html")) {
-      return null;
-    }
+    const last = path.split("/").pop() || "";
+    const isHome =
+      last === "" ||
+      last === "index.html" ||
+      document.body.classList.contains("dashboard-home");
+    if (!isHome) return null;
 
     // Prefer inline placement inside the page's top-actions nav so we
     // don't overlap Logout / Profile / Theme buttons. If no top-actions
