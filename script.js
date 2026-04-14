@@ -1055,6 +1055,29 @@ const goalDetailRangeOverrides = {
   }
 };
 
+// Clear the hardcoded sample tasks and milestones from the drill-down
+// structures — real content is rendered from the user's own goals/tasks
+// by store-ui.js. The surrounding copy (titles, summaries, status pill)
+// is kept so empty drill-down views still read as proper scaffolding.
+(function clearGoalDrilldownSamples() {
+  const views = ["short", "long"];
+  const metrics = ["completed", "active", "delayed", "on-time"];
+  for (const v of views) {
+    for (const m of metrics) {
+      const d = goalDetailDrilldowns[v]?.[m];
+      if (d) {
+        if (Array.isArray(d.tasks)) d.tasks = [];
+        if (Array.isArray(d.timeline)) d.timeline = [];
+      }
+      const o = goalDetailRangeOverrides[v]?.[m]?.month;
+      if (o) {
+        if (Array.isArray(o.tasks)) o.tasks = [];
+        if (Array.isArray(o.timeline)) o.timeline = [];
+      }
+    }
+  }
+})();
+
 function getGoalDetailView(view, metric, range = "all") {
   const selectedView = goalDetailDrilldowns[view] ? view : "short";
   const baseDetail = goalDetailDrilldowns[selectedView]?.[metric] || null;
@@ -1126,6 +1149,14 @@ function renderGoalDetailItems(items) {
 }
 
 function renderGoalTimeline(items) {
+  if (!Array.isArray(items) || items.length === 0) {
+    return `
+      <div class="timeline-item empty-state">
+        <span class="timeline-time">—</span>
+        <div><strong>No milestones yet</strong><small>Milestones will appear once you create goals with target dates.</small></div>
+      </div>
+    `;
+  }
   return items
     .map(
       (item) => `
@@ -1235,83 +1266,49 @@ const goalRangeOptions = document.querySelectorAll(".goal-range-option");
 
 const goalMetricData = buildGoalMetricData();
 
+// Goal dashboard copy. Portfolio and timeline arrays are intentionally
+// empty — real entries are rendered from the user's own goals by
+// store-ui.js. The empty-state markup below is shown while the user has
+// not created any goals yet.
 const goalDashboardContent = {
   short: {
     all: {
-      heroTitle: "Short-term goals shaping the next quarter",
+      heroTitle: "Short-term goals",
       healthLabel: "Sprint Health",
-      healthValue: "91%",
-      healthCopy: "Short-term goals are moving with clear weekly momentum and a focused execution board.",
+      healthValue: "—",
+      healthCopy: "Create a short-term goal to start tracking sprint momentum here.",
       timelineLabel: "Sprint Milestones",
-      portfolio: [
-        { title: "Finish 30-day strength cycle", meta: "30-day fitness sprint with 4 sessions left", badge: "84%", tone: "good" },
-        { title: "Build emergency buffer", meta: "60-day savings checkpoint with 2 reviews left", badge: "67%", tone: "warn" },
-        { title: "Ship Flutter UI prototype", meta: "45-day product sprint nearing dashboard polish", badge: "73%", tone: "good" },
-        { title: "Sleep before 11 PM for 21 days", meta: "Recovery streak improving but still needs consistency", badge: "58%", tone: "alert" }
-      ],
-      timeline: [
-        { label: "Week 1", title: "Lock scope and owner path", copy: "Set one clear weekly focus and one fallback action for each goal." },
-        { label: "Week 4", title: "Review blockers and rebalance effort", copy: "Refocus work on delayed goals before they affect the full quarter." },
-        { label: "Week 8", title: "Push highest-value deliverables", copy: "Close the strongest goals first and reduce drag on the remaining work." },
-        { label: "Week 12", title: "Close, carry, or reset", copy: "Archive wins, roll over unfinished items, and prepare the next short-term board." }
-      ]
+      portfolio: [],
+      timeline: []
     },
     month: {
-      heroTitle: "Short-term goals shaping this month",
+      heroTitle: "Short-term goals this month",
       healthLabel: "Monthly Health",
-      healthValue: "94%",
-      healthCopy: "This month is centered on closeout work, faster reviews, and one delayed sprint goal that needs recovery.",
+      healthValue: "—",
+      healthCopy: "Create a short-term goal to see this month's health and focus here.",
       timelineLabel: "This Month",
-      portfolio: [
-        { title: "Finish 30-day strength cycle", meta: "April closeout needs 3 more sessions and one recovery day", badge: "92%", tone: "good" },
-        { title: "Ship Flutter UI prototype", meta: "Dashboard interactions and mobile fit checks close this month", badge: "88%", tone: "good" },
-        { title: "Build emergency buffer", meta: "One savings review is still open before month-end", badge: "74%", tone: "warn" },
-        { title: "Sleep before 11 PM for 21 days", meta: "Night routine is improving but still missing consistency", badge: "61%", tone: "alert" }
-      ],
-      timeline: [
-        { label: "Week 1", title: "Set monthly focus", copy: "Trim lower-value work and lock the strongest short-term wins for this month." },
-        { label: "Week 2", title: "Remove blockers early", copy: "Handle delayed items before they start affecting the rest of the sprint board." },
-        { label: "Week 3", title: "Close active goals", copy: "Push open sprint goals into a completed or carry-forward state before the final review." },
-        { label: "Week 4", title: "Prepare next month", copy: "Capture lessons and reset only the goals that still deserve active attention next month." }
-      ]
+      portfolio: [],
+      timeline: []
     }
   },
   long: {
     all: {
-      heroTitle: "Long-term goals shaping the next year",
+      heroTitle: "Long-term goals",
       healthLabel: "Annual Health",
-      healthValue: "78%",
-      healthCopy: "Three long-term goals are moving ahead of plan and one needs a milestone reset.",
+      healthValue: "—",
+      healthCopy: "Create a long-term goal to start tracking annual progress here.",
       timelineLabel: "Quarter Milestones",
-      portfolio: [
-        { title: "Launch TIMENEST MVP", meta: "12-month product goal", badge: "81%", tone: "good" },
-        { title: "Build financial freedom runway", meta: "18-month savings target", badge: "63%", tone: "warn" },
-        { title: "Master Marathi communication", meta: "12-month fluency track", badge: "72%", tone: "good" },
-        { title: "Reach advanced fitness baseline", meta: "Annual strength and mobility target", badge: "49%", tone: "alert" }
-      ],
-      timeline: [
-        { label: "Q2", title: "Finalize design system and auth", copy: "UI sign-off plus first Firebase connection." },
-        { label: "Q3", title: "Ship goals, tasks, and reminders", copy: "Recurring tasks and notification channels ready." },
-        { label: "Q4", title: "Launch habits, export, and analytics", copy: "Retention and premium feature layer." }
-      ]
+      portfolio: [],
+      timeline: []
     },
     month: {
-      heroTitle: "Long-term goals shaping this month",
+      heroTitle: "Long-term goals this month",
       healthLabel: "Monthly Health",
-      healthValue: "84%",
-      healthCopy: "This month is focused on protecting annual momentum with milestone reviews, recovery actions, and tighter follow-up.",
+      healthValue: "—",
+      healthCopy: "Create a long-term goal to see this month's roadmap here.",
       timelineLabel: "Monthly Roadmap",
-      portfolio: [
-        { title: "Launch TIMENEST MVP", meta: "Auth and dashboard milestone closes in this month window", badge: "84%", tone: "good" },
-        { title: "Master Marathi communication", meta: "Speaking checkpoint and review cycle land this month", badge: "78%", tone: "good" },
-        { title: "Build financial freedom runway", meta: "Savings contribution pace needs a monthly correction", badge: "66%", tone: "warn" },
-        { title: "Reach advanced fitness baseline", meta: "Mobility reset is still behind the monthly target", badge: "52%", tone: "alert" }
-      ],
-      timeline: [
-        { label: "Start", title: "Confirm the current milestone", copy: "Reduce the annual roadmap into one checkpoint that must move this month." },
-        { label: "Mid", title: "Review active drift", copy: "Catch slips in savings, habit, or product milestones before they affect the annual arc." },
-        { label: "Close", title: "Lock next review", copy: "End the month with clear next steps, not just status reporting, so yearly progress keeps moving." }
-      ]
+      portfolio: [],
+      timeline: []
     }
   }
 };
@@ -1322,6 +1319,17 @@ function getSelectedGoalRange() {
 }
 
 function renderGoalPortfolioItems(items, view, range) {
+  if (!Array.isArray(items) || items.length === 0) {
+    const label = view === "long" ? "long-term" : "short-term";
+    const href = `./goal-editor.html?goalType=${label}`;
+    return `
+      <div class="surface-item empty-state" style="flex-direction:column;align-items:flex-start;gap:8px;">
+        <strong>No ${label} goals yet</strong>
+        <small>Create your first ${label} goal to start tracking progress.</small>
+        <a class="soft-pill" href="${href}">Add ${label === "long-term" ? "Long-Term" : "Short-Term"} Goal</a>
+      </div>
+    `;
+  }
   return items
     .map(
       (item) => `
@@ -1338,6 +1346,14 @@ function renderGoalPortfolioItems(items, view, range) {
 }
 
 function renderGoalDashboardTimeline(items) {
+  if (!Array.isArray(items) || items.length === 0) {
+    return `
+      <div class="timeline-item empty-state">
+        <span class="timeline-time">—</span>
+        <div><strong>No milestones yet</strong><small>Milestones will appear once you create goals with target dates.</small></div>
+      </div>
+    `;
+  }
   return items
     .map(
       (item) => `
