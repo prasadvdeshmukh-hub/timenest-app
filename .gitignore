@@ -4,4 +4,6 @@ mobile-*-preview*.png
 screen-*-preview.*
 .chrome-mobile-devtools/
 .chrome-mobile-preview/
+.chrome-headless*/
+.edge-headless*/
 .firebase/
