@@ -1226,7 +1226,9 @@
     panels.forEach((panel) => {
       const panelView = panel.getAttribute("data-goal-view") === "long" ? "long" : "short";
       const goalRecords = getGoalRecordsForView(state, panelView, selectedRange, statusFilter);
-      const metricsRoot = panel.querySelector(`[data-goal-metrics="${panelView}"]`);
+      // Metric grid lives in a separate <article data-goal-metrics-row> above
+      // the list panel, so scope the lookup to the document, not to `panel`.
+      const metricsRoot = document.querySelector(`[data-goal-metrics="${panelView}"]`);
       const heroTitle = panel.querySelector("[data-goal-hero-title]");
       const healthLabel = panel.querySelector("[data-goal-health-label]");
       const healthValue = panel.querySelector("[data-goal-health-value]");
@@ -1642,6 +1644,16 @@
 
     overviewValue.textContent = pad(displayCount);
 
+    // Inline "Add Habit" card rendered at the tail of the list so the
+    // add action lives next to existing habits (#9).
+    const addHabitCard = `
+      <a class="habit-card habit-add-card" href="./habit-editor.html" aria-label="Add a new habit">
+        <span class="habit-add-plus" aria-hidden="true">+</span>
+        <span class="habit-add-label">Add Habit</span>
+        <p class="habit-add-hint">Create a new recurring check-in.</p>
+      </a>
+    `;
+
     habitsGrid.innerHTML = state.habits.length
       ? state.habits
           .map((habit) => {
@@ -1663,7 +1675,7 @@
               </article>
             `;
           })
-          .join("")
+          .join("") + addHabitCard
       : `
           <article class="habit-card">
             <p class="mini-label">Habit Tracking</p>
@@ -1674,6 +1686,7 @@
               <a class="soft-pill" href="./calendar.html">Open Calendar</a>
             </div>
           </article>
+          ${addHabitCard}
         `;
   }
 

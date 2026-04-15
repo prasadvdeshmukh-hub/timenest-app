@@ -65,11 +65,13 @@
               </label>
             </div>
           </fieldset>
-          <div class="form-actions">
+          <div class="form-actions habit-editor-actions">
             <span class="soft-pill" data-action="save-habit">Save Habit</span>
             <a class="soft-pill" href="./calendar.html?view=habits">Preview Calendar</a>
-            <a class="soft-pill" href="./habits.html">Back to Habits</a>
-            <span class="soft-pill" data-action="delete-habit">Delete Habit</span>
+            <a class="soft-pill habit-cancel-pill" href="./habits.html" data-action="cancel-habit">Cancel</a>
+            <div class="task-action-destructive">
+              <span class="soft-pill" data-action="delete-habit">Delete Habit</span>
+            </div>
           </div>
         </article>
       </section>

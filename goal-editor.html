@@ -25,12 +25,12 @@
         <article class="page-card panel">
           <p class="mini-label" id="goal-editor-eyebrow">Goal Editor</p>
           <h2 class="section-title" id="goal-editor-title">Create or update a goal</h2>
-          <div class="form-grid">
-            <label class="field"><span>Goal Name</span><input type="text" id="goal-field-name" placeholder="Enter goal name" /></label>
+          <div class="form-grid goal-editor-form-grid">
+            <label class="field"><span>Goal Name <em class="field-required" aria-hidden="true">*</em></span><input type="text" id="goal-field-name" placeholder="Enter goal name" required /></label>
             <label class="field"><span id="goal-editor-type-label">Goal Type</span><input id="goal-editor-type-input" type="text" placeholder="Short-Term / Long-Term / Tasks" /></label>
-            <label class="field"><span>Start Date</span><input type="date" id="goal-field-start" /></label>
-            <label class="field"><span>Target Date</span><input type="date" id="goal-field-target" /></label>
-            <label class="field full"><span>Description</span><input type="text" id="goal-field-desc" placeholder="Describe the goal outcome and focus area" /></label>
+            <label class="field field-half"><span>Start Date <em class="field-required" aria-hidden="true">*</em></span><input type="date" id="goal-field-start" required /></label>
+            <label class="field field-half"><span>Target Date <em class="field-required" aria-hidden="true">*</em></span><input type="date" id="goal-field-target" required /></label>
+            <label class="field"><span>Description</span><input type="text" id="goal-field-desc" placeholder="Describe the goal outcome and focus area" /></label>
           </div>
           <div class="form-actions"><span class="soft-pill" data-action="save-goal">Save Goal</span><span class="soft-pill" data-action="duplicate-goal">Duplicate</span><span class="soft-pill" data-action="delete-goal">Delete</span></div>
         </article>

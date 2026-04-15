@@ -27,7 +27,23 @@
           <h2 class="section-title">Create a task with date, time, recurrence, and reminders</h2>
           <div class="form-grid">
             <label class="field"><span>Task Name</span><input type="text" id="task-field-name" placeholder="Enter task name" /></label>
-            <label class="field"><span>Priority</span><input type="text" id="task-field-priority" placeholder="Low / Medium / High" /></label>
+            <div class="field" id="task-priority-field">
+              <span>Priority</span>
+              <div class="priority-radio-group" role="radiogroup" aria-label="Priority">
+                <label class="priority-radio-pill is-low">
+                  <input type="radio" name="task-priority" value="Low" />
+                  <span>Low</span>
+                </label>
+                <label class="priority-radio-pill is-medium">
+                  <input type="radio" name="task-priority" value="Medium" checked />
+                  <span>Medium</span>
+                </label>
+                <label class="priority-radio-pill is-high">
+                  <input type="radio" name="task-priority" value="High" />
+                  <span>High</span>
+                </label>
+              </div>
+            </div>
             <label class="field field-half"><span>Deadline Date</span><input type="date" id="task-field-date" /></label>
             <label class="field field-half"><span>Time</span><input type="time" id="task-field-time" /></label>
             <label class="field full"><span>Notes</span><input type="text" id="task-field-notes" placeholder="Add notes, context, or a checklist" /></label>
@@ -80,7 +96,15 @@
               </div>
             </fieldset>
           </div>
-          <div class="form-actions task-editor-actions"><span class="soft-pill" data-action="save-task">Save Task</span><span class="soft-pill" data-action="preview-reminder">Preview Reminder</span><a class="soft-pill" href="./subtask-editor.html">Add Subtask</a><span class="soft-pill" data-action="reset-task">Reset</span><span class="soft-pill" data-action="delete-task">Delete Task</span></div>
+          <div class="form-actions task-editor-actions">
+            <span class="soft-pill" data-action="save-task">Save Task</span>
+            <span class="soft-pill" data-action="preview-reminder">Preview Reminder</span>
+            <a class="soft-pill" href="./subtask-editor.html">Add Subtask</a>
+            <span class="soft-pill" data-action="reset-task">Reset</span>
+            <div class="task-action-destructive">
+              <span class="soft-pill" data-action="delete-task">Delete Task</span>
+            </div>
+          </div>
         </article>
       </section>
     </main>

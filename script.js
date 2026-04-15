@@ -2867,6 +2867,13 @@ function generateId() {
   function validateGoal(data) {
     if (!data.name) { showToast("Goal name is required", "error"); return false; }
     if (!data.type) { showToast("Goal type is required", "error"); return false; }
+    if (!data.start) { showToast("Start date is required", "error"); startField?.focus(); return false; }
+    if (!data.target) { showToast("Target date is required", "error"); targetField?.focus(); return false; }
+    if (data.start && data.target && data.start > data.target) {
+      showToast("Target date must be on or after Start date", "error");
+      targetField?.focus();
+      return false;
+    }
     return true;
   }
 
@@ -2925,11 +2932,45 @@ function generateId() {
 // ──────────── Task Editor Wiring ────────────
 (function initTaskEditor() {
   const nameField = document.getElementById("task-field-name");
+  // Priority is now a radio group (#5). Fall back to the legacy text input
+  // for any older templates that still ship <input id="task-field-priority">.
   const priorityField = document.getElementById("task-field-priority");
+  const priorityRadios = document.querySelectorAll('input[name="task-priority"]');
   const dateField = document.getElementById("task-field-date");
   const timeField = document.getElementById("task-field-time");
   const notesField = document.getElementById("task-field-notes");
   if (!nameField) return;
+
+  function getSelectedPriority() {
+    for (const radio of priorityRadios) {
+      if (radio.checked) return radio.value.trim();
+    }
+    if (priorityField) return (priorityField.value || "").trim();
+    return "";
+  }
+
+  function setSelectedPriority(value) {
+    const normalized = String(value || "").trim().toLowerCase();
+    if (priorityRadios.length) {
+      let anyMatched = false;
+      priorityRadios.forEach((radio) => {
+        const match = radio.value.trim().toLowerCase() === normalized;
+        radio.checked = match;
+        if (match) anyMatched = true;
+      });
+      if (!anyMatched && normalized === "") {
+        // No saved priority — leave whatever is default-checked in HTML.
+        return;
+      }
+      if (!anyMatched) {
+        // Unknown legacy value — keep default Medium selected.
+        const fallback = Array.from(priorityRadios).find((r) => r.value.trim().toLowerCase() === "medium");
+        if (fallback) fallback.checked = true;
+      }
+    } else if (priorityField) {
+      priorityField.value = value || "";
+    }
+  }
 
   const params = new URLSearchParams(window.location.search);
   const editId = params.get("id");
@@ -2943,7 +2984,7 @@ function generateId() {
     if (task) {
       linkedGoalId = task.goalId || queryGoalId || "";
       nameField.value = task.name || "";
-      priorityField.value = task.priority || "";
+      setSelectedPriority(task.priority || "");
       dateField.value = task.date || "";
       timeField.value = task.time || "";
       notesField.value = task.notes || "";
@@ -2987,7 +3028,7 @@ function generateId() {
   function collectTaskData() {
     return {
       name: nameField.value.trim(),
-      priority: priorityField.value.trim(),
+      priority: getSelectedPriority(),
       date: dateField.value,
       time: timeField.value,
       notes: notesField.value.trim(),
@@ -3061,13 +3102,18 @@ function generateId() {
 
     if (act === "reset-task") {
       nameField.value = "";
-      priorityField.value = "";
+      if (priorityField) priorityField.value = "";
+      setSelectedPriority("Medium");
       dateField.value = "";
       timeField.value = "";
       notesField.value = "";
       document.querySelectorAll('.compact-check-chip input').forEach((cb) => cb.checked = false);
       const noneCheck = document.querySelector('.compact-check-group:first-of-type .compact-check-chip input');
       if (noneCheck) noneCheck.checked = true;
+      // Re-check the default notification channels (In-App + Push).
+      document
+        .querySelectorAll('[data-notification-group] .compact-check-chip input[data-channel="in-app"], [data-notification-group] .compact-check-chip input[data-channel="push"]')
+        .forEach((cb) => { cb.checked = true; });
       showToast("Form reset", "info");
     }
 

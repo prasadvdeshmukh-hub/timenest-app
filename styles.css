@@ -9163,3 +9163,385 @@ label.field > span {
     min-height: 112px !important;
   }
 }
+
+/* ─── Scoped overrides ────────────────────────────────────────────────── */
+
+/* Required-field asterisk marker next to the field label. */
+.field .field-required {
+  color: #ff9a9a;
+  font-style: normal;
+  font-weight: 700;
+  margin-left: 0.3rem;
+}
+
+/* Daily Tasks page: compact Due Window / Status / Task Cadence selects.
+   The global input enlargement forces min-height 54px + 1rem padding on every
+   select; here we walk that back so these three filter chips auto-fit on
+   narrow viewports and match the task summary grid height. */
+.task-filter-panel .task-filter-select,
+body .task-filter-select {
+  min-height: 40px !important;
+  padding: 0.48rem 2.2rem 0.48rem 0.72rem !important;
+  font-size: clamp(0.7rem, 2.4vw, 0.82rem) !important;
+  line-height: 1.15 !important;
+  border-radius: 12px !important;
+}
+
+.task-filter-panel {
+  padding: clamp(0.7rem, 2.4vw, 1rem);
+}
+
+.task-filter-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.32rem, 1.4vw, 0.6rem);
+}
+
+.task-filter-group {
+  padding: clamp(0.42rem, 1.6vw, 0.7rem) clamp(0.48rem, 1.8vw, 0.72rem) clamp(0.52rem, 1.8vw, 0.8rem);
+  border-radius: clamp(12px, 2.6vw, 18px);
+}
+
+.task-filter-group legend {
+  font-size: clamp(0.66rem, 2vw, 0.78rem);
+}
+
+.task-filter-helper {
+  font-size: clamp(0.56rem, 1.8vw, 0.66rem);
+  margin: 0 0 0.3rem;
+}
+
+@media (max-width: 560px) {
+  .task-filter-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.48rem;
+  }
+  .task-filter-copy-block .section-title {
+    font-size: clamp(0.92rem, 4vw, 1.1rem);
+  }
+  .task-filter-copy {
+    font-size: clamp(0.66rem, 3vw, 0.78rem);
+  }
+  .task-filter-reset {
+    align-self: flex-end;
+  }
+  .task-filter-grid {
+    gap: 0.34rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .task-filter-panel .task-filter-select,
+  body .task-filter-select {
+    padding: 0.4rem 1.8rem 0.4rem 0.6rem !important;
+    font-size: 0.66rem !important;
+    min-height: 36px !important;
+  }
+  .task-filter-select-wrap::after {
+    right: 0.68rem;
+    width: 0.46rem;
+    height: 0.46rem;
+  }
+  .task-filter-group legend {
+    font-size: 0.64rem;
+  }
+  .task-filter-helper {
+    display: none;
+  }
+}
+
+/* Task Streams panel — compact on small screens (#4). */
+.task-stream-panel {
+  padding: clamp(0.7rem, 2.4vw, 1rem);
+}
+
+.task-stream-panel .task-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem 0.6rem;
+  margin-bottom: clamp(0.4rem, 1.6vw, 0.7rem);
+}
+
+.task-stream-panel .task-panel-head .mini-label {
+  font-size: clamp(0.58rem, 2vw, 0.7rem);
+}
+
+.task-stream-panel .task-panel-head .section-title {
+  font-size: clamp(0.88rem, 3.4vw, 1.08rem);
+  margin: 0;
+}
+
+.task-stream-panel .task-management-list {
+  gap: clamp(0.4rem, 1.6vw, 0.68rem);
+}
+
+.task-stream-panel .task-empty-state {
+  padding: clamp(0.72rem, 2.8vw, 1.1rem);
+}
+
+.task-stream-panel .task-empty-state h3 {
+  font-size: clamp(0.92rem, 3.6vw, 1.1rem);
+  margin: 0.15rem 0;
+}
+
+.task-stream-panel .task-empty-state p {
+  font-size: clamp(0.68rem, 2.6vw, 0.82rem);
+  margin: 0;
+}
+
+@media (max-width: 560px) {
+  .task-stream-panel .task-panel-head [data-task-drilldown-summary] {
+    font-size: 0.64rem;
+    padding: 0.28rem 0.58rem;
+  }
+}
+
+/* Goal editor description: ensure the description sits in the normal
+   two-column grid like Goal Name / Goal Type instead of spanning full
+   width (#1). The global rule is overridden per-field. */
+.goal-editor-form-grid .field.full {
+  grid-column: auto;
+}
+
+/* Priority radio pills inside the task editor (#5). */
+.priority-radio-group {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.42rem;
+  margin-top: 0.35rem;
+}
+
+.priority-radio-pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(40px, 7vw, 48px);
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(164, 203, 255, 0.22);
+  border-radius: 14px;
+  background: rgba(15, 22, 40, 0.45);
+  color: var(--text-primary, #eaf2ff);
+  font-weight: 600;
+  font-size: clamp(0.78rem, 2.4vw, 0.95rem);
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  text-align: center;
+  user-select: none;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.priority-radio-pill input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  min-height: 0 !important;
+}
+
+.priority-radio-pill:hover {
+  border-color: rgba(92, 232, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.priority-radio-pill:has(input:checked) {
+  background: rgba(92, 232, 255, 0.16);
+  border-color: rgba(92, 232, 255, 0.7);
+  box-shadow: 0 0 0 1px rgba(92, 232, 255, 0.35) inset;
+}
+
+.priority-radio-pill.is-low:has(input:checked) {
+  background: rgba(123, 226, 174, 0.16);
+  border-color: rgba(123, 226, 174, 0.7);
+  box-shadow: 0 0 0 1px rgba(123, 226, 174, 0.35) inset;
+}
+.priority-radio-pill.is-medium:has(input:checked) {
+  background: rgba(255, 199, 120, 0.18);
+  border-color: rgba(255, 199, 120, 0.7);
+  box-shadow: 0 0 0 1px rgba(255, 199, 120, 0.35) inset;
+}
+.priority-radio-pill.is-high:has(input:checked) {
+  background: rgba(255, 134, 134, 0.18);
+  border-color: rgba(255, 134, 134, 0.7);
+  box-shadow: 0 0 0 1px rgba(255, 134, 134, 0.35) inset;
+}
+
+/* Task editor action buttons — primary row centered, destructive on its own
+   row below (#6). Override the 4-column grid so Save/Preview/Add Subtask/Reset
+   flow on one centered line while Delete Task gets a full-width row. */
+.task-editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  grid-template-columns: none;
+}
+
+.task-editor-actions .soft-pill {
+  flex: 0 1 auto;
+  width: auto;
+  min-width: 120px;
+  min-height: 42px;
+  padding: 0.55rem 1rem;
+  font-size: clamp(0.72rem, 2.2vw, 0.86rem);
+}
+
+.task-editor-actions .task-action-destructive {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 0.25rem;
+}
+
+.task-editor-actions .task-action-destructive .soft-pill {
+  min-width: 160px;
+  background: rgba(255, 120, 120, 0.08);
+  border-color: rgba(255, 120, 120, 0.35);
+  color: #ffb5b5;
+}
+
+@media (max-width: 420px) {
+  .task-editor-actions .soft-pill {
+    min-width: calc(50% - 0.3rem);
+    flex-basis: calc(50% - 0.3rem);
+  }
+  .task-editor-actions .task-action-destructive .soft-pill {
+    min-width: 70%;
+    flex-basis: 70%;
+  }
+}
+
+/* Habit editor action row — matches the task editor layout, with a
+   dedicated destructive row for Delete Habit and a prominent Cancel
+   escape hatch (#7). */
+.habit-editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.habit-editor-actions .soft-pill {
+  flex: 0 1 auto;
+  min-width: 120px;
+  min-height: 42px;
+  padding: 0.55rem 1rem;
+  font-size: clamp(0.72rem, 2.2vw, 0.86rem);
+  text-align: center;
+}
+
+.habit-editor-actions .habit-cancel-pill {
+  background: rgba(200, 210, 230, 0.08);
+  border-color: rgba(200, 210, 230, 0.35);
+  color: var(--text-primary, #eaf2ff);
+}
+
+.habit-editor-actions .task-action-destructive {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 0.25rem;
+}
+
+.habit-editor-actions .task-action-destructive .soft-pill {
+  min-width: 160px;
+  background: rgba(255, 120, 120, 0.08);
+  border-color: rgba(255, 120, 120, 0.35);
+  color: #ffb5b5;
+}
+
+@media (max-width: 420px) {
+  .habit-editor-actions .soft-pill {
+    min-width: calc(50% - 0.3rem);
+    flex-basis: calc(50% - 0.3rem);
+  }
+  .habit-editor-actions .task-action-destructive .soft-pill {
+    min-width: 70%;
+    flex-basis: 70%;
+  }
+}
+
+/* Habit card — equal-width action buttons (#8). */
+.habit-card .chip-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.42rem;
+  align-items: stretch;
+}
+
+.habit-card .chip-row > * {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0.5rem 0.6rem;
+  font-size: clamp(0.72rem, 2.4vw, 0.86rem);
+  border-radius: 14px;
+  text-align: center;
+  white-space: nowrap;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 520px) {
+  .habit-card .chip-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Inline "Add Habit" card with a small + sign at the tail of the grid (#9). */
+.habit-card.habit-add-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  gap: 0.6rem;
+  border: 1px dashed rgba(92, 232, 255, 0.4);
+  background: rgba(15, 22, 40, 0.32);
+  text-align: center;
+  text-decoration: none;
+  color: var(--text-primary, #eaf2ff);
+  padding: 1.25rem 1rem;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.habit-card.habit-add-card:hover,
+.habit-card.habit-add-card:focus-visible {
+  background: rgba(92, 232, 255, 0.08);
+  border-color: rgba(92, 232, 255, 0.65);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.habit-add-card .habit-add-plus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(92, 232, 255, 0.18);
+  border: 1px solid rgba(92, 232, 255, 0.45);
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 1;
+  color: #eaf6ff;
+}
+
+.habit-add-card .habit-add-label {
+  font-size: clamp(0.78rem, 2.6vw, 0.92rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.habit-add-card .habit-add-hint {
+  font-size: clamp(0.64rem, 2.2vw, 0.74rem);
+  color: var(--text-secondary, rgba(224, 230, 240, 0.65));
+  margin: 0;
+}
