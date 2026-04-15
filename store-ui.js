@@ -2343,4 +2343,25 @@
   purgeDemoRecords();
   bindInteractions();
   refreshAll();
+
+  // Keep views live. After creating or editing a goal/task/habit in a
+  // dedicated editor page and returning here, the browser may serve the
+  // previous DOM from its back-forward cache, which would leave stale
+  // metric counts and list rows on screen (e.g. the Short/Long-Term goal
+  // status matrix not reflecting a freshly added goal). Re-run refreshAll
+  // when the tab becomes visible, when another tab writes to localStorage,
+  // and when the page is restored from bfcache.
+  window.addEventListener("pageshow", () => {
+    refreshAll();
+  });
+  window.addEventListener("storage", (event) => {
+    if (!event.key || Object.values(STORE_KEYS).includes(event.key)) {
+      refreshAll();
+    }
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      refreshAll();
+    }
+  });
 })();
