@@ -24,64 +24,35 @@
         </nav>
       </aside>
       <section class="app-main">
-        <section class="page-hero">
-          <article class="hero-panel-large panel">
-            <p class="mini-label">Habit Tracking</p>
-            <h1 class="section-title" id="habits-overview-title">Recurring systems that build long-term consistency</h1>
-            <p id="habits-overview-summary">Create recurring habits to build consistency, reminders, and streaks.</p>
-            <div class="page-tools">
-              <a class="soft-pill" href="./calendar.html?view=habits">Open Habit Calendar</a>
-            </div>
-          </article>
-          <article class="hero-panel-side panel">
-            <p class="mini-label" id="habits-overview-label">Current Streak</p>
-            <strong class="value-big" id="habits-overview-value">0</strong>
-            <p id="habits-overview-copy">Your strongest streak will appear here once you add a habit.</p>
-          </article>
-        </section>
-        <section class="habit-grid">
-          <article class="habit-card">
-            <p class="mini-label">Habit Tracking</p>
-            <h2 class="section-title">No habits yet</h2>
-            <p>Create a recurring habit to start building streaks and reminders.</p>
-            <div class="chip-row">
-              <a class="soft-pill" href="./habit-editor.html">Add Habit</a>
-              <a class="soft-pill" href="./calendar.html">Open Calendar</a>
-            </div>
-          </article>
-        </section>
-
-        <!-- Default inline calendar — renderHabitCalendar auto-selects
-             state.habits[0] when no habit is explicitly chosen, so the
-             first habit's calendar shows by default the moment this page
-             loads. -->
-        <section class="page-hero" id="habits-inline-calendar-hero">
-          <article class="hero-panel-large panel">
-            <p class="mini-label" id="habit-calendar-eyebrow">Habit Calendar</p>
-            <h2 class="section-title" id="habit-calendar-title">Consistency tracker for your first habit</h2>
-            <p id="habit-calendar-summary">Create a habit to review completions, missed days, and streaks month by month.</p>
-            <div class="chip-row habit-selector-row" id="habit-selector-row">
-              <a class="soft-pill habit-selector is-active" href="./habit-editor.html">Add a habit to begin tracking</a>
-            </div>
-          </article>
-          <article class="hero-panel-side panel">
-            <p class="mini-label" id="habit-calendar-side-label">Current Streak</p>
-            <strong class="value-big" id="habit-calendar-streak">0 Days</strong>
-            <p id="habit-calendar-side-copy">Your streak and completion summary will appear here once you add a habit.</p>
-          </article>
-        </section>
-        <section class="page-card panel habit-tracker-panel">
-          <div class="section-head">
-            <h3 id="habit-calendar-month-label">This Month</h3>
-            <div class="habit-calendar-controls" aria-label="Habit month controls">
-              <button class="inline-button habit-month-nav" id="habit-month-prev" type="button" aria-label="View previous month">Prev</button>
-              <label class="habit-month-picker" for="habit-calendar-month-input">
-                <span>Month</span>
-                <input type="month" id="habit-calendar-month-input" />
-              </label>
-              <button class="inline-button habit-month-nav" id="habit-month-next" type="button" aria-label="View next month">Next</button>
-            </div>
+        <article class="page-card panel habit-tracking-panel">
+          <p class="mini-label">Habit Tracking</p>
+          <div class="habit-list" id="habit-list">
+            <!-- Populated by store-ui.js: Add Habit button first, then user habits -->
           </div>
+        </article>
+
+        <!-- Hidden elements kept for JS compatibility -->
+        <div id="habits-inline-calendar-hero" hidden>
+          <span id="habit-calendar-eyebrow"></span>
+          <span id="habit-calendar-title"></span>
+          <span id="habit-calendar-summary"></span>
+          <span id="habit-selector-row"></span>
+          <span id="habit-calendar-side-copy"></span>
+        </div>
+        <section class="page-card panel habit-tracker-panel">
+          <div class="habit-streak-row">
+            <p class="mini-label" id="habit-calendar-side-label">Current Streak</p>
+            <strong class="habit-streak-value" id="habit-calendar-streak">00 Days</strong>
+          </div>
+          <div class="habit-month-row" aria-label="Habit month controls">
+            <button class="inline-button habit-month-nav" id="habit-month-prev" type="button" aria-label="View previous month">Prev</button>
+            <label class="habit-month-picker" for="habit-calendar-month-input">
+              <input type="month" id="habit-calendar-month-input" />
+            </label>
+            <button class="inline-button habit-month-nav" id="habit-month-next" type="button" aria-label="View next month">Next</button>
+          </div>
+          <!-- hidden element kept for JS compatibility -->
+          <h3 id="habit-calendar-month-label" hidden>This Month</h3>
           <div class="habit-legend" aria-label="Habit completion legend">
             <span class="habit-legend-item"><i class="habit-status-dot is-complete" aria-hidden="true"></i>Completed <strong class="habit-legend-count" id="habit-completed-count">00</strong></span>
             <span class="habit-legend-item"><i class="habit-status-dot is-missed" aria-hidden="true"></i>Missed <strong class="habit-legend-count" id="habit-missed-count">00</strong></span>

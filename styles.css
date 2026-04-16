@@ -9545,3 +9545,387 @@ body .task-filter-select {
   color: var(--text-secondary, rgba(224, 230, 240, 0.65));
   margin: 0;
 }
+
+/* ─── Fix #1: Goal Editor — compact date / description inputs ────────────
+   Make Start Date, Target Date, and Description the same size as the other
+   input boxes (Goal Name, Goal Type). The global enlargement rule pushes
+   min-height to 54px; walk it back for the goal form. */
+.goal-editor-form-grid input {
+  min-height: 44px !important;
+  padding: 0.62rem 0.85rem !important;
+  font-size: 0.95rem !important;
+}
+
+.goal-editor-form-grid input[type="date"],
+.goal-editor-form-grid input[type="time"] {
+  min-height: 44px !important;
+  padding: 0.62rem 0.85rem !important;
+}
+
+@media (max-width: 780px) {
+  .goal-editor-form-grid input {
+    min-height: 42px !important;
+    padding: 0.55rem 0.78rem !important;
+    font-size: 0.92rem !important;
+  }
+}
+
+/* ─── Fix #3: Task Tab — further compact Due Window / Status / Cadence ─── */
+.task-filter-panel .task-filter-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.28rem, 1.2vw, 0.5rem);
+}
+
+.task-filter-panel .task-filter-select,
+body .task-filter-select {
+  min-height: 36px !important;
+  padding: 0.38rem 2rem 0.38rem 0.62rem !important;
+  font-size: clamp(0.66rem, 2.2vw, 0.78rem) !important;
+  line-height: 1.1 !important;
+  border-radius: 10px !important;
+}
+
+.task-filter-group {
+  padding: clamp(0.36rem, 1.4vw, 0.6rem) clamp(0.4rem, 1.6vw, 0.64rem) clamp(0.44rem, 1.6vw, 0.7rem);
+}
+
+.task-filter-group legend {
+  font-size: clamp(0.6rem, 1.8vw, 0.72rem);
+}
+
+@media (max-width: 560px) {
+  .task-filter-panel .task-filter-select,
+  body .task-filter-select {
+    min-height: 34px !important;
+    padding: 0.34rem 1.6rem 0.34rem 0.55rem !important;
+    font-size: clamp(0.6rem, 2vw, 0.7rem) !important;
+  }
+}
+
+/* ─── Fix #5 (refined): Task editor button rows ──────────────────────────
+   Row 1: Save Task + Preview Reminder (primary actions)
+   Row 2: Add Subtask + Reset (center-aligned)
+   Row 3: Delete Task (destructive, full-width) */
+.task-editor-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 0.45rem !important;
+}
+
+.task-editor-actions .soft-pill {
+  flex: 0 1 auto !important;
+  min-width: 110px !important;
+  min-height: 40px !important;
+  padding: 0.5rem 0.9rem !important;
+  font-size: clamp(0.7rem, 2.1vw, 0.84rem) !important;
+  text-align: center !important;
+}
+
+.task-editor-actions .task-action-destructive {
+  flex-basis: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  margin-top: 0.2rem !important;
+}
+
+@media (max-width: 480px) {
+  .task-editor-actions .soft-pill {
+    min-width: calc(48% - 0.2rem) !important;
+    flex-basis: calc(48% - 0.2rem) !important;
+  }
+}
+
+/* ─── Fix #6: Habit card — Cancel / Close button on each habit card ────── */
+.habit-card .habit-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0.5rem 0.6rem;
+  font-size: clamp(0.72rem, 2.4vw, 0.86rem);
+  border-radius: 14px;
+  text-align: center;
+  white-space: nowrap;
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(200, 210, 230, 0.08);
+  border: 1px solid rgba(200, 210, 230, 0.3);
+  color: var(--text-primary, #eaf2ff);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.habit-card .habit-close-btn:hover {
+  background: rgba(200, 210, 230, 0.14);
+  border-color: rgba(200, 210, 230, 0.45);
+}
+
+/* ─── Fix #7 (refined): Habit buttons — force equal sizing across all ──── */
+.habit-card .chip-row {
+  display: grid !important;
+  gap: 0.38rem !important;
+}
+
+.habit-card .chip-row > * {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 38px !important;
+  padding: 0.45rem 0.5rem !important;
+  font-size: clamp(0.68rem, 2.2vw, 0.82rem) !important;
+  border-radius: 12px !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* 5-column grid when Cancel is present (Day Streak, Calendar, Edit, Delete, Cancel) */
+@media (min-width: 520px) {
+  .habit-card .chip-row {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Stack into 3+2 on narrow screens */
+@media (max-width: 519px) {
+  .habit-card .chip-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ─── Habit Tracking panel — minimal list layout ──────────────────────── */
+.habit-tracking-panel {
+  padding: clamp(0.8rem, 2.8vw, 1.2rem);
+}
+
+.habit-tracking-panel > .mini-label {
+  margin-bottom: 0.7rem;
+  font-size: clamp(0.72rem, 2.2vw, 0.86rem);
+}
+
+.habit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.habit-list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.72rem 0.9rem;
+  border-radius: 14px;
+  border: 1px solid rgba(164, 203, 255, 0.14);
+  background: rgba(15, 22, 40, 0.4);
+  color: var(--text-primary, #eaf2ff);
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+  cursor: pointer;
+}
+
+.habit-list-item:hover,
+.habit-list-item:focus-visible {
+  background: rgba(92, 232, 255, 0.06);
+  border-color: rgba(92, 232, 255, 0.35);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.habit-list-item:active {
+  transform: scale(0.985);
+}
+
+/* Add Habit button — prominent first item */
+.habit-list-add {
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px dashed rgba(92, 232, 255, 0.45);
+  background: rgba(92, 232, 255, 0.04);
+  font-weight: 600;
+  font-size: clamp(0.82rem, 2.6vw, 0.96rem);
+  padding: 0.65rem 0.9rem;
+}
+
+.habit-list-add:hover,
+.habit-list-add:focus-visible {
+  background: rgba(92, 232, 255, 0.1);
+  border-color: rgba(92, 232, 255, 0.6);
+}
+
+.habit-list-add-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(92, 232, 255, 0.18);
+  border: 1px solid rgba(92, 232, 255, 0.4);
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* Habit row info */
+.habit-list-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.habit-list-info strong {
+  font-size: clamp(0.86rem, 2.8vw, 1rem);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.habit-list-info small {
+  font-size: clamp(0.66rem, 2.2vw, 0.78rem);
+  color: var(--text-secondary, rgba(224, 230, 240, 0.65));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Drill-down arrow */
+.habit-list-arrow {
+  font-size: 1.3rem;
+  color: rgba(92, 232, 255, 0.6);
+  flex-shrink: 0;
+}
+
+/* Empty state */
+.habit-list-empty {
+  text-align: center;
+  padding: 1rem 0.5rem;
+  color: var(--text-secondary, rgba(224, 230, 240, 0.55));
+  font-size: clamp(0.78rem, 2.4vw, 0.9rem);
+}
+
+/* ─── Delete Account UI ──────────────────────────────────────────────── */
+.delete-account-panel {
+  margin-top: 1.5rem;
+  border: 1px solid rgba(255, 120, 120, 0.25);
+}
+
+.delete-account-btn {
+  background: rgba(255, 100, 100, 0.12) !important;
+  border-color: rgba(255, 100, 100, 0.4) !important;
+  color: #ffb5b5 !important;
+}
+
+.delete-account-btn:hover {
+  background: rgba(255, 100, 100, 0.22) !important;
+  border-color: rgba(255, 100, 100, 0.6) !important;
+}
+
+.delete-account-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.delete-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 9998;
+}
+
+.delete-confirm-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  width: min(90vw, 420px);
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 120, 120, 0.35);
+  border-radius: 20px;
+  background: var(--card-bg, rgba(12, 20, 42, 0.96));
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+.delete-confirm-dialog .section-title {
+  color: #ffb5b5;
+}
+
+.delete-confirm-dialog input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ─── Habit calendar: Prev / Month / Next in one row ─────────────────── */
+.habit-month-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.35rem, 1.6vw, 0.6rem);
+  flex-wrap: nowrap;
+  margin-bottom: 0.7rem;
+}
+
+.habit-month-row .habit-month-nav {
+  flex-shrink: 0;
+  min-width: clamp(52px, 14vw, 72px);
+  min-height: 38px;
+  padding: 0.35rem 0.6rem;
+  font-size: clamp(0.7rem, 2.2vw, 0.85rem);
+}
+
+.habit-month-row .habit-month-picker {
+  flex: 1 1 auto;
+  min-width: 0;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0.35rem 0.6rem;
+}
+
+.habit-month-row .habit-month-picker input {
+  min-width: 0;
+  width: 100%;
+  font-size: clamp(0.72rem, 2.4vw, 0.88rem);
+  text-align: center;
+}
+
+@media (max-width: 380px) {
+  .habit-month-row .habit-month-nav {
+    min-width: 44px;
+    padding: 0.3rem 0.4rem;
+    font-size: 0.66rem;
+  }
+  .habit-month-row .habit-month-picker {
+    padding: 0.28rem 0.4rem;
+  }
+  .habit-month-row .habit-month-picker input {
+    font-size: 0.66rem;
+  }
+}
+
+/* ── Habit streak inline row ── */
+.habit-streak-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.habit-streak-row .mini-label {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.habit-streak-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(0.85rem, 2.8vw, 1.05rem);
+  font-weight: 700;
+  color: var(--accent, #a78bfa);
+  letter-spacing: 0.02em;
+}
