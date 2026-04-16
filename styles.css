@@ -9929,3 +9929,43 @@ body .task-filter-select {
   color: var(--accent, #a78bfa);
   letter-spacing: 0.02em;
 }
+
+/* ── Habit list: edit icon + selected state ── */
+.habit-list-item[data-habit-select] {
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.habit-list-item[data-habit-select]:hover {
+  background: rgba(167, 139, 250, 0.08);
+}
+
+.habit-list-item.is-selected {
+  background: rgba(167, 139, 250, 0.12);
+  border-color: var(--accent, #a78bfa);
+  box-shadow: 0 0 0 1px var(--accent, #a78bfa);
+}
+
+.habit-list-edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.15s ease, background 0.15s ease;
+  text-decoration: none;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.habit-list-edit:hover {
+  color: var(--accent, #a78bfa);
+  background: rgba(167, 139, 250, 0.12);
+}
+
+.habit-list-edit svg {
+  display: block;
+}

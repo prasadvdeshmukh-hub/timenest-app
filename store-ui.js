@@ -1586,108 +1586,78 @@
     document.title = `TIMENEST ${goalRecord.goal.name || "Goal Detail"}`;
   }
 
-  function renderHabitsPage(state) {
-    const habitsGrid = document.querySelector(".habit-grid");
-    const overviewTitle = document.getElementById("habits-overview-title");
-    const overviewSummary = document.getElementById("habits-overview-summary");
-    const overviewLabel = document.getElementById("habits-overview-label");
-    const overviewValue = document.getElementById("habits-overview-value");
-    const overviewCopy = document.getElementById("habits-overview-copy");
+  /* Track which habit is selected in the list (used by renderHabitCalendar) */
+  let _selectedHabitId = null;
+  function getSelectedHabitId() { return _selectedHabitId; }
 
-    if (!habitsGrid || !overviewTitle || !overviewSummary || !overviewLabel || !overviewValue || !overviewCopy) {
+  function renderHabitsPage(state) {
+    const habitList = document.getElementById("habit-list");
+    if (!habitList) {
       return;
     }
 
     const params = new URLSearchParams(window.location.search);
     const range = params.get("range") === "this-month" ? "this-month" : "all";
-    const statusFilter = normalizeName(params.get("status"));
-    const strongestHabit = [...state.habits].sort(
-      (leftHabit, rightHabit) => getHabitCurrentStreak(rightHabit, state.now) - getHabitCurrentStreak(leftHabit, state.now)
-    )[0] || null;
-    const aggregateCounts = finalizeHabitCounts(getHabitAggregateCounts(state, range));
-    const displayCount = statusFilter === "completed"
-      ? aggregateCounts.completed
-      : statusFilter === "skipped"
-        ? aggregateCounts.skipped
-        : strongestHabit
-          ? getHabitCurrentStreak(strongestHabit, state.now)
-          : 0;
 
-    if (statusFilter === "completed") {
-      overviewTitle.textContent = "Habit check-ins completed across your routines";
-      overviewSummary.textContent = `These totals come from the same saved habit history used by the calendar for ${range === "this-month" ? "this month" : "all tracked history"}.`;
-      overviewLabel.textContent = "Completed Count";
-      overviewCopy.textContent = `${aggregateCounts.completed} habit check-ins were completed in the selected range.`;
-    } else if (statusFilter === "skipped") {
-      overviewTitle.textContent = "Habit check-ins skipped across your routines";
-      overviewSummary.textContent = `Skipped totals are derived from saved days with no completion in ${range === "this-month" ? "this month" : "all tracked history"}.`;
-      overviewLabel.textContent = "Skipped Count";
-      overviewCopy.textContent = `${aggregateCounts.skipped} habit check-ins were skipped in the selected range.`;
-    } else {
-      overviewTitle.textContent = strongestHabit
-        ? `${strongestHabit.name} is setting the pace right now`
-        : "Recurring systems that build long-term consistency";
-      overviewSummary.textContent = strongestHabit
-        ? `${strongestHabit.name} currently leads the board with the best live streak and the calendar is synced to the same saved history.`
-        : "Create habits to replace the prototype routines and start tracking streaks for real.";
-      overviewLabel.textContent = "Current Streak";
-      overviewCopy.textContent = strongestHabit
-        ? `${getHabitCurrentStreak(strongestHabit, state.now)} day streak with ${clampPercent(
-            finalizeHabitCounts(getHabitCounts(strongestHabit, "this-month", state.now)).total
-              ? (finalizeHabitCounts(getHabitCounts(strongestHabit, "this-month", state.now)).completed /
-                  finalizeHabitCounts(getHabitCounts(strongestHabit, "this-month", state.now)).total) *
-                  100
-              : 0
-          )}% reliability this month.`
-        : "Your saved habits will show live streaks, reliability, and quick actions here.";
+    // Auto-select first habit if nothing selected yet
+    if (!_selectedHabitId && state.habits.length) {
+      _selectedHabitId = state.habits[0].id;
     }
 
-    overviewValue.textContent = pad(displayCount);
-
-    // Inline "Add Habit" card rendered at the tail of the list so the
-    // add action lives next to existing habits (#9).
-    const addHabitCard = `
-      <a class="habit-card habit-add-card" href="./habit-editor.html" aria-label="Add a new habit">
-        <span class="habit-add-plus" aria-hidden="true">+</span>
-        <span class="habit-add-label">Add Habit</span>
-        <p class="habit-add-hint">Create a new recurring check-in.</p>
+    // "Add Habit" button always first
+    const addHabitBtn = `
+      <a class="habit-list-item habit-list-add" href="./habit-editor.html">
+        <span class="habit-list-add-icon" aria-hidden="true">+</span>
+        <span>Add Habit</span>
       </a>
     `;
 
-    habitsGrid.innerHTML = state.habits.length
-      ? state.habits
-          .map((habit) => {
-            const counts = finalizeHabitCounts(getHabitCounts(habit, range, state.now));
-            const streak = getHabitCurrentStreak(habit, state.now);
-            const reliability = counts.total ? Math.round((counts.completed / counts.total) * 100) : 0;
-            return `
-              <article class="habit-card">
-                <p class="mini-label">${escapeHtml(habit.category || "Habit")}</p>
-                <h2 class="section-title">${escapeHtml(habit.name || "Untitled habit")}</h2>
-                <p>${escapeHtml(`${habit.schedule || "Custom cadence"}${habit.time ? ` at ${habit.time}` : ""}. ${habit.channel ? `Reminder via ${titleCase(habit.channel)}.` : "No reminder channel selected."}`)}</p>
-                <div class="progress-bar"><span style="width:${clampPercent(reliability)}%"></span></div>
-                <div class="chip-row">
-                  <span class="soft-pill">${pad(streak)} day streak</span>
-                  <a class="soft-pill" href="./calendar.html?habitId=${encodeURIComponent(habit.id)}">Calendar</a>
-                  <a class="soft-pill" href="./habit-editor.html?id=${encodeURIComponent(habit.id)}">Edit</a>
-                  <button class="soft-pill" type="button" data-store-habit-delete="${escapeHtml(habit.id)}">Delete</button>
-                </div>
-              </article>
-            `;
-          })
-          .join("") + addHabitCard
-      : `
-          <article class="habit-card">
-            <p class="mini-label">Habit Tracking</p>
-            <h2 class="section-title">No habits yet</h2>
-            <p>Create a recurring habit and start building streaks.</p>
-            <div class="chip-row">
-              <a class="soft-pill" href="./habit-editor.html">Add Habit</a>
-              <a class="soft-pill" href="./calendar.html">Open Calendar</a>
-            </div>
-          </article>
-          ${addHabitCard}
-        `;
+    const habitItems = state.habits.map((habit) => {
+      const counts = finalizeHabitCounts(getHabitCounts(habit, range, state.now));
+      const streak = getHabitCurrentStreak(habit, state.now);
+      const reliability = counts.total ? Math.round((counts.completed / counts.total) * 100) : 0;
+      const editHref = `./habit-editor.html?id=${encodeURIComponent(habit.id)}`;
+      const isSelected = _selectedHabitId === habit.id;
+      return `
+        <div class="habit-list-item${isSelected ? " is-selected" : ""}" data-habit-select="${escapeHtml(habit.id)}" role="button" tabindex="0">
+          <div class="habit-list-info">
+            <strong>${escapeHtml(habit.name || "Untitled habit")}</strong>
+            <small>${escapeHtml(habit.category || "Habit")} · ${pad(streak)} day streak · ${clampPercent(reliability)}%</small>
+          </div>
+          <a class="habit-list-edit" href="${editHref}" aria-label="Edit ${escapeHtml(habit.name || "habit")}" title="Edit habit">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </a>
+        </div>
+      `;
+    }).join("");
+
+    habitList.innerHTML = addHabitBtn + (habitItems || `
+      <p class="habit-list-empty">No habits yet. Tap Add Habit to create one.</p>
+    `);
+
+    // Attach click handlers for selecting a habit
+    habitList.querySelectorAll("[data-habit-select]").forEach((el) => {
+      el.addEventListener("click", (e) => {
+        // Don't fire if they clicked the edit icon
+        if (e.target.closest(".habit-list-edit")) return;
+        e.preventDefault();
+        const habitId = el.dataset.habitSelect;
+        if (_selectedHabitId === habitId) return;
+        _selectedHabitId = habitId;
+        // Re-render list (to update selected state) and calendar
+        renderHabitsPage(state);
+        renderHabitCalendar(state);
+        // Scroll calendar into view on mobile
+        const tracker = document.querySelector(".habit-tracker-panel");
+        if (tracker) tracker.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      el.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          el.click();
+        }
+      });
+    });
   }
 
   function renderHabitCalendar(state) {
@@ -1734,7 +1704,8 @@
       : parsedMonth < minMonthDate
         ? minMonthDate
         : parsedMonth;
-    const activeHabit = state.habits.find((habit) => habit.id === requestedHabitId)
+    const activeHabit = (_selectedHabitId && state.habits.find((habit) => habit.id === _selectedHabitId))
+      || state.habits.find((habit) => habit.id === requestedHabitId)
       || state.habits.find((habit) => slugifyHabitName(habit.name) === slugifyHabitName(requestedHabitName))
       || state.habits[0]
       || null;
@@ -2363,5 +2334,17 @@
     if (document.visibilityState === "visible") {
       refreshAll();
     }
+  });
+  // Catch focus events (e.g. returning from goal-editor on mobile)
+  window.addEventListener("focus", () => {
+    refreshAll();
+  });
+  // Ensure the goals metric grid refreshes even if DOMContentLoaded fires late
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => { refreshAll(); });
+  }
+  // Refresh UI after Firestore sync completes (server data merged into localStorage)
+  window.addEventListener("timenest-sync-complete", () => {
+    refreshAll();
   });
 })();
