@@ -176,19 +176,24 @@ async function lazyFirestore() {
   if (f.collection && f.addDoc && f.getDocs && f.query) return f;
   // Load the parts not preloaded by auth.js
   const more = await import(
-    "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"
+    "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js"
   );
   const merged = {
     ...f,
     collection: more.collection,
     addDoc: more.addDoc,
     getDocs: more.getDocs,
+    getDoc: more.getDoc,
+    doc: more.doc,
+    updateDoc: more.updateDoc,
+    setDoc: more.setDoc,
+    deleteDoc: more.deleteDoc,
     query: more.query,
     where: more.where,
     orderBy: more.orderBy,
-    deleteDoc: more.deleteDoc,
     onSnapshot: more.onSnapshot,
     serverTimestamp: more.serverTimestamp,
+    writeBatch: more.writeBatch,
   };
   window._fb = merged;
   return merged;

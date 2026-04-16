@@ -15,7 +15,12 @@
       "server.js",
       "claude-test.js",
       "CLAUDE.md",
-      "README.md"
+      "README.md",
+      "**/*.bat",
+      "**/*.sh",
+      "**/*.exe",
+      "commit-timenest.bat",
+      "deploy-fixes.bat"
     ],
     "cleanUrls": false,
     "headers": [

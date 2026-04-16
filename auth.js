@@ -503,6 +503,8 @@ function buildTimeGreeting(user) {
 function syncUserScope(user) {
   if (user?.uid) {
     localStorage.setItem(USER_SCOPE_STORAGE_KEY, user.uid);
+    // Notify sync layer that auth is ready for Firestore operations
+    window.dispatchEvent(new Event("timenest-auth-ready"));
     return;
   }
 

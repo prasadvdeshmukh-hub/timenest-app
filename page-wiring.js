@@ -407,7 +407,7 @@ async function wireHabits() {
   const res = await api().habitsApi.list();
   if (!res.ok) return;
   if (res.data.length === 0) return;
-  const grid = document.querySelector(".habit-grid");
+  const grid = document.querySelector(".habit-grid") || document.getElementById("habit-list");
   if (!grid) return;
   grid.innerHTML = "";
   res.data.forEach((h) => {

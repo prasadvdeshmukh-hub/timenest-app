@@ -2000,82 +2000,7 @@ if (
   });
 }
 
-const habitsOverviewTitle = document.getElementById("habits-overview-title");
-const habitsOverviewSummary = document.getElementById("habits-overview-summary");
-const habitsOverviewLabel = document.getElementById("habits-overview-label");
-const habitsOverviewValue = document.getElementById("habits-overview-value");
-const habitsOverviewCopy = document.getElementById("habits-overview-copy");
-const habitOverviewCards = document.querySelectorAll("[data-habit-overview-card]");
-
-function hydrateHabitsOverviewFromParams() {
-  if (
-    !habitsOverviewTitle ||
-    !habitsOverviewSummary ||
-    !habitsOverviewLabel ||
-    !habitsOverviewValue ||
-    !habitsOverviewCopy ||
-    !habitOverviewCards.length
-  ) {
-    return;
-  }
-
-  const params = new URLSearchParams(window.location.search);
-  const requestedStatus = params.get("status");
-  const requestedRange = params.get("range") === "this-month" ? "this-month" : "all";
-
-  if (!["completed", "skipped"].includes(requestedStatus || "")) {
-    return;
-  }
-
-  const aggregateCounts = getHabitAggregateCounts(requestedRange);
-  const displayCount = aggregateCounts[requestedStatus];
-  const rangeLabel = requestedRange === "this-month" ? "this month" : "all tracked history";
-  const statusLabel = requestedStatus === "completed" ? "Completed" : "Skipped";
-
-  habitsOverviewTitle.textContent =
-    requestedStatus === "completed"
-      ? "Habit check-ins completed across your routines"
-      : "Habit check-ins skipped across your routines";
-  habitsOverviewSummary.textContent =
-    requestedStatus === "completed"
-      ? `These totals come from the same habit history used by the calendar view for ${rangeLabel}.`
-      : `These skipped totals are derived from the same tracked habit history for ${rangeLabel}.`;
-  habitsOverviewLabel.textContent = `${statusLabel} Count`;
-  habitsOverviewValue.textContent = String(displayCount).padStart(2, "0");
-  habitsOverviewCopy.textContent =
-    requestedStatus === "completed"
-      ? `${displayCount} habit check-ins were completed across ${rangeLabel}.`
-      : `${displayCount} habit check-ins were skipped across ${rangeLabel}.`;
-
-  habitOverviewCards.forEach((card) => {
-    const habitKey = card.dataset.habitOverviewCard || "";
-    const countSummary = getHabitCountsForHabit(habitKey, requestedRange);
-    const nextCount = countSummary[requestedStatus];
-    const copyElement = card.querySelector("[data-habit-overview-copy]");
-    const progressElement = card.querySelector("[data-habit-overview-progress]");
-    const percent = countSummary.total
-      ? Math.round((nextCount / countSummary.total) * 100)
-      : 0;
-
-    if (copyElement) {
-      copyElement.textContent =
-        requestedStatus === "completed"
-          ? `${nextCount} completed days in ${rangeLabel}.`
-          : `${nextCount} skipped days in ${rangeLabel}.`;
-    }
-
-    if (progressElement) {
-      progressElement.style.width = `${Math.max(0, Math.min(percent, 100))}%`;
-    }
-
-    const nextUrl = new URL(card.getAttribute("href") || "./calendar.html", window.location.href);
-    nextUrl.searchParams.set("habit", habitCalendarData[habitKey]?.name || "");
-    nextUrl.searchParams.set("range", requestedRange);
-    card.setAttribute("href", nextUrl.toString());
-  });
-}
-
-hydrateHabitsOverviewFromParams();
+// Habit overview panel was removed — hydration is now handled by store-ui.js.
 
 const taskBoard = document.querySelector("[data-task-board]");
 const taskBoardEmptyState = document.querySelector("[data-task-empty]");
@@ -2804,7 +2729,10 @@ function readStore(key) {
 }
 
 function writeStore(key, data) {
+  // 1. Always write to localStorage first (fast, offline-capable)
   localStorage.setItem(getScopedStorageKey(key), JSON.stringify(data));
+  // 2. Push to Firestore in the background (server persistence)
+  syncToFirestore(key, data);
 }
 
 function readStoreObject(key, fallback) {
@@ -2824,6 +2752,180 @@ function readStoreObject(key, fallback) {
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
+
+// ──────────── Firestore Sync Layer ────────────
+// Maps STORE_KEYS values to Firestore collection names
+const STORE_KEY_TO_COLLECTION = {
+  [STORE_KEYS.goals]: "goals",
+  [STORE_KEYS.tasks]: "tasks",
+  [STORE_KEYS.habits]: "habits",
+  [STORE_KEYS.subtasks]: "subtasks",
+};
+
+// Debounce map — prevents rapid-fire writes from flooding Firestore
+const _syncTimers = {};
+
+function syncToFirestore(key, data) {
+  const collectionName = STORE_KEY_TO_COLLECTION[key];
+  if (!collectionName) return; // Only sync goals, tasks, habits, subtasks
+  const fb = window._fb;
+  if (!fb || !fb.db || !fb.auth?.currentUser) return; // Not signed in
+
+  clearTimeout(_syncTimers[key]);
+  _syncTimers[key] = setTimeout(async () => {
+    try {
+      const { doc, setDoc } = await import(
+        "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js"
+      );
+      const uid = fb.auth.currentUser.uid;
+      // Store the entire array as a single document for fast read/write
+      const ref = doc(fb.db, "users", uid, "sync", collectionName);
+      await setDoc(ref, {
+        items: Array.isArray(data) ? data : [],
+        updatedAt: new Date().toISOString(),
+        source: "web"
+      });
+    } catch (err) {
+      console.warn("[TimeNest Sync] Firestore write failed for", collectionName, err.message);
+    }
+  }, 600); // 600ms debounce
+}
+
+// Pull server data on login / page load and merge into localStorage
+async function syncFromFirestore() {
+  const fb = window._fb;
+  if (!fb || !fb.db || !fb.auth?.currentUser) return;
+
+  try {
+    const { doc, getDoc } = await import(
+      "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js"
+    );
+    const uid = fb.auth.currentUser.uid;
+
+    for (const [storeKey, collectionName] of Object.entries(STORE_KEY_TO_COLLECTION)) {
+      const ref = doc(fb.db, "users", uid, "sync", collectionName);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) continue;
+
+      const serverData = snap.data();
+      const serverItems = Array.isArray(serverData.items) ? serverData.items : [];
+      const localItems = readStore(storeKey);
+
+      // Merge strategy: server wins if local is empty or server is newer
+      if (serverItems.length > 0 && localItems.length === 0) {
+        // First install or cleared cache — restore from server
+        localStorage.setItem(getScopedStorageKey(storeKey), JSON.stringify(serverItems));
+      } else if (serverItems.length > 0 && localItems.length > 0) {
+        // Both have data — merge by ID, keeping the most recent version
+        const mergedMap = new Map();
+        serverItems.forEach((item) => { if (item.id) mergedMap.set(item.id, item); });
+        localItems.forEach((item) => {
+          if (!item.id) return;
+          const existing = mergedMap.get(item.id);
+          if (!existing) {
+            mergedMap.set(item.id, item);
+          } else {
+            // Keep whichever was updated more recently
+            const localTime = new Date(item.updatedAt || item.createdAt || 0).getTime();
+            const serverTime = new Date(existing.updatedAt || existing.createdAt || 0).getTime();
+            if (localTime > serverTime) {
+              mergedMap.set(item.id, item);
+            }
+          }
+        });
+        const merged = Array.from(mergedMap.values());
+        localStorage.setItem(getScopedStorageKey(storeKey), JSON.stringify(merged));
+      }
+    }
+  } catch (err) {
+    console.warn("[TimeNest Sync] Firestore read failed:", err.message);
+  }
+}
+
+// Trigger sync after auth state changes
+window.addEventListener("timenest-auth-ready", () => {
+  syncFromFirestore().then(() => {
+    // Refresh UI after sync
+    window.dispatchEvent(new Event("timenest-sync-complete"));
+  });
+});
+
+// Also sync when the page loads and user is already signed in
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    if (window._fb?.auth?.currentUser) {
+      syncFromFirestore().then(() => {
+        window.dispatchEvent(new Event("timenest-sync-complete"));
+      });
+    }
+  }, 1500); // Wait for auth to settle
+});
+
+// ──────────── Delete Account ────────────
+async function deleteUserAccount() {
+  const fb = window._fb;
+  if (!fb || !fb.auth?.currentUser) {
+    showToast("You must be signed in to delete your account", "error");
+    return false;
+  }
+
+  try {
+    const { doc, deleteDoc, collection, getDocs } = await import(
+      "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js"
+    );
+    const uid = fb.auth.currentUser.uid;
+
+    // 1. Delete all sync documents
+    for (const collectionName of Object.values(STORE_KEY_TO_COLLECTION)) {
+      try {
+        const ref = doc(fb.db, "users", uid, "sync", collectionName);
+        await deleteDoc(ref);
+      } catch (_) { /* ignore if doc doesn't exist */ }
+    }
+
+    // 2. Delete user sub-collections (goals, tasks, habits, subtasks)
+    for (const collectionName of Object.values(STORE_KEY_TO_COLLECTION)) {
+      try {
+        const colRef = collection(fb.db, "users", uid, collectionName);
+        const snap = await getDocs(colRef);
+        const deletePromises = [];
+        snap.forEach((d) => {
+          deletePromises.push(deleteDoc(doc(fb.db, "users", uid, collectionName, d.id)));
+        });
+        await Promise.all(deletePromises);
+      } catch (_) { /* ignore */ }
+    }
+
+    // 3. Delete the user profile document
+    try {
+      await deleteDoc(doc(fb.db, "users", uid));
+    } catch (_) { /* ignore */ }
+
+    // 4. Clear all localStorage for this user
+    Object.values(STORE_KEYS).forEach((key) => {
+      localStorage.removeItem(getScopedStorageKey(key));
+      localStorage.removeItem(key);
+    });
+    localStorage.removeItem(USER_SCOPE_STORAGE_KEY);
+
+    // 5. Delete the Firebase Auth account
+    await fb.auth.currentUser.delete();
+
+    showToast("Account deleted successfully. Redirecting...");
+    setTimeout(() => { window.location.href = "./login.html"; }, 1500);
+    return true;
+  } catch (err) {
+    if (err.code === "auth/requires-recent-login") {
+      showToast("Please sign out and sign in again before deleting your account", "error");
+    } else {
+      showToast("Failed to delete account: " + err.message, "error");
+    }
+    return false;
+  }
+}
+
+// Expose globally so settings page can call it
+window.timenestDeleteAccount = deleteUserAccount;
 
 // ──────────── Goal Editor Wiring ────────────
 (function initGoalEditor() {

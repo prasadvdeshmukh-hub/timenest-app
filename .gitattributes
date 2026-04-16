@@ -1,0 +1,24 @@
+# Normalize line endings across platforms.
+# All text files commit with LF; Windows checkouts can still use CRLF locally
+# via core.autocrlf, but the repo stays canonical.
+* text=auto eol=lf
+
+# Binary files — never touch line endings.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tgz binary
+*.jar binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.mp3 binary
+*.mp4 binary
+*.mov binary
