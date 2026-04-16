@@ -40,11 +40,11 @@
           <p class="mini-label">Habit Editor</p>
           <h2 class="section-title">Create a habit with reminders, streak rules, and calendar tracking</h2>
           <div class="form-grid">
-            <label class="field"><span>Habit Name</span><input type="text" id="habit-field-name" placeholder="Enter habit name" /></label>
+            <label class="field"><span>Habit Name <span class="required-star" aria-hidden="true">*</span></span><input type="text" id="habit-field-name" placeholder="Enter habit name" required aria-required="true" /></label>
             <label class="field"><span>Category</span><input type="text" id="habit-field-category" placeholder="Health / Learning / Focus" /></label>
-            <label class="field field-half"><span>Schedule</span><input type="text" id="habit-field-schedule" placeholder="Daily / Weekdays / Custom Days" /></label>
-            <label class="field field-half"><span>Preferred Time</span><input type="time" id="habit-field-time" /></label>
-            <label class="field"><span>Linked Goal</span><input type="text" id="habit-field-goal" placeholder="Optional linked goal" /></label>
+            <label class="field field-half"><span>Schedule <span class="required-star" aria-hidden="true">*</span></span><input type="text" id="habit-field-schedule" placeholder="Daily / Weekdays / Custom Days" required aria-required="true" /></label>
+            <label class="field field-half"><span>Preferred Time <span class="required-star" aria-hidden="true">*</span></span><input type="time" id="habit-field-time" required aria-required="true" /></label>
+            <label class="field"><span>Linked Goal</span><select id="habit-field-goal" data-habit-goal-select><option value="">No linked goal</option></select></label>
             <label class="field full"><span>Success Rule</span><input type="text" id="habit-field-rule" placeholder="Describe what counts as a completed check-in." /></label>
             <label class="field full"><span>Notes</span><input type="text" id="habit-field-notes" placeholder="Add cues, rewards, or tracking notes." /></label>
           </div>
@@ -66,12 +66,8 @@
             </div>
           </fieldset>
           <div class="form-actions habit-editor-actions">
-            <span class="soft-pill" data-action="save-habit">Save Habit</span>
-            <a class="soft-pill" href="./calendar.html?view=habits">Preview Calendar</a>
+            <button type="button" class="soft-pill habit-save-pill" data-action="save-habit">Save</button>
             <a class="soft-pill habit-cancel-pill" href="./habits.html" data-action="cancel-habit">Cancel</a>
-            <div class="task-action-destructive">
-              <span class="soft-pill" data-action="delete-habit">Delete Habit</span>
-            </div>
           </div>
         </article>
       </section>
@@ -82,7 +78,4 @@
       <a class="tab-link" href="./daily-tasks.html">Tasks</a>
       <a class="tab-link is-active" href="./habits.html">Habits</a>
     </nav>
-    <script src="./script.js"></script>
-    <script src="./store-ui.js"></script>
-  </body>
-</html>
+    <script src="./script.js"></s

@@ -9144,6 +9144,247 @@ label.field > span {
   line-height: 1.35;
 }
 
+/* Red star for required field labels */
+.required-star {
+  color: #ff5c7a;
+  font-weight: 700;
+  margin-left: 2px;
+  font-size: 1em;
+  display: inline;
+}
+
+/* ── Notifications Inbox Panel ────────────────────────────────────── */
+.tn-inbox-panel {
+  margin: 16px 0 24px;
+  padding: 16px 18px;
+  border-radius: 18px;
+}
+
+.tn-inbox-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-bottom: 12px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(122, 242, 156, 0.15);
+}
+
+.tn-inbox-panel-head strong {
+  color: #eaf4ff;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.tn-inbox-tools {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tn-inbox-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 22, 40, 0.55);
+  color: #7af29c;
+  border: 1px solid rgba(122, 242, 156, 0.35);
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+  line-height: 1.2;
+}
+
+.tn-inbox-btn:hover,
+.tn-inbox-btn:focus-visible {
+  background: rgba(122, 242, 156, 0.12);
+  border-color: rgba(122, 242, 156, 0.6);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.tn-inbox-btn:active {
+  transform: scale(0.97);
+}
+
+.tn-inbox-btn-danger {
+  color: #ff9aa2;
+  border-color: rgba(255, 154, 162, 0.4);
+}
+
+.tn-inbox-btn-danger:hover,
+.tn-inbox-btn-danger:focus-visible {
+  background: rgba(255, 154, 162, 0.12);
+  border-color: rgba(255, 154, 162, 0.7);
+}
+
+.tn-inbox-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.tn-inbox-item {
+  display: block;
+  padding: 12px 10px;
+  border-bottom: 1px dashed rgba(92, 232, 255, 0.15);
+  color: #d7e5ff;
+  text-decoration: none;
+}
+
+.tn-inbox-item:hover {
+  background: rgba(92, 232, 255, 0.06);
+}
+
+.tn-inbox-item.unread {
+  background: rgba(122, 242, 156, 0.06);
+}
+
+.tn-inbox-item strong {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 2px;
+  color: #eaf4ff;
+}
+
+.tn-inbox-item small {
+  display: block;
+  font-size: 0.78rem;
+  color: #8aa4cc;
+}
+
+.tn-inbox-item .tn-time {
+  font-size: 0.7rem;
+  color: #66809e;
+  margin-top: 4px;
+}
+
+.tn-inbox-empty {
+  text-align: center;
+  padding: 24px 8px;
+  color: #8aa4cc;
+  font-size: 0.85rem;
+}
+
+.tn-type-overdue strong { color: #ff9aa2; }
+.tn-type-due-soon strong { color: #5ce8ff; }
+.tn-type-habit-nudge strong { color: #b6ff9a; }
+.tn-type-confirmation strong { color: #d7e5ff; }
+
+/* ── Task list: + Add Task row (mirrors .habit-list-add) ─────────── */
+.task-list-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 14px;
+  border: 1px dashed rgba(92, 232, 255, 0.45);
+  background: rgba(92, 232, 255, 0.04);
+  color: var(--text-primary, #eaf2ff);
+  font-weight: 600;
+  font-size: clamp(0.88rem, 2.6vw, 1rem);
+  text-decoration: none;
+  margin-bottom: 0.9rem;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+  cursor: pointer;
+}
+
+.task-list-add:hover,
+.task-list-add:focus-visible {
+  background: rgba(92, 232, 255, 0.1);
+  border-color: rgba(92, 232, 255, 0.6);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.task-list-add:active {
+  transform: scale(0.99);
+}
+
+.task-list-add-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(92, 232, 255, 0.18);
+  border: 1px solid rgba(92, 232, 255, 0.4);
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* ── Task card: small icon-only actions (Mark Complete / Edit / Delete) ── */
+.task-card-icon-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+
+.task-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.6);
+  background: transparent;
+  border: 1px solid rgba(164, 203, 255, 0.2);
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+}
+
+.task-icon-btn svg {
+  display: block;
+}
+
+.task-icon-btn:active {
+  transform: scale(0.95);
+}
+
+.task-icon-complete:hover,
+.task-icon-complete:focus-visible {
+  color: #7af29c;
+  background: rgba(122, 242, 156, 0.12);
+  border-color: rgba(122, 242, 156, 0.5);
+  outline: none;
+}
+
+.task-icon-complete.is-complete {
+  color: #7af29c;
+  background: rgba(122, 242, 156, 0.15);
+  border-color: rgba(122, 242, 156, 0.55);
+}
+
+.task-icon-edit:hover,
+.task-icon-edit:focus-visible {
+  color: var(--accent, #a78bfa);
+  background: rgba(167, 139, 250, 0.12);
+  border-color: rgba(167, 139, 250, 0.5);
+  outline: none;
+}
+
+.task-icon-delete:hover,
+.task-icon-delete:focus-visible {
+  color: #ff9aa2;
+  background: rgba(255, 154, 162, 0.12);
+  border-color: rgba(255, 154, 162, 0.5);
+  outline: none;
+}
+
 /* Mobile — keep 16px+ to prevent iOS zoom, but a touch more breathing room. */
 @media (max-width: 780px) {
   input,
@@ -9731,241 +9972,4 @@ body .task-filter-select {
 .habit-list-item:focus-visible {
   background: rgba(92, 232, 255, 0.06);
   border-color: rgba(92, 232, 255, 0.35);
-  transform: translateY(-1px);
-  outline: none;
-}
-
-.habit-list-item:active {
-  transform: scale(0.985);
-}
-
-/* Add Habit button — prominent first item */
-.habit-list-add {
-  justify-content: center;
-  gap: 0.5rem;
-  border: 1px dashed rgba(92, 232, 255, 0.45);
-  background: rgba(92, 232, 255, 0.04);
-  font-weight: 600;
-  font-size: clamp(0.82rem, 2.6vw, 0.96rem);
-  padding: 0.65rem 0.9rem;
-}
-
-.habit-list-add:hover,
-.habit-list-add:focus-visible {
-  background: rgba(92, 232, 255, 0.1);
-  border-color: rgba(92, 232, 255, 0.6);
-}
-
-.habit-list-add-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(92, 232, 255, 0.18);
-  border: 1px solid rgba(92, 232, 255, 0.4);
-  font-size: 1.15rem;
-  font-weight: 500;
-  line-height: 1;
-}
-
-/* Habit row info */
-.habit-list-info {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.habit-list-info strong {
-  font-size: clamp(0.86rem, 2.8vw, 1rem);
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.habit-list-info small {
-  font-size: clamp(0.66rem, 2.2vw, 0.78rem);
-  color: var(--text-secondary, rgba(224, 230, 240, 0.65));
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Drill-down arrow */
-.habit-list-arrow {
-  font-size: 1.3rem;
-  color: rgba(92, 232, 255, 0.6);
-  flex-shrink: 0;
-}
-
-/* Empty state */
-.habit-list-empty {
-  text-align: center;
-  padding: 1rem 0.5rem;
-  color: var(--text-secondary, rgba(224, 230, 240, 0.55));
-  font-size: clamp(0.78rem, 2.4vw, 0.9rem);
-}
-
-/* ─── Delete Account UI ──────────────────────────────────────────────── */
-.delete-account-panel {
-  margin-top: 1.5rem;
-  border: 1px solid rgba(255, 120, 120, 0.25);
-}
-
-.delete-account-btn {
-  background: rgba(255, 100, 100, 0.12) !important;
-  border-color: rgba(255, 100, 100, 0.4) !important;
-  color: #ffb5b5 !important;
-}
-
-.delete-account-btn:hover {
-  background: rgba(255, 100, 100, 0.22) !important;
-  border-color: rgba(255, 100, 100, 0.6) !important;
-}
-
-.delete-account-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.delete-confirm-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.65);
-  z-index: 9998;
-}
-
-.delete-confirm-dialog {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-  width: min(90vw, 420px);
-  padding: 1.5rem;
-  border: 1px solid rgba(255, 120, 120, 0.35);
-  border-radius: 20px;
-  background: var(--card-bg, rgba(12, 20, 42, 0.96));
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
-}
-
-.delete-confirm-dialog .section-title {
-  color: #ffb5b5;
-}
-
-.delete-confirm-dialog input {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* ─── Habit calendar: Prev / Month / Next in one row ─────────────────── */
-.habit-month-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(0.35rem, 1.6vw, 0.6rem);
-  flex-wrap: nowrap;
-  margin-bottom: 0.7rem;
-}
-
-.habit-month-row .habit-month-nav {
-  flex-shrink: 0;
-  min-width: clamp(52px, 14vw, 72px);
-  min-height: 38px;
-  padding: 0.35rem 0.6rem;
-  font-size: clamp(0.7rem, 2.2vw, 0.85rem);
-}
-
-.habit-month-row .habit-month-picker {
-  flex: 1 1 auto;
-  min-width: 0;
-  justify-content: center;
-  min-height: 38px;
-  padding: 0.35rem 0.6rem;
-}
-
-.habit-month-row .habit-month-picker input {
-  min-width: 0;
-  width: 100%;
-  font-size: clamp(0.72rem, 2.4vw, 0.88rem);
-  text-align: center;
-}
-
-@media (max-width: 380px) {
-  .habit-month-row .habit-month-nav {
-    min-width: 44px;
-    padding: 0.3rem 0.4rem;
-    font-size: 0.66rem;
-  }
-  .habit-month-row .habit-month-picker {
-    padding: 0.28rem 0.4rem;
-  }
-  .habit-month-row .habit-month-picker input {
-    font-size: 0.66rem;
-  }
-}
-
-/* ── Habit streak inline row ── */
-.habit-streak-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.6rem;
-}
-
-.habit-streak-row .mini-label {
-  margin: 0;
-  white-space: nowrap;
-}
-
-.habit-streak-value {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(0.85rem, 2.8vw, 1.05rem);
-  font-weight: 700;
-  color: var(--accent, #a78bfa);
-  letter-spacing: 0.02em;
-}
-
-/* ── Habit list: edit icon + selected state ── */
-.habit-list-item[data-habit-select] {
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
-}
-
-.habit-list-item[data-habit-select]:hover {
-  background: rgba(167, 139, 250, 0.08);
-}
-
-.habit-list-item.is-selected {
-  background: rgba(167, 139, 250, 0.12);
-  border-color: var(--accent, #a78bfa);
-  box-shadow: 0 0 0 1px var(--accent, #a78bfa);
-}
-
-.habit-list-edit {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.5);
-  transition: color 0.15s ease, background 0.15s ease;
-  text-decoration: none;
-  flex-shrink: 0;
-  margin-left: auto;
-}
-
-.habit-list-edit:hover {
-  color: var(--accent, #a78bfa);
-  background: rgba(167, 139, 250, 0.12);
-}
-
-.habit-list-edit svg {
-  display: block;
-}
+  transform

@@ -689,57 +689,36 @@
     const list = document.querySelector("[data-tn-inbox-list]");
     if (!list) return;
 
-    // Inject inbox-specific styles once.
-    if (!document.getElementById("tn-inbox-page-styles")) {
-      const style = document.createElement("style");
-      style.id = "tn-inbox-page-styles";
-      style.textContent = `
-        .tn-inbox-panel { margin: 16px 0 24px; padding: 14px 14px 4px; border-radius: 18px;
-          background: rgba(15,20,40,0.7); border: 1px solid rgba(92,232,255,0.22); }
-        .tn-inbox-panel-head { display:flex; justify-content:space-between; align-items:center;
-          padding: 2px 4px 10px; border-bottom: 1px solid rgba(122,242,156,0.15); }
-        .tn-inbox-panel-head strong { color:#eaf4ff; font-size:15px; letter-spacing:0.02em; }
-        .tn-inbox-tools button { background: transparent; color: #7af29c;
-          border: 1px solid rgba(122,242,156,0.25); padding: 4px 10px; border-radius: 10px;
-          font-size: 12px; cursor: pointer; margin-left: 6px; }
-        [data-tn-inbox-list] { display:flex; flex-direction:column; }
-        .tn-inbox-item { display:block; padding: 12px 6px; border-bottom: 1px dashed rgba(92,232,255,0.15);
-          color:#d7e5ff; text-decoration:none; }
-        .tn-inbox-item:hover { background: rgba(92,232,255,0.06); }
-        .tn-inbox-item.unread { background: rgba(122,242,156,0.06); }
-        .tn-inbox-item strong { display:block; font-size:14px; margin-bottom:2px; color:#eaf4ff; }
-        .tn-inbox-item small { display:block; font-size:12px; color:#8aa4cc; }
-        .tn-inbox-item .tn-time { font-size: 10px; color:#66809e; margin-top: 4px; }
-        .tn-inbox-empty { text-align:center; padding: 24px 8px; color:#8aa4cc; font-size:13px; }
-        .tn-type-overdue strong { color:#ff9aa2; }
-        .tn-type-due-soon strong { color:#5ce8ff; }
-        .tn-type-habit-nudge strong { color:#b6ff9a; }
-        .tn-type-confirmation strong { color:#d7e5ff; }
-      `;
-      document.head.appendChild(style);
-    }
+    // Styles for the inbox panel now live in styles.css so they're applied
+    // before first paint (avoids the unstyled/distorted flash).
 
-    const markAll = document.querySelector("[data-tn-mark-all]");
-    const clearAll = document.querySelector("[data-tn-clear]");
-    if (markAll && !markAll.dataset.tnBound) {
-      markAll.dataset.tnBound = "1";
-      markAll.addEventListener("click", () => {
-        const all = readNotifs().map((n) => ({
-          ...n,
-          readAt: n.readAt || new Date().toISOString(),
-        }));
-        writeNotifs(all);
-        renderInbox();
-        renderBell();
-      });
-    }
-    if (clearAll && !clearAll.dataset.tnBound) {
-      clearAll.dataset.tnBound = "1";
-      clearAll.addEventListener("click", () => {
-        if (!confirm("Clear all notifications?")) return;
-        writeNotifs([]);
-        renderInbox();
-        renderBell();
+    // Use event delegation on document so the Mark-all-read / Clear buttons
+    // work reliably even if this mount function runs before the nodes exist
+    // or the markup is re-rendered later.
+    if (!document.__tnInboxToolsBound) {
+      document.__tnInboxToolsBound = true;
+      document.addEventListener("click", (ev) => {
+        const markAllBtn = ev.target.closest("[data-tn-mark-all]");
+        if (markAllBtn) {
+          ev.preventDefault();
+          const all = readNotifs().map((n) => ({
+            ...n,
+            readAt: n.readAt || new Date().toISOString(),
+          }));
+          writeNotifs(all);
+          renderInbox();
+          renderBell();
+          return;
+        }
+        const clearBtn = ev.target.closest("[data-tn-clear]");
+        if (clearBtn) {
+          ev.preventDefault();
+          if (!confirm("Clear all notifications?")) return;
+          writeNotifs([]);
+          renderInbox();
+          renderBell();
+          return;
+        }
       });
     }
 
@@ -816,3 +795,4 @@
     rehydrateAlarms();
   }
 })();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               

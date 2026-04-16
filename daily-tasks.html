@@ -29,10 +29,6 @@
             <div class="task-control-copy">
               <p class="mini-label">Daily Task Control</p>
             </div>
-            <div class="page-tools task-control-tools">
-              <a class="soft-pill task-control-pill" href="./task-editor.html">Add Task</a>
-              <a class="soft-pill task-control-pill" href="./subtask-editor.html">Add Subtask</a>
-            </div>
           </div>
         </article>
 
@@ -217,10 +213,14 @@
         const taskBoard = document.getElementById("task-stream-list");
         if (taskBoard) {
           taskBoard.innerHTML = `
+            <a class="task-list-add" href="./task-editor.html" data-task-add>
+              <span class="task-list-add-icon" aria-hidden="true">+</span>
+              <span>Add Task</span>
+            </a>
             <div class="task-empty-state panel" data-task-empty>
               <p class="mini-label">Task Streams</p>
               <h3 data-task-empty-title>No tasks yet</h3>
-              <p data-task-empty-copy>Use Add Task or Add Subtask to create your first item.</p>
+              <p data-task-empty-copy>Tap + Add Task above to create your first task.</p>
             </div>
           `;
         }
@@ -230,3 +230,4 @@
     <script src="./store-ui.js"></script>
   </body>
 </html>
+                                                                  

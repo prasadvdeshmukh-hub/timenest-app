@@ -873,6 +873,24 @@
 
     getTaskItems().forEach((item) => item.remove());
 
+    // Ensure an "+ Add Task" entry is always the first item in the list,
+    // mirroring the Habits tab's Add Habit affordance.
+    let taskAddBtn = taskBoard.querySelector(".task-list-add");
+    if (!taskAddBtn) {
+      taskBoard.insertAdjacentHTML(
+        "afterbegin",
+        `
+          <a class="task-list-add" href="./task-editor.html" data-task-add>
+            <span class="task-list-add-icon" aria-hidden="true">+</span>
+            <span>Add Task</span>
+          </a>
+        `
+      );
+      taskAddBtn = taskBoard.querySelector(".task-list-add");
+    } else if (taskAddBtn !== taskBoard.firstElementChild) {
+      taskBoard.insertBefore(taskAddBtn, taskBoard.firstElementChild);
+    }
+
     const sortedTasks = [...state.tasks].sort(
       (leftTask, rightTask) => Number(getSortKey(leftTask)) - Number(getSortKey(rightTask))
     );
@@ -917,23 +935,35 @@
               </div>
             </div>
 
-            <div class="task-card-actions">
+            <div class="task-card-icon-actions">
               <button
-                class="soft-pill task-action-pill task-complete-pill"
+                class="task-icon-btn task-icon-complete${isTaskComplete(task) ? " is-complete" : ""}"
                 type="button"
                 data-complete-toggle
                 data-store-task-toggle="${escapeHtml(task.id)}"
                 aria-pressed="${isTaskComplete(task)}"
+                aria-label="${isTaskComplete(task) ? "Mark task as open" : "Mark task complete"}"
+                title="${isTaskComplete(task) ? "Mark as open" : "Mark complete"}"
               >
-                <span class="task-complete-dot" aria-hidden="true"></span>
-                <span data-complete-text>${isTaskComplete(task) ? "Completed" : "Done"}</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
               </button>
-              ${isTaskComplete(task)
-                ? ''
-                : `<a class="soft-pill task-action-pill" href="./subtask-editor.html?taskId=${encodeURIComponent(task.id)}">Subtask</a>`}
-              <a class="soft-pill task-action-pill" href="./task-detail.html?id=${encodeURIComponent(task.id)}">View</a>
-              <a class="soft-pill task-action-pill" href="./task-editor.html?id=${encodeURIComponent(task.id)}">Edit</a>
-              <button class="soft-pill task-action-pill" type="button" data-store-task-delete="${escapeHtml(task.id)}">Delete</button>
+              <a
+                class="task-icon-btn task-icon-edit"
+                href="./task-editor.html?id=${encodeURIComponent(task.id)}"
+                aria-label="Edit task"
+                title="Edit task"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </a>
+              <button
+                class="task-icon-btn task-icon-delete"
+                type="button"
+                data-store-task-delete="${escapeHtml(task.id)}"
+                aria-label="Delete task"
+                title="Delete task"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+              </button>
             </div>
 
             <div class="subtask-stack">
@@ -1618,15 +1648,21 @@
       const reliability = counts.total ? Math.round((counts.completed / counts.total) * 100) : 0;
       const editHref = `./habit-editor.html?id=${encodeURIComponent(habit.id)}`;
       const isSelected = _selectedHabitId === habit.id;
+      const safeName = escapeHtml(habit.name || "habit");
       return `
         <div class="habit-list-item${isSelected ? " is-selected" : ""}" data-habit-select="${escapeHtml(habit.id)}" role="button" tabindex="0">
           <div class="habit-list-info">
             <strong>${escapeHtml(habit.name || "Untitled habit")}</strong>
             <small>${escapeHtml(habit.category || "Habit")} · ${pad(streak)} day streak · ${clampPercent(reliability)}%</small>
           </div>
-          <a class="habit-list-edit" href="${editHref}" aria-label="Edit ${escapeHtml(habit.name || "habit")}" title="Edit habit">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          </a>
+          <div class="habit-list-actions">
+            <a class="habit-list-icon-btn habit-list-edit" href="${editHref}" aria-label="Edit ${safeName}" title="Edit habit">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </a>
+            <button type="button" class="habit-list-icon-btn habit-list-delete" data-store-habit-delete="${escapeHtml(habit.id)}" aria-label="Delete ${safeName}" title="Delete habit">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+          </div>
         </div>
       `;
     }).join("");
@@ -1638,8 +1674,8 @@
     // Attach click handlers for selecting a habit
     habitList.querySelectorAll("[data-habit-select]").forEach((el) => {
       el.addEventListener("click", (e) => {
-        // Don't fire if they clicked the edit icon
-        if (e.target.closest(".habit-list-edit")) return;
+        // Don't fire if they clicked the edit or delete icon
+        if (e.target.closest(".habit-list-icon-btn")) return;
         e.preventDefault();
         const habitId = el.dataset.habitSelect;
         if (_selectedHabitId === habitId) return;
@@ -2127,15 +2163,26 @@
           event.preventDefault();
           event.stopImmediatePropagation();
           const habitId = habitDeleteButton.getAttribute("data-store-habit-delete") || "";
-          if (habitId && window.confirm("Delete this habit permanently?")) {
-            deleteHabit(habitId);
-            showToast("Habit deleted");
-            if (document.getElementById("habit-calendar-grid")) {
-              window.location.href = "./habits.html";
-              return;
-            }
-            refreshAll();
+          if (!habitId) return;
+          const allHabits = readStore(STORE_KEYS.habits);
+          const habitRecord = allHabits.find((h) => h.id === habitId);
+          const habitName = habitRecord?.name || "this habit";
+          // First confirmation
+          if (!window.confirm(`Are you sure you want to delete "${habitName}"?`)) {
+            return;
           }
+          // Second confirmation (double-confirm before destructive action)
+          if (!window.confirm(`This action cannot be undone. Permanently delete "${habitName}" and all its tracking history?`)) {
+            showToast("Delete cancelled", "info");
+            return;
+          }
+          deleteHabit(habitId);
+          showToast("Habit deleted");
+          if (document.getElementById("habit-calendar-grid") && !document.getElementById("habit-list")) {
+            window.location.href = "./habits.html";
+            return;
+          }
+          refreshAll();
           return;
         }
 
@@ -2274,77 +2321,4 @@
           return;
         }
 
-        const selectedDay = Number(clickedDay.getAttribute("data-store-habit-day"));
-        const currentDays = new Set(getHabitMonthDays(habit, monthKey));
-        if (currentDays.has(selectedDay)) {
-          currentDays.delete(selectedDay);
-        } else {
-          currentDays.add(selectedDay);
-        }
-
-        writeHabitMonthDays(habitId, monthKey, currentDays);
-        refreshAll();
-      },
-      true
-    );
-
-    [...dashboardRangeRadios, ...goalViewRadios, ...goalRangeRadios].forEach((input) => {
-      input?.addEventListener("change", () => {
-        refreshAll();
-      });
-    });
-
-    // Metric tab clicks (Completed / Active / Delayed / On Time) on the Goals page
-    // — toggle the active tab on BOTH short-term & long-term metric grids so the
-    // selection stays in sync, then re-render the portfolio grid below.
-    document.addEventListener("click", (event) => {
-      const tab = event.target.closest("[data-goal-status-filter]");
-      if (!tab || !document.body.classList.contains("goals-page")) return;
-      event.preventDefault();
-      const filter = tab.getAttribute("data-goal-status-filter") || "active";
-      document.querySelectorAll("[data-goal-status-filter]").forEach((el) => {
-        const isMatch = el.getAttribute("data-goal-status-filter") === filter;
-        el.classList.toggle("is-active", isMatch);
-        el.setAttribute("aria-pressed", isMatch ? "true" : "false");
-      });
-      refreshAll();
-    });
-  }
-
-  purgeDemoRecords();
-  bindInteractions();
-  refreshAll();
-
-  // Keep views live. After creating or editing a goal/task/habit in a
-  // dedicated editor page and returning here, the browser may serve the
-  // previous DOM from its back-forward cache, which would leave stale
-  // metric counts and list rows on screen (e.g. the Short/Long-Term goal
-  // status matrix not reflecting a freshly added goal). Re-run refreshAll
-  // when the tab becomes visible, when another tab writes to localStorage,
-  // and when the page is restored from bfcache.
-  window.addEventListener("pageshow", () => {
-    refreshAll();
-  });
-  window.addEventListener("storage", (event) => {
-    if (!event.key || Object.values(STORE_KEYS).includes(event.key)) {
-      refreshAll();
-    }
-  });
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
-      refreshAll();
-    }
-  });
-  // Catch focus events (e.g. returning from goal-editor on mobile)
-  window.addEventListener("focus", () => {
-    refreshAll();
-  });
-  // Ensure the goals metric grid refreshes even if DOMContentLoaded fires late
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => { refreshAll(); });
-  }
-  // Refresh UI after Firestore sync completes (server data merged into localStorage)
-  window.addEventListener("timenest-sync-complete", () => {
-    refreshAll();
-  });
-})();
+        const selectedDay = Number(clickedDay.getAttri

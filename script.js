@@ -2398,8 +2398,8 @@ function setTaskCompletionState(taskItem, isComplete) {
     return;
   }
 
-  const completeButton = taskItem.querySelector(".task-card-actions [data-complete-toggle]");
-  const completeText = taskItem.querySelector(".task-card-actions [data-complete-text]");
+  const completeButton = taskItem.querySelector("[data-complete-toggle]");
+  const completeText = taskItem.querySelector("[data-complete-text]");
   const statusPill = taskItem.querySelector("[data-status-pill]");
   const pendingLabel = taskItem.dataset.pendingLabel || "Pending";
   const completeLabel = taskItem.dataset.completeLabel || "Completed";
@@ -2409,6 +2409,18 @@ function setTaskCompletionState(taskItem, isComplete) {
 
   if (completeButton) {
     completeButton.setAttribute("aria-pressed", String(isComplete));
+    // Sync visual state for the new icon-only complete button.
+    if (completeButton.classList.contains("task-icon-complete")) {
+      completeButton.classList.toggle("is-complete", isComplete);
+      completeButton.setAttribute(
+        "aria-label",
+        isComplete ? "Mark task as open" : "Mark task complete"
+      );
+      completeButton.setAttribute(
+        "title",
+        isComplete ? "Mark as open" : "Mark complete"
+      );
+    }
   }
 
   if (completeText) {
@@ -3253,6 +3265,50 @@ window.timenestDeleteAccount = deleteUserAccount;
   const params = new URLSearchParams(window.location.search);
   const editId = params.get("id");
 
+  // Populate the Linked Goal <select> with Active goals (status !== "completed"
+  // and not explicitly archived). Falls back gracefully if the field is still
+  // a plain text <input> in older markup.
+  function populateActiveGoalsDropdown(selectedValue) {
+    if (!goalField || goalField.tagName !== "SELECT") return;
+    const goals = readStore(STORE_KEYS.goals) || [];
+    const activeGoals = goals.filter((g) => {
+      if (!g || !g.id) return false;
+      const status = String(g.status || "open").toLowerCase();
+      return status !== "completed" && status !== "archived" && status !== "cancelled";
+    });
+
+    // Preserve any placeholder option and rebuild list
+    const placeholderOption = '<option value="">No linked goal</option>';
+    const optionsHtml = activeGoals
+      .map((g) => {
+        const label = String(g.name || "Untitled goal").replace(/</g, "&lt;");
+        return `<option value="${g.id}">${label}</option>`;
+      })
+      .join("");
+    goalField.innerHTML = placeholderOption + optionsHtml;
+
+    // Try to set the selected value — it may be an id or a legacy goal name.
+    if (selectedValue) {
+      const byId = activeGoals.find((g) => g.id === selectedValue);
+      const byName = !byId && activeGoals.find((g) => (g.name || "").trim() === selectedValue.trim());
+      if (byId) {
+        goalField.value = byId.id;
+      } else if (byName) {
+        goalField.value = byName.id;
+      } else {
+        // Selected goal not in active list (possibly completed). Add a
+        // disabled option so the user can see what was linked previously.
+        const legacyLabel = String(selectedValue).replace(/</g, "&lt;");
+        goalField.insertAdjacentHTML(
+          "beforeend",
+          `<option value="${selectedValue}" selected>${legacyLabel} (not active)</option>`
+        );
+      }
+    }
+  }
+
+  populateActiveGoalsDropdown("");
+
   if (editId) {
     const habits = readStore(STORE_KEYS.habits);
     const habit = habits.find((h) => h.id === editId);
@@ -3262,7 +3318,7 @@ window.timenestDeleteAccount = deleteUserAccount;
       scheduleField.value = habit.schedule || "";
       timeField.value = habit.time || "";
       if (channelField) channelField.value = habit.channel || "";
-      goalField.value = habit.linkedGoal || "";
+      populateActiveGoalsDropdown(habit.linkedGoal || "");
       ruleField.value = habit.successRule || "";
       notesField.value = habit.notes || "";
       // Re-check the saved notification channels.
@@ -3301,7 +3357,9 @@ window.timenestDeleteAccount = deleteUserAccount;
         successRule: ruleField.value.trim(),
         notes: notesField.value.trim(),
       };
-      if (!data.name) { showToast("Habit name is required", "error"); return; }
+      if (!data.name) { showToast("Habit Name is required", "error"); nameField?.focus(); return; }
+      if (!data.schedule) { showToast("Schedule is required", "error"); scheduleField?.focus(); return; }
+      if (!data.time) { showToast("Preferred Time is required", "error"); timeField?.focus(); return; }
       const habits = readStore(STORE_KEYS.habits);
 
       let savedHabitId = editId;
@@ -3673,70 +3731,4 @@ window.timenestDeleteAccount = deleteUserAccount;
   prefPills.forEach((pill) => {
     const key = pill.dataset.pref;
     if (savedPrefs[key]) {
-      pill.textContent = key.charAt(0).toUpperCase() + key.slice(1) + ": " + savedPrefs[key];
-    }
-
-    pill.style.cursor = "pointer";
-    pill.addEventListener("click", () => {
-      const options = prefOptions[key];
-      if (!options) return;
-      const currentText = pill.textContent.split(": ")[1] || options[0];
-      const currentIdx = options.indexOf(currentText);
-      const nextIdx = (currentIdx + 1) % options.length;
-      const newValue = options[nextIdx];
-      pill.textContent = key.charAt(0).toUpperCase() + key.slice(1) + ": " + newValue;
-      savedPrefs[key] = newValue;
-      writeStore(STORE_KEYS.preferences, savedPrefs);
-      showToast(key.charAt(0).toUpperCase() + key.slice(1) + " set to " + newValue);
-    });
-  });
-})();
-
-// ──────────── Login Page: Wire preview actions ────────────
-(function initLoginActions() {
-  if (document.body.dataset.authMode !== "prototype") {
-    return;
-  }
-
-  const loginSubmit = document.querySelector(".login-submit");
-  if (loginSubmit) {
-    loginSubmit.addEventListener("click", (e) => {
-      e.preventDefault();
-      showToast("This is a prototype — use the preview buttons above", "info");
-    });
-  }
-
-  // Wire the form to prevent actual submission
-  const loginForm = document.querySelector(".login-form");
-  if (loginForm) {
-    loginForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      showToast("Prototype mode — no real authentication", "info");
-    });
-  }
-})();
-
-import("./auth.js")
-  .then(({ initAuth }) => initAuth())
-  .catch((error) => {
-    console.error("Failed to initialize TIMENEST auth", error);
-    const authBanner = document.querySelector("[data-auth-banner], [data-auth-feedback]");
-    if (authBanner) {
-      authBanner.hidden = false;
-      authBanner.dataset.tone = "error";
-      authBanner.textContent = "TIMENEST could not initialize Firebase Authentication. Open the browser console to see the exact error.";
-    }
-  });
-
-// ──────────── In-app notification engine bootstrap ────────────
-// Loaded once per page via dynamic <script> injection so individual HTML
-// pages don't need a separate <script src="./notifications.js"> include.
-(function bootstrapTimenestNotifications() {
-  if (window.__timenestNotificationsBooted) return;
-  if (document.getElementById("timenest-notifications-script")) return;
-  const s = document.createElement("script");
-  s.id = "timenest-notifications-script";
-  s.src = "./notifications.js";
-  s.defer = true;
-  document.head.appendChild(s);
-})();
+      pill.textContent = key.charAt(0).toUpperCase() + key.slice(1) + ": " + savedPrefs[
