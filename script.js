@@ -3053,7 +3053,20 @@ window.timenestDeleteAccount = deleteUserAccount;
   const dateField = document.getElementById("task-field-date");
   const timeField = document.getElementById("task-field-time");
   const notesField = document.getElementById("task-field-notes");
+  const frequencyInputs = Array.from(document.querySelectorAll("[data-frequency-option]"));
+  const customDaysRow = document.querySelector("[data-custom-days-row]");
+  const customDayInputs = Array.from(document.querySelectorAll("[data-custom-day]"));
   if (!nameField) return;
+
+  const weekdayOrder = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+  ];
 
   function getSelectedPriority() {
     for (const radio of priorityRadios) {
@@ -3091,6 +3104,106 @@ window.timenestDeleteAccount = deleteUserAccount;
   const queryGoalId = params.get("goalId");
   let linkedGoalId = queryGoalId || "";
 
+  function getSelectedFrequencyKey() {
+    const selected = frequencyInputs.find((input) => input.checked);
+    return selected?.getAttribute("data-frequency-option") || "none";
+  }
+
+  function syncCustomDaysVisibility() {
+    const showCustomDays = getSelectedFrequencyKey() === "custom-days";
+    if (customDaysRow) {
+      customDaysRow.hidden = !showCustomDays;
+    }
+    if (!showCustomDays) {
+      customDayInputs.forEach((input) => {
+        input.checked = false;
+      });
+    }
+  }
+
+  function setFrequencySelection(values) {
+    const normalizedValues = Array.isArray(values)
+      ? values.map((value) => String(value || "").trim().toLowerCase()).filter(Boolean)
+      : [];
+    const hasCustomDays = normalizedValues.includes("custom days")
+      || normalizedValues.includes("custom-days")
+      || normalizedValues.some((value) => weekdayOrder.includes(value));
+
+    let selectedKey = "none";
+    if (hasCustomDays) {
+      selectedKey = "custom-days";
+    } else if (normalizedValues.includes("daily")) {
+      selectedKey = "daily";
+    } else if (normalizedValues.includes("weekly")) {
+      selectedKey = "weekly";
+    } else if (normalizedValues.includes("monthly")) {
+      selectedKey = "monthly";
+    } else if (normalizedValues.includes("yearly")) {
+      selectedKey = "yearly";
+    }
+
+    frequencyInputs.forEach((input) => {
+      input.checked = input.getAttribute("data-frequency-option") === selectedKey;
+    });
+
+    const selectedCustomDays = normalizedValues.filter((value) => weekdayOrder.includes(value));
+    customDayInputs.forEach((input) => {
+      const day = input.getAttribute("data-custom-day") || "";
+      input.checked = selectedCustomDays.includes(day);
+    });
+
+    syncCustomDaysVisibility();
+  }
+
+  function collectFrequencyValues() {
+    const selectedKey = getSelectedFrequencyKey();
+    if (!selectedKey || selectedKey === "none") {
+      return ["none"];
+    }
+    if (selectedKey === "custom-days") {
+      const selectedDays = customDayInputs
+        .filter((input) => input.checked)
+        .map((input) => input.getAttribute("data-custom-day") || "")
+        .filter(Boolean);
+      return ["custom days", ...selectedDays];
+    }
+    return [selectedKey];
+  }
+
+  function getFrequencySummary(values) {
+    const normalizedValues = Array.isArray(values)
+      ? values.map((value) => String(value || "").trim().toLowerCase()).filter(Boolean)
+      : [];
+    if (!normalizedValues.length || normalizedValues.includes("none")) {
+      return "one-time";
+    }
+    if (normalizedValues.includes("custom days")) {
+      const selectedDays = normalizedValues.filter((value) => weekdayOrder.includes(value));
+      if (!selectedDays.length) {
+        return "custom days";
+      }
+      return `custom days (${selectedDays.map((day) => day.slice(0, 3)).join(", ")})`;
+    }
+    return normalizedValues.join(", ");
+  }
+
+  frequencyInputs.forEach((input) => {
+    input.addEventListener("change", () => {
+      const selectedKey = input.getAttribute("data-frequency-option") || "none";
+      if (input.checked) {
+        setFrequencySelection([selectedKey]);
+        return;
+      }
+      if (!frequencyInputs.some((option) => option.checked)) {
+        setFrequencySelection(["none"]);
+        return;
+      }
+      syncCustomDaysVisibility();
+    });
+  });
+
+  syncCustomDaysVisibility();
+
   // Load existing task for editing
   if (editId) {
     const tasks = readStore(STORE_KEYS.tasks);
@@ -3102,14 +3215,7 @@ window.timenestDeleteAccount = deleteUserAccount;
       dateField.value = task.date || "";
       timeField.value = task.time || "";
       notesField.value = task.notes || "";
-      // Restore frequency checkboxes
-      if (task.frequency) {
-        const freqChecks = document.querySelectorAll('.compact-check-group:first-of-type .compact-check-chip input');
-        freqChecks.forEach((cb) => {
-          const label = cb.parentElement.querySelector("span").textContent.trim().toLowerCase();
-          cb.checked = task.frequency.includes(label);
-        });
-      }
+      setFrequencySelection(task.frequency || ["none"]);
       // Restore notification checkboxes
       if (task.notifications) {
         const notifChecks = document.querySelectorAll('[data-notification-group] .compact-check-chip input, .compact-check-group:last-of-type .compact-check-chip input');
@@ -3146,7 +3252,7 @@ window.timenestDeleteAccount = deleteUserAccount;
       date: dateField.value,
       time: timeField.value,
       notes: notesField.value.trim(),
-      frequency: getCheckedValues(0),
+      frequency: collectFrequencyValues(),
       notifications: getCheckedValues(1),
       goalId: linkedGoalId || null,
     };
@@ -3160,6 +3266,11 @@ window.timenestDeleteAccount = deleteUserAccount;
     if (act === "save-task") {
       const data = collectTaskData();
       if (!data.name) { showToast("Task name is required", "error"); return; }
+      if (data.frequency.includes("custom days") && data.frequency.length === 1) {
+        showToast("Select at least one custom day", "error");
+        customDayInputs[0]?.focus();
+        return;
+      }
       const tasks = readStore(STORE_KEYS.tasks);
 
       let savedId = editId;
@@ -3207,8 +3318,12 @@ window.timenestDeleteAccount = deleteUserAccount;
     if (act === "preview-reminder") {
       const data = collectTaskData();
       if (!data.name) { showToast("Enter a task name first", "error"); return; }
+      if (data.frequency.includes("custom days") && data.frequency.length === 1) {
+        showToast("Select at least one custom day", "error");
+        return;
+      }
       const channels = data.notifications.length ? data.notifications.join(", ") : "none selected";
-      const freq = data.frequency.length ? data.frequency.join(", ") : "one-time";
+      const freq = getFrequencySummary(data.frequency);
       const deadline = data.date ? new Date(data.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }) : "no date set";
       const timeStr = data.time || "no time set";
       showToast("Reminder: \"" + data.name + "\" — " + deadline + " at " + timeStr + " via " + channels + " (" + freq + ")", "info", 6000);
@@ -3221,9 +3336,10 @@ window.timenestDeleteAccount = deleteUserAccount;
       dateField.value = "";
       timeField.value = "";
       notesField.value = "";
-      document.querySelectorAll('.compact-check-chip input').forEach((cb) => cb.checked = false);
-      const noneCheck = document.querySelector('.compact-check-group:first-of-type .compact-check-chip input');
-      if (noneCheck) noneCheck.checked = true;
+      setFrequencySelection(["none"]);
+      document.querySelectorAll('[data-notification-group] .compact-check-chip input').forEach((cb) => {
+        cb.checked = false;
+      });
       // Re-check the default notification channels (In-App + Push).
       document
         .querySelectorAll('[data-notification-group] .compact-check-chip input[data-channel="in-app"], [data-notification-group] .compact-check-chip input[data-channel="push"]')

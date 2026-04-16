@@ -49,33 +49,66 @@
             <label class="field full"><span>Notes</span><input type="text" id="task-field-notes" placeholder="Add notes, context, or a checklist" /></label>
           </div>
           <div class="task-editor-compact-stack">
-            <fieldset class="compact-check-group">
+            <fieldset class="compact-check-group" data-frequency-group>
               <legend>Frequency</legend>
               <div class="compact-check-row" aria-label="Frequency options">
                 <label class="compact-check-chip">
-                  <input type="checkbox" checked />
+                  <input type="checkbox" data-frequency-option="none" checked />
                   <span>None</span>
                 </label>
                 <label class="compact-check-chip">
-                  <input type="checkbox" />
+                  <input type="checkbox" data-frequency-option="daily" />
                   <span>Daily</span>
                 </label>
                 <label class="compact-check-chip">
-                  <input type="checkbox" />
+                  <input type="checkbox" data-frequency-option="weekly" />
                   <span>Weekly</span>
                 </label>
                 <label class="compact-check-chip">
-                  <input type="checkbox" />
+                  <input type="checkbox" data-frequency-option="monthly" />
                   <span>Monthly</span>
                 </label>
                 <label class="compact-check-chip">
-                  <input type="checkbox" />
+                  <input type="checkbox" data-frequency-option="yearly" />
                   <span>Yearly</span>
                 </label>
                 <label class="compact-check-chip">
-                  <input type="checkbox" />
+                  <input type="checkbox" data-frequency-option="custom-days" />
                   <span>Custom Days</span>
                 </label>
+              </div>
+              <div class="task-custom-days-row" data-custom-days-row hidden aria-label="Custom day selection">
+                <span class="task-custom-days-label">Choose days</span>
+                <div class="task-custom-days-chips">
+                  <label class="compact-check-chip">
+                    <input type="checkbox" data-custom-day="monday" />
+                    <span>Mon</span>
+                  </label>
+                  <label class="compact-check-chip">
+                    <input type="checkbox" data-custom-day="tuesday" />
+                    <span>Tue</span>
+                  </label>
+                  <label class="compact-check-chip">
+                    <input type="checkbox" data-custom-day="wednesday" />
+                    <span>Wed</span>
+                  </label>
+                  <label class="compact-check-chip">
+                    <input type="checkbox" data-custom-day="thursday" />
+                    <span>Thu</span>
+                  </label>
+                  <label class="compact-check-chip">
+                    <input type="checkbox" data-custom-day="friday" />
+                    <span>Fri</span>
+                  </label>
+                  <label class="compact-check-chip">
+                    <input type="checkbox" data-custom-day="saturday" />
+                    <span>Sat</span>
+                  </label>
+                  <label class="compact-check-chip">
+                    <input type="checkbox" data-custom-day="sunday" />
+                    <span>Sun</span>
+                  </label>
+                </div>
               </div>
             </fieldset>
             <fieldset class="compact-check-group" data-notification-group>
@@ -100,9 +133,9 @@
             <span class="soft-pill" data-action="preview-reminder">Preview Reminder</span>
             <a class="soft-pill" href="./subtask-editor.html">Add Subtask</a>
             <span class="soft-pill" data-action="reset-task">Reset</span>
-            <span class="soft-pill" data-action="save-task">Save Task</span>
-            <div class="task-action-destructive">
-              <span class="soft-pill" data-action="delete-task">Delete Task</span>
+            <span class="soft-pill task-delete-pill" data-action="delete-task">Delete Task</span>
+            <div class="task-action-bottom">
+              <span class="soft-pill" data-action="save-task">Save Task</span>
             </div>
           </div>
         </article>

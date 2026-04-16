@@ -5857,6 +5857,27 @@ body.login-page .bottom-tabbar {
   outline: none;
 }
 
+.task-custom-days-row {
+  margin-top: 0.72rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.task-custom-days-label {
+  color: rgba(166, 195, 255, 0.72);
+  font-family: "Space Grotesk", "Outfit", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.task-custom-days-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.38rem;
+}
+
 .segmented-row {
   display: flex;
   flex-wrap: wrap;
@@ -6289,9 +6310,39 @@ body.login-page .bottom-tabbar {
   gap: 0.18rem;
 }
 
+.completion-check-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  color: #bfffe0;
+  background: radial-gradient(circle at 30% 30%, rgba(50, 125, 88, 0.98), rgba(9, 42, 28, 0.98));
+  border: 1px solid rgba(132, 255, 190, 0.5);
+  box-shadow:
+    0 0 0 1px rgba(18, 66, 45, 0.8) inset,
+    0 0 18px rgba(74, 214, 142, 0.38),
+    0 0 28px rgba(25, 84, 55, 0.28);
+  flex: 0 0 auto;
+}
+
+.completion-check-badge svg {
+  display: block;
+}
+
 .task-card-copy {
   display: grid;
   gap: 0.12rem;
+}
+
+.task-card-status-cluster,
+.goal-portfolio-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  flex: 0 0 auto;
 }
 
 .task-card-copy h3,
@@ -8888,6 +8939,12 @@ body.dashboard-home .dashboard-summary-card strong {
   margin-bottom: 10px;
 }
 
+.goal-portfolio-list .goal-portfolio-card.is-complete {
+  border-color: rgba(132, 255, 190, 0.32);
+  background: linear-gradient(180deg, rgba(13, 35, 28, 0.9), rgba(12, 24, 38, 0.84));
+  box-shadow: 0 0 0 1px rgba(74, 214, 142, 0.08) inset;
+}
+
 .goal-portfolio-list .goal-portfolio-card:last-child {
   margin-bottom: 0;
 }
@@ -8964,6 +9021,20 @@ body.dashboard-home .dashboard-summary-card strong {
 [data-theme="light"] .goal-portfolio-list .goal-portfolio-card {
   background: rgba(255, 255, 255, 0.7);
   border-color: rgba(15, 22, 40, 0.08);
+}
+
+[data-theme="light"] .goal-portfolio-list .goal-portfolio-card.is-complete {
+  background: linear-gradient(180deg, rgba(233, 255, 243, 0.96), rgba(247, 251, 255, 0.94));
+  border-color: rgba(48, 151, 97, 0.2);
+}
+
+[data-theme="light"] .completion-check-badge {
+  color: #14613d;
+  background: radial-gradient(circle at 30% 30%, rgba(168, 255, 205, 0.98), rgba(76, 176, 120, 0.96));
+  border-color: rgba(25, 128, 79, 0.28);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.65) inset,
+    0 0 16px rgba(83, 191, 126, 0.25);
 }
 [data-theme="light"] .goal-action-btn {
   background: rgba(15, 22, 40, 0.04);
@@ -9294,6 +9365,15 @@ label.field > span {
   margin-bottom: 0.9rem;
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
   cursor: pointer;
+}
+
+.task-control-add {
+  width: auto;
+  min-width: 146px;
+  margin-bottom: 0;
+  padding: 0.66rem 1rem;
+  font-size: clamp(0.8rem, 2.2vw, 0.92rem);
+  flex: 0 0 auto;
 }
 
 .task-list-add:hover,
@@ -9864,17 +9944,32 @@ body .task-filter-select {
   text-align: center !important;
 }
 
-.task-editor-actions .task-action-destructive {
+.task-editor-actions .task-delete-pill {
+  background: rgba(255, 120, 120, 0.08) !important;
+  border-color: rgba(255, 120, 120, 0.35) !important;
+  color: #ffb5b5 !important;
+}
+
+.task-editor-actions .task-action-bottom {
   flex-basis: 100% !important;
   display: flex !important;
   justify-content: center !important;
   margin-top: 0.2rem !important;
 }
 
+.task-editor-actions .task-action-bottom .soft-pill {
+  min-width: 160px !important;
+}
+
 @media (max-width: 480px) {
   .task-editor-actions .soft-pill {
     min-width: calc(48% - 0.2rem) !important;
     flex-basis: calc(48% - 0.2rem) !important;
+  }
+
+  .task-editor-actions .task-action-bottom .soft-pill {
+    min-width: 70% !important;
+    flex-basis: 70% !important;
   }
 }
 
@@ -10008,6 +10103,14 @@ body .task-filter-select {
   font-size: 1.15rem;
   font-weight: 500;
   line-height: 1;
+}
+
+@media (max-width: 560px) {
+  .task-control-add {
+    min-width: 132px;
+    padding: 0.58rem 0.82rem;
+    font-size: 0.76rem;
+  }
 }
 
 .habit-list-info {

@@ -64,6 +64,17 @@
       .replace(/\b\w/g, (char) => char.toUpperCase());
   }
 
+  function completedTickMarkup(label = "Completed") {
+    const safeLabel = escapeHtml(label);
+    return `
+      <span class="completion-check-badge" aria-label="${safeLabel}" title="${safeLabel}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </span>
+    `;
+  }
+
   function pad(value) {
     return String(value).padStart(2, "0");
   }
@@ -178,12 +189,26 @@
     const frequency = Array.isArray(task?.frequency)
       ? task.frequency.map((item) => normalizeName(item))
       : [];
+    const weekdayKeys = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+    if (
+      frequency.includes("custom days")
+      || frequency.includes("custom-days")
+      || frequency.some((item) => weekdayKeys.includes(item))
+    ) {
+      return "custom days";
+    }
     return ["daily", "weekly", "monthly", "yearly"].find((item) => frequency.includes(item)) || "";
   }
 
   function getTaskCadenceLabel(task) {
     const cadence = getTaskCadence(task);
-    return cadence ? `${titleCase(cadence)} task` : "One-time";
+    if (!cadence) {
+      return "One-time";
+    }
+    if (cadence === "custom days") {
+      return "Custom days";
+    }
+    return `${titleCase(cadence)} task`;
   }
 
   function isTaskComplete(task) {
@@ -873,24 +898,6 @@
 
     getTaskItems().forEach((item) => item.remove());
 
-    // Ensure an "+ Add Task" entry is always the first item in the list,
-    // mirroring the Habits tab's Add Habit affordance.
-    let taskAddBtn = taskBoard.querySelector(".task-list-add");
-    if (!taskAddBtn) {
-      taskBoard.insertAdjacentHTML(
-        "afterbegin",
-        `
-          <a class="task-list-add" href="./task-editor.html" data-task-add>
-            <span class="task-list-add-icon" aria-hidden="true">+</span>
-            <span>Add Task</span>
-          </a>
-        `
-      );
-      taskAddBtn = taskBoard.querySelector(".task-list-add");
-    } else if (taskAddBtn !== taskBoard.firstElementChild) {
-      taskBoard.insertBefore(taskAddBtn, taskBoard.firstElementChild);
-    }
-
     const sortedTasks = [...state.tasks].sort(
       (leftTask, rightTask) => Number(getSortKey(leftTask)) - Number(getSortKey(rightTask))
     );
@@ -928,7 +935,10 @@
               <div class="task-card-copy">
                 <div class="task-card-title-row">
                   <p class="mini-label">${escapeHtml(linkedGoal?.name || "Independent Task")}</p>
-                  <span class="status-pill ${escapeHtml(statusTone)}" data-status-pill>${escapeHtml(statusLabel)}</span>
+                  <div class="task-card-status-cluster">
+                    ${isTaskComplete(task) ? completedTickMarkup("Completed task") : ""}
+                    <span class="status-pill ${escapeHtml(statusTone)}" data-status-pill>${escapeHtml(statusLabel)}</span>
+                  </div>
                 </div>
                 <h3>${escapeHtml(task.name || "Untitled task")}</h3>
                 <p class="task-card-meta">${escapeHtml(formatDueLabel(task, state.now))} | ${escapeHtml(titleCase(task.priority || "Medium"))} priority | ${escapeHtml(getTaskCadenceLabel(task))}</p>
@@ -1364,13 +1374,16 @@
                 const goalIdAttr = escapeHtml(goalRecord.goal.id);
                 const tone = escapeHtml(goalRecord.tone);
                 const pct = clampPercent(goalRecord.progress);
-                const completed = goalRecord.goal.status === "completed";
+                const completed = goalRecord.status === "completed";
                 const detailHref = `./goal-detail.html?id=${goalId}`;
                 return `
-                  <div class="goal-portfolio-card">
+                  <div class="goal-portfolio-card ${completed ? "is-complete" : ""}">
                     <a class="goal-portfolio-row goal-portfolio-link" href="${detailHref}" aria-label="Open goal: ${goalName}">
                       <strong class="goal-portfolio-title" title="${goalName}">${goalName}</strong>
-                      <span class="status-pill ${tone}">${pct}%</span>
+                      <div class="goal-portfolio-status">
+                        ${completed ? completedTickMarkup("Completed goal") : ""}
+                        <span class="status-pill ${tone}">${pct}%</span>
+                      </div>
                     </a>
                     <div class="goal-portfolio-actions">
                       <a class="goal-action-btn" href="${detailHref}">Open</a>
