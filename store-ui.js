@@ -2321,4 +2321,66 @@
           return;
         }
 
-        const selectedDay = Number(clickedDay.getAttri
+        const selectedDay = Number(clickedDay.getAttribute("data-store-habit-day"));
+        const currentDays = new Set(getHabitMonthDays(habit, monthKey));
+        if (currentDays.has(selectedDay)) {
+          currentDays.delete(selectedDay);
+        } else {
+          currentDays.add(selectedDay);
+        }
+
+        writeHabitMonthDays(habitId, monthKey, currentDays);
+        refreshAll();
+      },
+      true
+    );
+
+    [...dashboardRangeRadios, ...goalViewRadios, ...goalRangeRadios].forEach((input) => {
+      input?.addEventListener("change", () => {
+        refreshAll();
+      });
+    });
+
+    document.addEventListener("click", (event) => {
+      const tab = event.target.closest("[data-goal-status-filter]");
+      if (!tab || !document.body.classList.contains("goals-page")) return;
+      event.preventDefault();
+      const filter = tab.getAttribute("data-goal-status-filter") || "active";
+      document.querySelectorAll("[data-goal-status-filter]").forEach((el) => {
+        const isMatch = el.getAttribute("data-goal-status-filter") === filter;
+        el.classList.toggle("is-active", isMatch);
+        el.setAttribute("aria-pressed", isMatch ? "true" : "false");
+      });
+      refreshAll();
+    });
+  }
+
+  purgeDemoRecords();
+  bindInteractions();
+  refreshAll();
+
+  window.addEventListener("pageshow", () => {
+    refreshAll();
+  });
+  window.addEventListener("storage", (event) => {
+    if (!event.key || Object.values(STORE_KEYS).includes(event.key)) {
+      refreshAll();
+    }
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      refreshAll();
+    }
+  });
+  window.addEventListener("focus", () => {
+    refreshAll();
+  });
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      refreshAll();
+    });
+  }
+  window.addEventListener("timenest-sync-complete", () => {
+    refreshAll();
+  });
+})();

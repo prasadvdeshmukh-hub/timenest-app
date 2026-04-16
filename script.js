@@ -3731,4 +3731,66 @@ window.timenestDeleteAccount = deleteUserAccount;
   prefPills.forEach((pill) => {
     const key = pill.dataset.pref;
     if (savedPrefs[key]) {
-      pill.textContent = key.charAt(0).toUpperCase() + key.slice(1) + ": " + savedPrefs[
+      pill.textContent = key.charAt(0).toUpperCase() + key.slice(1) + ": " + savedPrefs[key];
+    }
+
+    pill.style.cursor = "pointer";
+    pill.addEventListener("click", () => {
+      const options = prefOptions[key];
+      if (!options) return;
+      const currentText = pill.textContent.split(": ")[1] || options[0];
+      const currentIdx = options.indexOf(currentText);
+      const nextIdx = (currentIdx + 1) % options.length;
+      const newValue = options[nextIdx];
+      pill.textContent = key.charAt(0).toUpperCase() + key.slice(1) + ": " + newValue;
+      savedPrefs[key] = newValue;
+      writeStore(STORE_KEYS.preferences, savedPrefs);
+      showToast(key.charAt(0).toUpperCase() + key.slice(1) + " set to " + newValue);
+    });
+  });
+})();
+
+(function initLoginActions() {
+  if (document.body.dataset.authMode !== "prototype") {
+    return;
+  }
+
+  const loginSubmit = document.querySelector(".login-submit");
+  if (loginSubmit) {
+    loginSubmit.addEventListener("click", (event) => {
+      event.preventDefault();
+      showToast("This is a prototype - use the preview buttons above", "info");
+    });
+  }
+
+  const loginForm = document.querySelector(".login-form");
+  if (loginForm) {
+    loginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      showToast("Prototype mode - no real authentication", "info");
+    });
+  }
+})();
+
+import("./auth.js")
+  .then(({ initAuth }) => initAuth())
+  .catch((error) => {
+    console.error("Failed to initialize TIMENEST auth", error);
+    const authBanner = document.querySelector("[data-auth-banner], [data-auth-feedback]");
+    if (authBanner) {
+      authBanner.hidden = false;
+      authBanner.dataset.tone = "error";
+      authBanner.textContent =
+        "TIMENEST could not initialize Firebase Authentication. Open the browser console to see the exact error.";
+    }
+  });
+
+(function bootstrapTimenestNotifications() {
+  if (window.__timenestNotificationsBooted) return;
+  if (document.getElementById("timenest-notifications-script")) return;
+  const script = document.createElement("script");
+  script.id = "timenest-notifications-script";
+  script.src = "./notifications.js";
+  script.defer = true;
+  document.head.appendChild(script);
+})();
